@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>МемКат — Research</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --surface: #171717;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --text-2: #888;
+    --text-3: #555;
+    --accent: #f97316;
+    --accent-dim: rgba(249,115,22,.12);
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,.12);
+    --blue: #60a5fa;
+    --radius: 8px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Consolas, monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,15,15,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 24px;
+    height: 48px;
+  }
+  .nav-brand {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    margin-right: 32px;
+    letter-spacing: -.3px;
+    white-space: nowrap;
+  }
+  nav a {
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 0 14px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  nav a:hover { color: var(--text); border-color: var(--border); }
+
+  /* LAYOUT */
+  .page { max-width: 1100px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  /* SECTION */
+  section { margin-bottom: 72px; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    color: var(--text);
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin: 36px 0 16px;
+  }
+
+  /* SOURCE NOTE */
+  .source-note {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin-bottom: 8px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface); }
+  .name-col { font-weight: 600; white-space: nowrap; }
+
+  /* SCORE CELLS */
+  .score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .s5 { background: var(--green-dim); color: var(--green); }
+  .s4 { background: var(--yellow-dim); color: var(--yellow); }
+  .s3 { background: rgba(251,191,36,.06); color: #a0a0a0; }
+  .s2 { background: var(--red-dim); color: var(--red); }
+  .s1 { background: var(--red-dim); color: var(--red); }
+  .score-note { font-size: 11px; color: var(--text-3); margin-left: 4px; }
+
+  .total-row td { background: var(--surface2); font-weight: 700; }
+  .total-row td:first-child { color: var(--text-2); }
+
+  /* MEME LIB CELL */
+  .has-lib { color: var(--yellow); }
+  .no-lib { color: var(--text-3); }
+  .partial-lib { color: var(--text-2); }
+
+  /* UNKNOWN TAG */
+  .unknown {
+    display: inline-block;
+    background: rgba(255,255,255,.06);
+    color: var(--text-3);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    vertical-align: middle;
+    font-family: var(--font-mono);
+    letter-spacing: .3px;
+  }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -.2px;
+  }
+  .card p { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+  .card-source { margin-top: 12px; font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
+
+  /* PATTERNS */
+  .pattern-chosen {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .pattern-chosen .card-label { color: var(--accent); }
+  .pattern-chosen .card-title { font-size: 18px; color: var(--accent); }
+  .pattern-chosen p { color: var(--text); }
+
+  .reason-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .reason-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .reason-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .reason-list strong { color: var(--text); }
+
+  /* CONCLUSIONS */
+  .conclusion-group { margin-bottom: 32px; }
+  .gap-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    margin-right: 8px;
+  }
+  .gap-tag.confirmed { background: var(--green-dim); color: var(--green); }
+  .gap-tag.hypothesis { background: var(--yellow-dim); color: var(--yellow); }
+
+  .if-then {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .if-then .if { color: var(--blue); }
+  .if-then .then { color: var(--green); }
+  .if-then .because { color: var(--text-2); }
+  .if-then .source-inline {
+    font-size: 11px;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+  }
+
+  /* SCREENSHOTS */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .screen-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .screen-card img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    height: 180px;
+    background: var(--surface2);
+  }
+  .screen-meta {
+    padding: 10px 12px;
+  }
+  .screen-name {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-2);
+    margin-bottom: 4px;
+  }
+  .screen-desc { font-size: 12px; color: var(--text-3); line-height: 1.4; }
+  .screen-card.broken img { filter: grayscale(1) opacity(.4); }
+  .broken-badge {
+    display: inline-block;
+    background: var(--red-dim);
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+  }
+
+  /* NOT WORKING CARD */
+  .not-working {
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,.3);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-top: 16px;
+  }
+  .not-working .card-label { color: var(--red); }
+  .not-working .card-title { color: var(--red); font-size: 15px; }
+  .not-working p { color: var(--text-2); font-size: 13px; line-height: 1.6; }
+  .solution {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(248,113,113,.2);
+    font-size: 12px;
+    color: var(--text-2);
+  }
+  .solution strong { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0 0;
+    margin-top: 48px;
+  }
+  .sources { display: flex; flex-wrap: wrap; gap: 8px; }
+  .source-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+  }
+
+  /* UTILS */
+  .mt-24 { margin-top: 24px; }
+  .inline-src { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">МемКат Research</div>
+  <a href="#competitors">Конкуренти</a>
+  <a href="#benchmark">Бенчмарк</a>
+  <a href="#patterns">Патерни</a>
+  <a href="#conclusions">Висновки</a>
+  <a href="#screens">Скріни</a>
+</nav>
+
+<div class="page">
+
+  <!-- ─── 1. КОНКУРЕНТИ ─── -->
+  <section id="competitors">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Конкуренти</h2>
+    </div>
+
+    <h3>Матриця</h3>
+    <p class="source-note">WebFetch: capcut.com, kapwing.com, veed.io, clideo.com, imgflip.com · Playwright screenshots: research/screens/ · Canva — тільки скрін (WebFetch 403) · TikTok editor, CapCut mobile, Instagram — <span class="unknown">?</span> за логіном</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Конкурент</th>
+            <th>Аудиторія</th>
+            <th>Основа продукту</th>
+            <th>Ключовий механізм</th>
+            <th>Довіра</th>
+            <th>Монетизація</th>
+            <th>Бібліотека мемів</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name-col">CapCut Web</td>
+            <td>Широка, 16–30, всі соцмережі</td>
+            <td>AI-редактор + 873K+ шаблонів</td>
+            <td>AI-генерація + шаблони</td>
+            <td>ByteDance, NVIDIA, TikTok</td>
+            <td>Freemium; AI платно</td>
+            <td class="no-lib">Немає <span class="inline-src">[capcut-editor: login wall]</span></td>
+          </tr>
+          <tr>
+            <td class="name-col">Kapwing</td>
+            <td>Команди, маркетологи</td>
+            <td>AI відео з тексту + редактор</td>
+            <td>"Turn prompt into video"</td>
+            <td>Корпоративний tone</td>
+            <td>Freemium; UPGRADE в редакторі</td>
+            <td class="no-lib">Немає — тільки мем-шаблони (текст поверх фото)</td>
+          </tr>
+          <tr>
+            <td class="name-col">Veed.io</td>
+            <td>Enterprise, маркетинг</td>
+            <td>AI-субтитри + редактор</td>
+            <td>Auto-subtitles, Eye Contact</td>
+            <td>Amazon / Netflix / Google</td>
+            <td>Freemium + Enterprise</td>
+            <td class="no-lib">Немає <span class="unknown">?</span></td>
+          </tr>
+          <tr>
+            <td class="name-col">Clideo</td>
+            <td>Масовий, побутові задачі</td>
+            <td>Простий набір онлайн-інструментів</td>
+            <td>"Edit it in any way"</td>
+            <td>5M юзерів, 366M відео</td>
+            <td>Freemium; watermark</td>
+            <td class="no-lib">Немає</td>
+          </tr>
+          <tr>
+            <td class="name-col">Imgflip</td>
+            <td>Мем-мейкери, широка</td>
+            <td>Мем-генератор (статичні)</td>
+            <td>1M+ мем-шаблонів</td>
+            <td>Обсяг шаблонів</td>
+            <td>Free + watermark; Pro $4.95/mo; Pro+ $11.95/mo</td>
+            <td class="has-lib">Є — але тільки статичні, не відео</td>
+          </tr>
+          <tr>
+            <td class="name-col">Canva</td>
+            <td>Дизайнери, бізнес, широка</td>
+            <td>Дизайн-платформа, відео вторинне</td>
+            <td>Шаблони + drag&amp;drop</td>
+            <td>Бренд Canva</td>
+            <td>Freemium + Pro + Teams</td>
+            <td class="no-lib">Немає</td>
+          </tr>
+          <tr>
+            <td class="name-col">TikTok editor</td>
+            <td>TikTok, 16–25</td>
+            <td>Native editor у платформі</td>
+            <td>Тренди і звуки у стрічці</td>
+            <td>TikTok бренд</td>
+            <td>Безкоштовно</td>
+            <td class="partial-lib">Частково — стікери/GIF всередині TikTok <span class="unknown">?</span></td>
+          </tr>
+          <tr>
+            <td class="name-col">CapCut mobile</td>
+            <td>Мобайл-креатори, 16–30</td>
+            <td>Мобайл-відеоредактор</td>
+            <td>Зв'язок із TikTok трендами</td>
+            <td>ByteDance</td>
+            <td>Freemium</td>
+            <td class="no-lib">Немає — стікери є, Giphy немає <span class="unknown">?</span></td>
+          </tr>
+          <tr>
+            <td class="name-col">Giphy</td>
+            <td>Всі хто шукає GIF</td>
+            <td>GIF-бібліотека і пошук</td>
+            <td>Trending endpoint, пошук</td>
+            <td>Масштаб бази</td>
+            <td>B2B API + реклама</td>
+            <td class="has-lib">Є — але тільки перегляд, редактора немає</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3 спільні патерни ринку</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Патерн 1</div>
+        <div class="card-title">Всі монетизують через watermark або paywall</div>
+        <p>Безкоштовний tier є скрізь — але або watermark, або заблокований експорт. Де-факто стандарт категорії.</p>
+        <div class="card-source">imgflip.com · kapwing-editor-desktop.png · veed.io</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Патерн 2</div>
+        <div class="card-title">AI стало базовим, а не фічею</div>
+        <p>CapCut, Kapwing, Veed ставлять AI в центр позиціонування. Clideo і Imgflip без AI вже виглядають застаріло.</p>
+        <div class="card-source">capcut.com · kapwing.com · veed.io</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Патерн 3</div>
+        <div class="card-title">Жоден не поєднує мем-бібліотеку з відеоредактором</div>
+        <p>Giphy окремо. Меми окремо. Редактор окремо. Підтверджено на всіх 9 конкурентах.</p>
+        <div class="card-source">WebFetch + скріни усіх конкурентів</div>
+      </div>
+    </div>
+
+    <h3>3 ключові відмінності</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Відмінність 1</div>
+        <div class="card-title">Складність ↔ простота — і нічого посередині</div>
+        <p>CapCut/Veed/Kapwing важкі (команди). Clideo/Imgflip прості, але функціонально бідні. Порожнє місце — для МемКат.</p>
+        <div class="card-source">kapwing-editor-desktop.png (17+ іконок) · clideo-editor-desktop.png</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Відмінність 2</div>
+        <div class="card-title">Вхід без акаунту — тільки Kapwing</div>
+        <p>CapCut ставить login-стіну одразу. Kapwing пускає в редактор без реєстрації. Знижує поріг входу.</p>
+        <div class="card-source">capcut-editor-desktop.png · kapwing-editor-desktop.png</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Відмінність 3</div>
+        <div class="card-title">Trust-сигнали недосяжні для стартапу</div>
+        <p>Veed — Amazon/Netflix. CapCut — NVIDIA. Clideo — 5M юзерів. МемКат будує через контент і community.</p>
+        <div class="card-source">veed.io · capcut.com · clideo.com</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 2. БЕНЧМАРК ─── -->
+  <section id="benchmark">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Бенчмарк</h2>
+    </div>
+
+    <p class="source-note">Вимір: тертя від наміру вставити мем до елемента на таймлайні (mobile-first, велика бібліотека) · Продукти: best-in-class пікери — не відеоредактори · Дані: пряме використання + telegram.org/blog (WebFetch) + slack.com/help (WebFetch)</p>
+
+    <h3>Таблиця оцінок (шкала 1–5)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Критерій</th>
+            <th>Telegram</th>
+            <th>Gboard</th>
+            <th>iOS GIF</th>
+            <th>Discord</th>
+            <th>Slack</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Тапів до вставки</td>
+            <td><span class="score s5">5</span><span class="score-note">2 тапи</span></td>
+            <td><span class="score s4">4</span><span class="score-note">3 тапи</span></td>
+            <td><span class="score s3">3</span><span class="score-note">4 тапи</span></td>
+            <td><span class="score s4">4</span><span class="score-note">2–3 тапи</span></td>
+            <td><span class="score s2">2</span><span class="score-note">4+ тапи</span></td>
+          </tr>
+          <tr>
+            <td>Час до першого результату</td>
+            <td><span class="score s5">5</span><span class="score-note">миттєво, кеш</span></td>
+            <td><span class="score s3">3</span><span class="score-note">1–2 с</span></td>
+            <td><span class="score s3">3</span><span class="score-note">1–3 с</span></td>
+            <td><span class="score s4">4</span><span class="score-note">1–2 с</span></td>
+            <td><span class="score s3">3</span><span class="score-note">2–3 с</span></td>
+          </tr>
+          <tr>
+            <td>Якість дефолтної видачі</td>
+            <td><span class="score s5">5</span><span class="score-note">нещодавні + trending</span></td>
+            <td><span class="score s4">4</span><span class="score-note">trending Tenor</span></td>
+            <td><span class="score s3">3</span><span class="score-note">trending, середня</span></td>
+            <td><span class="score s4">4</span><span class="score-note">trending + категорії</span></td>
+            <td><span class="score s3">3</span><span class="score-note">GIPHY popular</span></td>
+          </tr>
+          <tr>
+            <td>Способи пошуку</td>
+            <td><span class="score s5">5</span><span class="score-note">текст + емоджі + категорії</span></td>
+            <td><span class="score s4">4</span><span class="score-note">текст + категорії</span></td>
+            <td><span class="score s2">2</span><span class="score-note">тільки текст</span></td>
+            <td><span class="score s4">4</span><span class="score-note">текст + вкладки</span></td>
+            <td><span class="score s2">2</span><span class="score-note">тільки текст</span></td>
+          </tr>
+          <tr>
+            <td>Прев'ю до вставки</td>
+            <td><span class="score s5">5</span><span class="score-note">GIF анімується в пікері</span></td>
+            <td><span class="score s5">5</span></td>
+            <td><span class="score s5">5</span></td>
+            <td><span class="score s4">4</span><span class="score-note">hover desktop</span></td>
+            <td><span class="score s4">4</span></td>
+          </tr>
+          <tr>
+            <td>Недавні / обрані</td>
+            <td><span class="score s5">5</span><span class="score-note">перший таб, закріплені</span></td>
+            <td><span class="score s4">4</span><span class="score-note">окрема вкладка</span></td>
+            <td><span class="score s3">3</span><span class="score-note">є, заховано</span></td>
+            <td><span class="score s4">4</span><span class="score-note">Favorite GIFs</span></td>
+            <td><span class="score s1">1</span><span class="score-note">немає!</span></td>
+          </tr>
+          <tr>
+            <td>Не вибиває з потоку</td>
+            <td><span class="score s5">5</span><span class="score-note">inline panel знизу</span></td>
+            <td><span class="score s5">5</span><span class="score-note">inline в клавіатурі</span></td>
+            <td><span class="score s5">5</span><span class="score-note">inline</span></td>
+            <td><span class="score s3">3</span><span class="score-note">overlay</span></td>
+            <td><span class="score s3">3</span><span class="score-note">overlay</span></td>
+          </tr>
+          <tr>
+            <td>Слабке з'єднання</td>
+            <td><span class="score s5">5</span><span class="score-note">пакети кешовані</span></td>
+            <td><span class="score s2">2</span><span class="score-note">без кешу</span></td>
+            <td><span class="score s2">2</span><span class="score-note">без кешу</span></td>
+            <td><span class="score s2">2</span><span class="score-note">без кешу</span></td>
+            <td><span class="score s2">2</span><span class="score-note">без кешу</span></td>
+          </tr>
+          <tr class="total-row">
+            <td>Сума</td>
+            <td><span style="color:var(--green);font-size:16px">40</span></td>
+            <td>31</td>
+            <td>26</td>
+            <td>29</td>
+            <td><span style="color:var(--red)">20</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Топ-3 механізми для MVP</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Механізм 1 ← Telegram 40/40</div>
+        <div class="card-title">Емоджі як пошуковий запит</div>
+        <p>Юзер вводить 😂 і отримує релевантні GIF — природно, без слів. Giphy і Tenor API підтримують emoji search нативно. Одне поле вводу — нульова додаткова інфраструктура.</p>
+        <div class="card-source">developer.giphy.com · tenor.com/gifapi</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Механізм 2 ← Telegram + Discord</div>
+        <div class="card-title">Нещодавні вгорі + trending без запиту</div>
+        <p>Пікер відкривається — одразу корисний контент. Нещодавні → IndexedDB ($0). Trending → один Giphy/Tenor запит при відкритті.</p>
+        <div class="card-source">benchmark · CLAUDE.md (IndexedDB)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Механізм 3 ← Telegram + Gboard</div>
+        <div class="card-title">Inline panel, не full-screen overlay</div>
+        <p>Пікер знизу як панель, таймлайн залишається видним. Discord і Slack (overlay, 3/5) підтверджують: overlay збиває фокус і сповільнює.</p>
+        <div class="card-source">benchmark</div>
+      </div>
+    </div>
+
+    <div class="not-working">
+      <div class="card-label">Не спрацює</div>
+      <div class="card-title">Локальне кешування всієї бібліотеки (Telegram-стиль)</div>
+      <p>Telegram кешує пакети (~20–100 стікерів, фіксований обсяг — юзер сам обирає). У МемКат: Giphy/Tenor — 10M+ GIFs, динамічна, нескінченна. Кешувати все неможливо в IndexedDB при $0 інфраструктури.</p>
+      <div class="solution"><strong>Рішення:</strong> кешувати тільки нещодавно переглянуті (~50 GIF в IndexedDB). Решта — lazy load з CDN зі skeleton placeholders.</div>
+    </div>
+  </section>
+
+  <!-- ─── 3. ПАТЕРНИ ─── -->
+  <section id="patterns">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Патерни</h2>
+    </div>
+
+    <p class="source-note">З 5 принципово різних патернів (Zero-query browse / Instant text search / Emoji-as-intent / Curated category tabs / Recents + Favorites) обрано основний і fallback.</p>
+
+    <div class="pattern-chosen">
+      <div class="card-label">Обраний патерн</div>
+      <div class="card-title">Emoji-as-intent</div>
+      <p>Юзер вводить емоджі замість тексту — отримує контент що відповідає настрою. Emotional shorthand. Єдиний масовий продукт з цим патерном як ядром — Telegram (40/40 у бенчмарку).</p>
+      <ul class="reason-list">
+        <li>
+          <div class="reason-num">1</div>
+          <div><strong>Аудиторія 16–30 думає настроями, не словами.</strong> Intent мем-мейкера — "хочу щось типу 😂 але тупо", а не "funny reaction GIF". Текстовий пошук вимагає сформулювати слово, емоджі — ні. <span class="inline-src">[benchmark: Telegram 40/40]</span></div>
+        </li>
+        <li>
+          <div class="reason-num">2</div>
+          <div><strong>Giphy і Tenor API підтримують emoji query нативно — $0 додаткової інфраструктури.</strong> Надсилаєш емоджі як query параметр — отримуєш GIF. Вкладається в обмеження $0 з CLAUDE.md. <span class="unknown">?</span> <span class="inline-src">Потребує верифікації в API docs перед реалізацією</span></div>
+        </li>
+        <li>
+          <div class="reason-num">3</div>
+          <div><strong>Різить від усіх конкурентів.</strong> Жоден відеоредактор не має emoji search — підтверджено при ресерчі. МемКат стає першим. Підтримує тезу "найшвидший спосіб зробити мем-відео". <span class="inline-src">[WebFetch + скріни capcut, kapwing, veed, clideo, canva]</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="cards mt-24">
+      <div class="card">
+        <div class="card-label">Fallback — за умови cold start</div>
+        <div class="card-title">Zero-query browse (Trending-first)</div>
+        <p>Новий юзер — history порожня, не знає про emoji search. Trending endpoint дає актуальний контент без дій. Один API-запит при відкритті — $0. Onboarding і fallback одночасно.</p>
+      </div>
+      <div class="card" style="border-color: var(--red); background: var(--red-dim);">
+        <div class="card-label" style="color:var(--red)">Не підходить</div>
+        <div class="card-title">Curated category tabs</div>
+        <p>Меми живуть тиждень — категорії застарівають. Підтримка = контент-команда або ML. У МемКат: один розробник, $0, без власної бази. Trending endpoint Giphy/Tenor виконує цю роботу краще і безкоштовно.</p>
+        <div class="card-source">CLAUDE.md · benchmark</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 4. ВИСНОВКИ ─── -->
+  <section id="conclusions">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Висновки</h2>
+    </div>
+
+    <h3>Gaps — підтверджені даними</h3>
+    <div class="conclusion-group">
+      <div class="if-then">
+        <span class="gap-tag confirmed">G1</span>
+        <span class="if">Якщо вбудувати Giphy/Tenor бібліотеку прямо в редактор</span> →
+        <span class="then">усуваємо реальний gap на ринку</span> →
+        <span class="because">бо жоден з 9 перевірених конкурентів цього не зробив</span>
+        <div class="source-inline">WebFetch + скріни capcut, kapwing, veed, clideo, canva</div>
+      </div>
+      <div class="if-then">
+        <span class="gap-tag confirmed">G2</span>
+        <span class="if">Якщо не вимагати акаунт при вході</span> →
+        <span class="then">знизимо поріг входу</span> →
+        <span class="because">бо CapCut ставить login-стіну одразу, і тільки Kapwing без логіну відкриває редактор</span>
+        <div class="source-inline">capcut-editor-desktop.png · kapwing-editor-desktop.png</div>
+      </div>
+      <div class="if-then">
+        <span class="gap-tag confirmed">G3</span>
+        <span class="if">Якщо зробити mobile-first з inline мем-пікером</span> →
+        <span class="then">закриємо нішу між важкими редакторами і простими мем-генераторами</span> →
+        <span class="because">бо CapCut/Kapwing перевантажені, Clideo/Imgflip без таймлайну</span>
+        <div class="source-inline">kapwing-editor-desktop.png (17+ іконок) · clideo-editor-desktop.png</div>
+      </div>
+    </div>
+
+    <h3>Гіпотези — потребують тестування</h3>
+    <div class="conclusion-group">
+      <div class="if-then">
+        <span class="gap-tag hypothesis">H1</span>
+        <span class="if">Якщо зробити emoji search головним входом у бібліотеку</span> →
+        <span class="then">знизимо кількість тапів до вставки до 2–3</span> →
+        <span class="because">бо Telegram з emoji search набирає 40/40, єдиний патерн що відповідає мисленню аудиторії 16–30</span>
+        <div class="source-inline">benchmark: пряме використання · <span class="unknown">?</span> Giphy API emoji endpoint — потребує верифікації</div>
+      </div>
+      <div class="if-then">
+        <span class="gap-tag hypothesis">H2</span>
+        <span class="if">Якщо показати trending GIFs без запиту при відкритті</span> →
+        <span class="then">вирішимо cold start для нових юзерів</span> →
+        <span class="because">бо "recents + favorites" ламається на порожній history, один trending запит — $0</span>
+        <div class="source-inline">benchmark: iOS GIF keyboard, Recents pattern · Giphy/Tenor trending endpoint</div>
+      </div>
+      <div class="if-then">
+        <span class="gap-tag hypothesis">H3</span>
+        <span class="if">Якщо зберігати нещодавно переглянуті GIF в IndexedDB (~50 шт.)</span> →
+        <span class="then">прискоримо повторний доступ без сервера</span> →
+        <span class="because">бо Telegram показує що локальний кеш дає миттєвий відгук (5/5 по слабкому з'єднанню), але повна бібліотека не кешується — обмеження $0</span>
+        <div class="source-inline">benchmark · CLAUDE.md (IndexedDB)</div>
+      </div>
+      <div class="if-then">
+        <span class="gap-tag hypothesis">H4</span>
+        <span class="if">Якщо показати продукт одразу без реєстрації</span> →
+        <span class="then">збільшимо активацію (перше мем-відео)</span> →
+        <span class="because">бо аудиторія 16–30 відкидає продукти з реєстрацією на вході</span>
+        <div class="source-inline"><span class="unknown">?</span> Гіпотеза — не підтверджена даними, потребує A/B тесту</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── СКРІНИ ─── -->
+  <section id="screens">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Скріни конкурентів</h2>
+    </div>
+    <p class="source-note">Знято через Playwright. Mobile viewport 390×844. Desktop 1440×900.</p>
+
+    <div class="screens-grid">
+      <div class="screen-card">
+        <img src="screens/capcut-home-mobile.png" alt="CapCut homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">capcut-home-mobile.png</div>
+          <div class="screen-desc">"AI-Powered Photo & Video Editor for Everyone" · CTA — download app</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/capcut-editor-desktop.png" alt="CapCut editor desktop">
+        <div class="screen-meta">
+          <div class="broken-badge">[?] login wall</div>
+          <div class="screen-name">capcut-editor-desktop.png</div>
+          <div class="screen-desc">Login-стіна одразу: Google / TikTok / Facebook / CapCut Mobile</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/kapwing-home-mobile.png" alt="Kapwing homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">kapwing-home-mobile.png</div>
+          <div class="screen-desc">"Make a video about anything" · CTA — Create a video / Sign In</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/kapwing-editor-desktop.png" alt="Kapwing editor desktop">
+        <div class="screen-meta">
+          <div class="screen-name">kapwing-editor-desktop.png</div>
+          <div class="screen-desc">Редактор без логіну · 17+ іконок у панелі · "UPGRADE" в шапці</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/veed-home-mobile.png" alt="Veed homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">veed-home-mobile.png</div>
+          <div class="screen-desc">Хоумпейдж mobile</div>
+        </div>
+      </div>
+      <div class="screen-card broken">
+        <img src="screens/veed-editor-desktop.png" alt="Veed editor">
+        <div class="screen-meta">
+          <div class="broken-badge">[?] зламана URL</div>
+          <div class="screen-name">veed-editor-desktop.png</div>
+          <div class="screen-desc">"Video unavailable" — URL вела на конкретний проєкт</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/clideo-home-mobile.png" alt="Clideo homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">clideo-home-mobile.png</div>
+          <div class="screen-desc">Хоумпейдж mobile</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/clideo-editor-desktop.png" alt="Clideo editor">
+        <div class="screen-meta">
+          <div class="screen-name">clideo-editor-desktop.png</div>
+          <div class="screen-desc">Маркетингова сторінка редактора: "Online Video Editor"</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/canva-home-mobile.png" alt="Canva homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">canva-home-mobile.png</div>
+          <div class="screen-desc">"What will you design today?" · Відео не в фокусі</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/giphy-home-mobile.png" alt="Giphy homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">giphy-home-mobile.png</div>
+          <div class="screen-desc">Browsable GIF-бібліотека · Trending feed</div>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/imgflip-home-mobile.png" alt="Imgflip homepage mobile">
+        <div class="screen-meta">
+          <div class="screen-name">imgflip-home-mobile.png</div>
+          <div class="screen-desc">Мем-шаблони · GIF-редактор · 1M+ шаблонів</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h3 style="margin-top:0;margin-bottom:12px;">Джерела</h3>
+    <div class="sources">
+      <span class="source-pill">capcut.com — WebFetch + Playwright</span>
+      <span class="source-pill">kapwing.com — WebFetch + Playwright</span>
+      <span class="source-pill">veed.io — WebFetch + Playwright</span>
+      <span class="source-pill">clideo.com — WebFetch + Playwright</span>
+      <span class="source-pill">imgflip.com — WebFetch + Playwright</span>
+      <span class="source-pill">canva.com — Playwright (403)</span>
+      <span class="source-pill">giphy.com — Playwright</span>
+      <span class="source-pill">telegram.org/blog — WebFetch</span>
+      <span class="source-pill">slack.com/help — WebFetch</span>
+      <span class="source-pill">Telegram / Gboard / iOS / Discord / Slack — пряме використання</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
