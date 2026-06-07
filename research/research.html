@@ -460,6 +460,65 @@
   .pos-text { color: var(--text-2); line-height: 1.5; }
   .pos-text strong { color: var(--text); }
 
+  /* SCREEN LINKS */
+  .screen-link {
+    cursor: pointer;
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+    transition: color .15s;
+  }
+  .screen-link:hover { color: #93c5fd; }
+
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0,0,0,.88);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-inner {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .lightbox-inner img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: var(--radius);
+    box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    display: block;
+  }
+  .lightbox-name {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-3);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--text-2);
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+  }
+  .lightbox-close:hover { color: var(--text); }
+
   /* UTILS */
   .mt-24 { margin-top: 24px; }
   .inline-src { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
@@ -691,7 +750,7 @@
             <td>AI-генерація + шаблони</td>
             <td>ByteDance, NVIDIA, TikTok</td>
             <td>Freemium; AI платно</td>
-            <td class="no-lib">Немає <span class="inline-src">[capcut-editor: login wall]</span></td>
+            <td class="no-lib">Немає <span class="inline-src">[capcut-editor-desktop.png: login wall]</span></td>
           </tr>
           <tr>
             <td class="name-col">Kapwing</td>
@@ -1160,5 +1219,52 @@
   </footer>
 
 </div>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-name" id="lightboxName"></div>
+  </div>
+</div>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxName = document.getElementById('lightboxName');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(filename) {
+    lightboxImg.src = 'screens/' + filename;
+    lightboxName.textContent = filename;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  lightboxClose.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Auto-detect all .png filename mentions in inline-src, card-source, source-inline
+  const PNG_RE = /([\w-]+\.png)/g;
+  const selectors = '.inline-src, .card-source, .source-inline, .screen-desc, .screen-name';
+
+  document.querySelectorAll(selectors).forEach(el => {
+    el.innerHTML = el.innerHTML.replace(PNG_RE, (match, filename) => {
+      return `<span class="screen-link" data-file="${filename}">${match}</span>`;
+    });
+  });
+
+  document.addEventListener('click', e => {
+    const link = e.target.closest('.screen-link');
+    if (link) openLightbox(link.dataset.file);
+  });
+</script>
 </body>
 </html>
