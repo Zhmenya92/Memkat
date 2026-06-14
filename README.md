@@ -51,3 +51,9 @@
 
 - [CLAUDE.md](CLAUDE.md) — повний бриф продукту, технічні рішення, принципи
 - [research/research.md](research/research.md) — ресерч і конкурентний аналіз
+
+---
+
+## Research live
+
+**[research-wheat-seven.vercel.app](https://research-wheat-seven.vercel.app)** — інтерактивний HTML-звіт (конкуренти, персони, JTBD, аудит)
