@@ -77,7 +77,85 @@
   nav a:hover { color: var(--text); border-color: var(--border); }
 
   /* LAYOUT */
-  .page { max-width: 1100px; margin: 0 auto; padding: 48px 24px 96px; }
+  .layout { display: flex; max-width: 1320px; margin: 0 auto; }
+  .page { flex: 1; min-width: 0; padding: 48px 40px 96px; }
+  .page > section { display: none; }
+  .page > section.active { display: block; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 210px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 48px;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding: 28px 0 64px;
+    border-right: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.3;
+    transition: color .15s, background .15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-link:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .sidebar-link.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+  .sidebar-num {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: .5px;
+    flex-shrink: 0;
+    color: var(--text-3);
+    width: 20px;
+  }
+  .sidebar-link.active .sidebar-num { color: var(--accent); }
+  .sidebar-group + .sidebar-group { margin-top: 4px; }
+  .sidebar-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 16px 14px 6px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    transition: color .15s;
+  }
+  .sidebar-group-label:hover { color: var(--text-2); }
+  .sidebar-group.active > .sidebar-group-label { color: var(--accent); }
+  .sidebar-group:first-child .sidebar-group-label { padding-top: 4px; }
+  .sidebar-chevron {
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    transition: transform .2s ease;
+  }
+  .sidebar-group.collapsed .sidebar-chevron { transform: rotate(-90deg); }
+  .sidebar-group-items {
+    overflow: hidden;
+    max-height: 400px;
+    transition: max-height .25s ease;
+  }
+  .sidebar-group.collapsed .sidebar-group-items { max-height: 0; }
+  @media (min-width: 900px) { nav a { display: none; } }
+  @media (max-width: 899px) {
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .page { padding: 48px 24px 96px; }
+  }
 
   /* SECTION */
   section { margin-bottom: 72px; }
@@ -519,6 +597,147 @@
   }
   .lightbox-close:hover { color: var(--text); }
 
+  /* PERSONAS */
+  .persona-grid { display: flex; flex-direction: column; gap: 28px; }
+  .persona-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .persona-card.primary-card { border-color: var(--accent); }
+  .persona-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .persona-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .persona-badge.primary { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); }
+  .persona-badge.secondary { background: var(--surface2); color: var(--text-2); border: 1px solid var(--border); }
+  .persona-name { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+  .persona-role { font-size: 13px; color: var(--text-2); }
+  .persona-why {
+    padding: 12px 24px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .persona-why strong { color: var(--text); }
+  .persona-section {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .persona-section:last-child { border-bottom: none; }
+  .persona-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .persona-section p { font-size: 13px; color: var(--text-2); line-height: 1.65; }
+  .persona-section ol { padding-left: 16px; display: flex; flex-direction: column; gap: 5px; }
+  .persona-section ol li { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+  .pain-item { font-size: 13px; color: var(--text-2); line-height: 1.55; margin-bottom: 9px; }
+  .pain-item strong { color: var(--text); }
+  .trust-row { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 7px; }
+  .trust-row strong { color: var(--text); }
+
+  /* JTBD */
+  .job-main {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .job-main-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .job-main-text { font-size: 16px; font-weight: 600; line-height: 1.55; color: var(--text); letter-spacing: -.2px; margin-bottom: 16px; }
+  .job-main-meta { font-size: 12px; color: var(--text-2); line-height: 1.65; }
+  .job-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 10px;
+  }
+  .job-id {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: .5px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  .job-id.related  { background: var(--green-dim); color: var(--green); }
+  .job-id.emotional { background: rgba(167,139,250,.12); color: #a78bfa; }
+  .job-id.hypothesis { background: var(--yellow-dim); color: var(--yellow); }
+  /* ── JTBD matrix ── */
+  .matrix-wrap { overflow-x: auto; margin: 24px 0 32px; border-radius: 8px; border: 1px solid var(--border); }
+  .jtbd-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .jtbd-table th { background: var(--surface2); color: var(--text-2); font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .jtbd-table th .th-persona { display: block; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-3); margin-top: 2px; }
+  .jtbd-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-2); line-height: 1.5; }
+  .jtbd-table tr:last-child td { border-bottom: none; }
+  .jtbd-table tr:hover td { background: var(--surface); }
+  .jtbd-table .row-hyp td { color: var(--text-3); }
+  .col-job { min-width: 190px; }
+  .job-cell { font-size: 12px; font-weight: 500; color: var(--text); }
+  .job-id-sm { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 5px; vertical-align: middle; white-space: nowrap; }
+  .imp { display: inline-block; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 4px; padding: 0 3px; margin-right: 4px; vertical-align: middle; }
+  .imp-3 { background: var(--accent); color: #fff; }
+  .imp-2 { background: var(--accent-dim); color: var(--accent); }
+  .imp-1 { background: var(--surface2); color: var(--text-3); }
+  .imp-q { background: var(--surface2); color: var(--text-3); font-style: italic; font-size: 10px; }
+  .comp { font-size: 11px; font-weight: 600; display: block; margin-bottom: 2px; }
+  .comp-no { color: var(--red); }
+  .comp-partial { color: var(--yellow); }
+  .comp-yes { color: var(--green); }
+  .conclusion-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; }
+  .conclusion-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-2); margin-bottom: 6px; }
+  .conclusion-sub { font-size: 12px; color: var(--text-3); margin: 0 0 16px; }
+  .mvp-job { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .mvp-job:last-child { margin-bottom: 0; }
+  .func-tag { display: inline-block; margin-top: 3px; font-size: 11px; color: var(--accent); font-weight: 600; }
+  /* ── Audit section ── */
+  .audit-group { margin-bottom: 28px; }
+  .audit-group-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-3); padding: 20px 0 8px; }
+  .s-ok   { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; background: var(--green-dim); color: var(--green); }
+  .s-hyp  { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; background: var(--yellow-dim); color: var(--yellow); }
+  .s-inv  { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; background: var(--red-dim); color: var(--red); }
+  .s-part { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; background: var(--accent-dim); color: var(--accent); }
+  .q-result { background: var(--surface2); border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--text-2); line-height: 1.7; }
+  .q-result-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--green); margin-bottom: 5px; }
+  .q-done { border-left-color: var(--green); }
+  .danger-item { display: flex; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--red); border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; }
+  .danger-num { font-size: 22px; font-weight: 700; color: var(--red); flex-shrink: 0; line-height: 1.1; }
+  .danger-body { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+  .danger-body strong { color: var(--text); }
+  .danger-impact { font-size: 11px; color: var(--text-3); margin-top: 5px; }
+  .q-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+  .q-num { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .q-text { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+  .q-row { font-size: 12px; color: var(--text-2); line-height: 1.6; margin-top: 6px; }
+  .q-label { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-3); margin-right: 6px; }
+  .job-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.55; margin-bottom: 10px; letter-spacing: -.1px; }
+  .job-body { font-size: 12px; color: var(--text-2); line-height: 1.65; }
+
   /* UTILS */
   .mt-24 { margin-top: 24px; }
   .inline-src { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
@@ -534,7 +753,39 @@
   <a href="#patterns">Патерни</a>
   <a href="#conclusions">Висновки</a>
   <a href="#screens">Скріни</a>
+  <a href="#personas">Персони та JTBD</a>
 </nav>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-group" data-group-id="research">
+    <div class="sidebar-group-label">
+      <span>Рісерч</span>
+      <svg class="sidebar-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 6,8 10,4"/></svg>
+    </div>
+    <div class="sidebar-group-items">
+      <a href="#summary"     class="sidebar-link active" data-section="summary"     data-group="research"><span class="sidebar-num">00</span>Про продукт</a>
+      <a href="#competitors" class="sidebar-link"        data-section="competitors" data-group="research"><span class="sidebar-num">01</span>Конкуренти</a>
+      <a href="#benchmark"   class="sidebar-link"        data-section="benchmark"   data-group="research"><span class="sidebar-num">02</span>Бенчмарк</a>
+      <a href="#patterns"    class="sidebar-link"        data-section="patterns"    data-group="research"><span class="sidebar-num">03</span>Патерни</a>
+      <a href="#conclusions" class="sidebar-link"        data-section="conclusions" data-group="research"><span class="sidebar-num">04</span>Висновки</a>
+      <a href="#screens"     class="sidebar-link"        data-section="screens"     data-group="research"><span class="sidebar-num">05</span>Скріни</a>
+    </div>
+  </div>
+
+  <div class="sidebar-group collapsed" data-group-id="personas">
+    <div class="sidebar-group-label">
+      <span>Персони та JTBD</span>
+      <svg class="sidebar-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 6,8 10,4"/></svg>
+    </div>
+    <div class="sidebar-group-items">
+      <a href="#personas" class="sidebar-link" data-section="personas" data-group="personas"><span class="sidebar-num">06</span>Персони</a>
+      <a href="#jtbd"     class="sidebar-link" data-section="jtbd"     data-group="personas"><span class="sidebar-num">07</span>JTBD</a>
+      <a href="#audit"    class="sidebar-link" data-section="audit"    data-group="personas"><span class="sidebar-num">08</span>Аудит</a>
+    </div>
+  </div>
+</aside>
 
 <div class="page">
 
@@ -1106,7 +1357,7 @@
         <span class="if">Якщо показати продукт одразу без реєстрації</span> →
         <span class="then">збільшимо активацію (перше мем-відео)</span> →
         <span class="because">бо аудиторія 16–30 відкидає продукти з реєстрацією на вході</span>
-        <div class="source-inline"><span class="unknown">?</span> Гіпотеза — не підтверджена даними, потребує A/B тесту</div>
+        <div class="source-inline"><span class="s-part" style="font-size:10px">◑ Частково підтверджено</span> Аудит 2026-06-14: 23–26% юзерів покидають через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian). No-login MVP підтверджений для продукту без trust-сигналів. [?] на точних цифрах для відеоредактора — A/B після запуску.</div>
       </div>
     </div>
   </section>
@@ -1209,6 +1460,585 @@
     </div>
   </section>
 
+  <!-- ─── 6. ПЕРСОНИ ТА JTBD ─── -->
+  <section id="personas">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Персони</h2>
+    </div>
+    <p class="source-note">База: research.md (конкурентний аналіз, UX benchmark) + personas.md + jtbd.md · Прямих інтерв'ю, опитувань і юзер-тестів немає — позначено <span class="unknown">?</span></p>
+
+    <div class="persona-grid">
+
+      <!-- АНЯ -->
+      <div class="persona-card primary-card">
+        <div class="persona-head">
+          <span class="persona-badge primary">Primary</span>
+          <span class="persona-name">Аня, 19</span>
+          <span class="persona-role">TikTok-мейкер</span>
+        </div>
+        <div class="persona-why">
+          <strong>Чому primary.</strong> Єдина персона для якої всі три ключові рішення MVP (emoji search, inline picker, no-login) знімають підтверджені болі. Демографія підтверджена двома конкурентами з найбільшим охватом аудиторії. Денис і Ліза потрапляють у продукт, але вимагають рішень поверх MVP-ядра.
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Контекст</div>
+          <p>19 років, знімає TikTok-контент з телефону. Приходить із ситуації: побачила в стрічці мем цього тижня, хоче вставити в кліп — і починає стрибати між аппами: CapCut → Telegram або Giphy → скачати → повернутись → вставити. <span class="unknown">?</span> Частота публікацій і конкретна платформа (TikTok vs Reels) — гіпотеза, не верифіковано. <span class="unknown">?</span> Точний timing між "побачила у стрічці" і "відкрила редактор" (секунди / хвилини / того ж дня пізніше) — не верифіковано.</p>
+          <div class="card-source">Матриця конкурентів — CapCut Web ("широка, всі соцмережі, 16–30") · CapCut mobile ("мобайл-креатори, 16–30") · Тригер "побачила у стрічці" підтверджений аудитом 2026-06-14: FYP є реальним і домінуючим тригером участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела)</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Jobs</div>
+          <ol>
+            <li>Зробити мем-відео поки тренд живий — speed to publish важливіший за якість монтажу. <em style="color:var(--text-3);font-size:11px">(Аудит 2026-06-14: частково підтверджено — TikTok 2024–2025 пріоритизує неполірований контент; вікно тренду вузьке і затримка = втрата моменту. Ранжування speed&gt;quality з вуст юзерів — досі <span class="unknown">?</span>.)</em></li>
+            <li>Знайти мем за настроєм ("щось типу 😂 але тупо") без потреби формулювати слово. <em style="color:var(--text-3);font-size:11px">(Аудит Q3 2026-06-14: mood-intent підтверджений — GIF-пошук відбувається за короткими TEXT-словами "tired", "reaction", "funny" (Tenor 300M/день); emoji-символ 😂 як ввід — нішева поведінка. TikTok native відкриває trending першим; text пошук вторинний. R1: text + emoji вхід; R2 trending — перший таб. <span class="unknown">?</span> чи Аня тисне emoji чи пише слово — прямих даних немає.)</em></li>
+            <li>Не перемикатись між аппами під час монтажу.</li>
+          </ol>
+          <div class="card-source">Патерни — "Intent мем-мейкера — 'хочу щось типу 😂 але тупо'" · Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні"</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Болі</div>
+          <div class="pain-item"><strong>App-switching</strong> — CapCut не має мем-бібліотеки, жоден з 9 конкурентів не вбудував Giphy/Tenor у редактор. <span class="inline-src">Висновки G1 · Матриця конкурентів</span></div>
+          <div class="pain-item"><strong>Login-стіна</strong> — CapCut вимагає реєстрацію (Google / TikTok / Facebook) до входу в редактор. Для МемКат login на вході = вимірювана причина відмови: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); на мобайлі вище. Нюанс: Аня реєструється в CapCut, бо знає бренд — для невідомого МемКат той самий login = вищий abandonment risk. <span class="inline-src">capcut-editor-desktop.png · аудит 2026-06-14</span></div>
+          <div class="pain-item"><strong>Текстовий пошук ламається</strong> — треба слово, а є настрій. Emoji search немає в жодному відеоредакторі. <span class="inline-src">Патерни — Unified search</span></div>
+          <div class="pain-item"><strong>Overlay-пікер вибиває з монтажу</strong> — Discord і Slack 3/5 по "не вибиває з потоку" проти Telegram inline 5/5. <span class="inline-src">Benchmark таблиця</span></div>
+          <div class="pain-item"><span class="unknown">?</span> <strong>Watermark</strong> — гіпотеза: аудиторія 16–19 менш готова платити щоб прибрати. Не верифіковано.</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Тригери довіри</div>
+          <div class="trust-row"><strong>Що переконує:</strong> <span class="unknown">?</span> Немає даних. Гіпотеза: побачила у стрічці або друг показав. Потребує якісного дослідження.</div>
+          <div class="trust-row"><strong>Що відлякує:</strong> Login-стіна на вході — підтверджено на CapCut. H4 — <span class="s-part" style="font-size:10px">◑ частково підтверджено</span> (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle); Gen Z відмовляється від сервісів через privacy у 35% (Experian 2025). Але та ж Gen Z реєструється після показу цінності (88%, Forbes 2024). Для МемКат без trust-сигналів: no-login MVP = правильне рішення. <span class="unknown">?</span> залишається на точних цифрах для відеоредактора. <span class="inline-src">capcut-editor-desktop.png · Висновки H4 · аудит 2026-06-14</span></div>
+          <div class="trust-row"><strong>Trust-сигнали яких у МемКат немає:</strong> ByteDance/NVIDIA (CapCut), Amazon/Netflix (Veed/Kapwing), 5M юзерів (Clideo). Стартувати треба через контент і community. <span class="inline-src">"Ключові відмінності між конкурентами"</span></div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Цитата-настрій</div>
+          <p><span class="unknown">?</span> Прямих цитат і відгуків у research.md немає — форумний ресерч (Reddit, TikTok коментарі, App Store reviews) не проводився. Реальна цитата потребує окремого дослідження.</p>
+        </div>
+      </div>
+
+      <!-- ДЕНИС -->
+      <div class="persona-card">
+        <div class="persona-head">
+          <span class="persona-badge secondary">Secondary 1</span>
+          <span class="persona-name">Денис, 24</span>
+          <span class="persona-role">YouTube Shorts / Reels, навмисний контент</span>
+        </div>
+        <div class="persona-why">
+          <strong>Чому secondary.</strong> Старший і більш навмисний — для нього таймлайн і точність важливіші за тренд "прямо зараз". Потрапляє в аудиторію 16–30, але ресерч не підтверджує що ця когорта є більшою або ціннішою за Аню.
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Контекст</div>
+          <p>24 роки, веде канал із запланованим контентом. Монтує і з телефону, і з ноута залежно від проєкту. До МемКат приходить коли хоче вставити мем-момент в інакше серйозне відео. <span class="unknown">?</span> Частота, основна платформа, розподіл телефон/ноут — гіпотеза, даних немає.</p>
+          <div class="card-source">Матриця конкурентів — CapCut Web "широка, всі соцмережі, 16–30" · "Запланований контент" підтверджений аудитом 2026-06-14: досвідченіші TikTok-креатори переважно батчують (60–70% запланованого + 30–40% тренд-реактивного) — becreatives.co, influenceflow.io</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Jobs</div>
+          <ol>
+            <li>Змонтувати відео з чистим таймлайном — обрізка, порядок, точна підгонка.</li>
+            <li>Додати мем або стікер у конкретний момент, а не "десь тут".</li>
+            <li>Експортувати в потрібному форматі (9:16 або 1:1).</li>
+          </ol>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Болі</div>
+          <div class="pain-item"><strong>Складні редактори</strong> — Kapwing 17+ іконок, орієнтований на команди, а не соло-автора. <span class="inline-src">kapwing-editor-desktop.png · "Ключові відмінності"</span></div>
+          <div class="pain-item"><strong>Мем-бібліотеки немає ніде</strong> — всі 9 конкурентів без вбудованого Giphy/Tenor. <span class="inline-src">Висновки G1</span></div>
+          <div class="pain-item"><span class="unknown">?</span> <strong>Watermark більш критичний</strong> — гіпотеза: для 24-річного є відчуття "якісного" контенту. Не верифіковано.</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Тригери довіри</div>
+          <div class="trust-row"><strong>Що переконує:</strong> <span class="unknown">?</span> Немає даних. Гіпотеза: reviews, порівняльні відео. Не верифіковано.</div>
+          <div class="trust-row"><strong>Що відлякує:</strong> <span class="unknown">?</span> Немає даних. Корпоративні trust-сигнали (Netflix, Amazon) ймовірно нерелевантні для соло-автора — але не верифіковано.</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Цитата-настрій</div>
+          <p><span class="unknown">?</span> Прямих цитат у research.md немає.</p>
+        </div>
+      </div>
+
+      <!-- ЛІЗА -->
+      <div class="persona-card">
+        <div class="persona-head">
+          <span class="persona-badge secondary">Secondary 2</span>
+          <span class="persona-name">Ліза, 16</span>
+          <span class="persona-role">TikTok native, перший редактор</span>
+        </div>
+        <div class="persona-why">
+          <strong>Чому secondary.</strong> Входить в аудиторію (TikTok editor таргетує 16–25), але її профіль вимагає рішень поверх MVP: cold start onboarding, толерантність до слабшого пристрою. Ресерч не підтверджує що новачки є більшою частиною аудиторії — закривати їх потреби ціною ускладнення MVP передчасно.
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Контекст</div>
+          <p>16 років, дивиться TikTok і хоче повторювати формати зі стрічки. Монтувала тільки в нативному TikTok editor. До МемКат приходить <span class="unknown">?</span> — тригер невідомий, гіпотеза: пошук "як додати мем у відео".</p>
+          <div class="card-source">Матриця конкурентів — TikTok editor "16–25"</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Jobs</div>
+          <ol>
+            <li>Скопіювати формат мем-відео що побачила у стрічці.</li>
+            <li>Зробити це швидко і без розуміння монтажу.</li>
+            <li>Викласти поки актуально.</li>
+          </ol>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Болі</div>
+          <div class="pain-item"><strong>Cold start</strong> — відкриває пікер вперше, history порожня, не знає що шукати. "Recents + favorites ламається на порожній history". <span class="s-part" style="font-size:10px">◑</span> R2 (trending tab) = рішення: аудит Q3 підтверджує — TikTok native (рідний редактор Лізи) відкриває trending GIF за замовчуванням, без порожнього екрану. <span class="inline-src">Висновки H2 · Benchmark — iOS GIF keyboard (Recents 3/5) · аудит 2026-06-14 Q3 — flexclip.com</span></div>
+          <div class="pain-item"><strong>Перевантажений інтерфейс</strong> — 17+ іконок у Kapwing не для першого досвіду. <span class="inline-src">kapwing-editor-desktop.png</span></div>
+          <div class="pain-item"><strong>Login-стіна</strong> — CapCut вимагає акаунт. H4 <span class="s-part" style="font-size:10px">◑ частково підтверджено</span> (аудит 2026-06-14): Gen Z загалом відмовляється від сервісів через privacy у 35% — найвищий показник серед усіх вікових груп (Experian 2025). <span class="unknown">?</span> залишається на "16-річна відмовляється частіше, ніж 24-річна" — вікового розбиття в даних немає. <span class="inline-src">capcut-editor-desktop.png · Висновки H4 · аудит 2026-06-14</span></div>
+          <div class="pain-item"><span class="unknown">?</span> <strong>Слабший пристрій і з'єднання</strong> — гіпотеза. Benchmark: без кешу всі продукти 2/5 на слабкому з'єднанні, але специфіка пристроїв 16-річних не верифікована. <span class="inline-src">Benchmark таблиця — "Слабке з'єднання"</span></div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Тригери довіри</div>
+          <div class="trust-row"><strong>Що переконує:</strong> <span class="unknown">?</span> Повністю невідомо. Гіпотеза: social proof у TikTok-форматі. Не верифіковано.</div>
+          <div class="trust-row"><strong>Що відлякує:</strong> <span class="unknown">?</span> Невідомо.</div>
+        </div>
+        <div class="persona-section">
+          <div class="persona-section-label">— Цитата-настрій</div>
+          <p><span class="unknown">?</span> Прямих цитат у research.md немає.</p>
+        </div>
+      </div>
+
+    </div><!-- /persona-grid -->
+
+    <!-- ЩО НЕВІДОМО -->
+    <h3>Що невідомо по всіх персонах</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Персона</th><th>Що невідомо</th><th>Що потрібно</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Всі</td><td>Реальний голос юзера — цитати, відгуки</td><td>App Store reviews, Reddit, TikTok коментарі</td></tr>
+          <tr><td>Аня</td><td>Тригер "побачила у стрічці" — <strong>підтверджений</strong> (аудит 2026-06-14); timing між тригером і відкриттям редактора — <span class="unknown">?</span></td><td>Пряме спостереження / інтерв'ю</td></tr>
+          <tr><td>Ліза, Денис</td><td>Тригер приходу в МемКат</td><td>Якісне інтерв'ю або опитування</td></tr>
+          <tr><td>Всі</td><td>Де конкретно зупиняються (drop-off)</td><td>Юзер-тест або аналітика воронки</td></tr>
+          <tr><td>Всі</td><td>Чому обирають конкретний редактор</td><td>Якісне інтерв'ю</td></tr>
+          <tr><td>Аня</td><td>H4 <span class="s-part" style="font-size:10px">◑ частково підтверджено</span>: 16–30 відкидає реєстрацію <em>до</em> показу цінності; після — реєструється. Залишається <span class="unknown">?</span>: точні цифри abandonment для відеоредактора vs e-commerce</td><td>A/B тест після запуску</td></tr>
+          <tr><td>Аня</td><td>Платіжна готовність</td><td>A/B або опитування</td></tr>
+          <tr><td>Денис</td><td>Чи існує ця когорта в нашій аудиторії</td><td>Кількісне опитування</td></tr>
+          <tr><td>Ліза</td><td>Характеристики пристрою і з'єднання</td><td>Технічна аналітика після запуску</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- ─── 7. JTBD ─── -->
+  <section id="jtbd">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Jobs to Be Done</h2>
+    </div>
+    <p class="source-note">Формат: «Коли [ситуація], я хочу [мотивація], щоб [результат]» · У формулюваннях немає назв функцій — тільки прогрес людини · База: jtbd.md</p>
+
+    <div class="job-main">
+      <div class="job-main-label">Main job</div>
+      <div class="job-main-text">«Коли я бачу мем або тренд у стрічці, я хочу швидко зробити і викласти своє відео з ним, щоб потрапити в момент поки він живий.»</div>
+      <div class="job-main-meta">
+        <strong>Персона:</strong> Аня — контекст: побачила мем у стрічці → app-switching → хоче вставити.<br>
+        <strong>Research:</strong> Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні". Gap G1 — жоден з 9 конкурентів не вбудував мем-бібліотеку в редактор.
+      </div>
+    </div>
+
+    <h3 style="margin-top:28px">Related jobs</h3>
+
+    <div class="job-card">
+      <div class="job-id related">R1</div>
+      <div class="job-text">«Коли я шукаю мем, я хочу знайти його за настроєм або емоджі, щоб не витрачати час на підбір точного слова.»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — job #2.<br><strong>Research:</strong> Патерни — "Intent мем-мейкера — 'хочу щось типу 😂 але тупо', а не 'funny reaction GIF'." Benchmark: Telegram 40/40, єдиний продукт з emoji search. <span class="inline-src">telegram-gif-picker.png</span></div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id related">R2</div>
+      <div class="job-text">«Коли я вперше відкриваю бібліотеку або не знаю що шукати, я хочу одразу бачити актуальний контент, щоб не стояти перед порожнім екраном.»</div>
+      <div class="job-body"><strong>Персона:</strong> Ліза — pain: cold start, history порожня.<br><strong>Research:</strong> Висновки H2 — "'recents + favorites' ламається на порожній history". Benchmark: iOS GIF keyboard (Recents 3/5). Telegram trending без запиту = 5/5.</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id related">R3</div>
+      <div class="job-text">«Коли я монтую відео і хочу додати мем, я хочу знайти і вставити його не виходячи з монтажу, щоб не збирати фокус заново.»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — pain: app-switching, overlay-пікер вибиває.<br><strong>Research:</strong> Gap G1 — жоден конкурент не вбудував бібліотеку. Benchmark: Telegram і Gboard 5/5 (inline) vs Discord і Slack 3/5 (overlay) по "не вибиває з потоку".</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id related">R4</div>
+      <div class="job-text">«Коли я хочу повторно використати мем що вже шукав, я хочу знайти його одразу, щоб не повторювати пошук.»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — implied контекст регулярного постингу.<br><strong>Research:</strong> Benchmark — Recents/Favorites: Telegram 5/5 ("перший таб + закріплені набори"), Slack 1/5 ("немає!"). Висновки H3: "якщо зберігати нещодавно переглянуті GIF → прискоримо повторний доступ без сервера."</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id related">R5</div>
+      <div class="job-text">«Коли моє відео готове, я хочу зберегти його у правильному співвідношенні для платформи куди виходжу, щоб воно виглядало як треба без додаткових дій.»</div>
+      <div class="job-body"><strong>Персона:</strong> Денис — job #3.<br><strong>Research:</strong> Gap G3 — "порожнє місце між важкими і простими" без контролю форматів. <span class="inline-src">Специфіка форматів (9:16, 1:1) — з CLAUDE.md, не з даних юзерів.</span></div>
+    </div>
+
+    <h3 style="margin-top:28px">Emotional jobs</h3>
+
+    <div class="job-card">
+      <div class="job-id emotional">E1</div>
+      <div class="job-text">«Коли я закінчую монтаж, я хочу відчувати що процес не поборов мене, щоб не боятися братися за наступне відео.»</div>
+      <div class="job-body"><strong>Персона:</strong> Ліза — "зробити це швидко і без розуміння монтажу"; pain: перший редактор, перевантажений інтерфейс.<br><strong>Research:</strong> Gap G3 — складні редактори відштовхують. Benchmark — кількість тапів як показник friction. <span class="unknown">?</span> Емоційна складова ("не боятися") — гіпотеза, прямих даних немає.</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id emotional">E2</div>
+      <div class="job-text">«Коли я роблю мем-відео, я хочу відчути що встигла поки тренд живий, щоб публікація мала сенс а не вийшла "запізно".»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — urgency тренду; Ліза — "викласти поки актуально".<br><strong>Research:</strong> Main job benchmark вимірює швидкість як ключовий параметр. App-switching — кожен додатковий крок підвищує ризик втратити момент. <span class="unknown">?</span> Суб'єктивне відчуття "встигла / запізно" — гіпотеза.</div>
+    </div>
+
+    <h3 style="margin-top:28px">Гіпотези JTBD</h3>
+    <p class="source-note">Jobs що логічно випливають з контексту, але не підкріплені даними ресерчу. Не впливають на рішення поки не верифіковані.</p>
+
+    <div class="job-card">
+      <div class="job-id hypothesis">Г1 — social</div>
+      <div class="job-text">«Коли мій підписник бачить моє відео, я хочу щоб він сприйняв мене як людину що розуміє тренди, щоб підписатися або поширити.»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня, Ліза — implied TikTok context.<br><strong>Чому гіпотеза:</strong> Social dimension не згаданий у research.md прямо. Потребує інтерв'ю або аналізу мотивацій публікацій.</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id hypothesis">Г2 — functional</div>
+      <div class="job-text">«Коли я хочу спробувати редактор, я хочу зробити це без реєстрації, щоб не витрачати час і не давати дані продукту якому ще не довіряю.»</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — pain: login-стіна CapCut.<br><strong>Статус:</strong> <span class="s-part" style="font-size:10px">◑ Частково підтверджено</span> (аудит 2026-06-14): 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian 2025). Але та ж Gen Z реєструється після показу цінності. No-login MVP підтверджений для продукту без trust-сигналів. [?] залишається на точних цифрах abandonment для відеоредактора. Залишається як Гіпотеза до верифікації точних цифр у нашому контексті.</div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-id hypothesis">Г3 — emotional</div>
+      <div class="job-text">«Коли я отримую результат з першої спроби, я хочу відчути що зробила правильний вибір інструменту, щоб повернутися наступного разу.»</div>
+      <div class="job-body"><strong>Персона:</strong> Ліза — перший редактор.<br><strong>Чому гіпотеза:</strong> Перший досвід і retention — загальний UX-патерн, але не підтверджений даними ресерчу. Потребує юзер-тесту або аналітики після запуску.</div>
+    </div>
+
+    <h3 style="margin-top:40px">JTBD-матриця</h3>
+    <p class="source-note">Важливість: <strong style="color:var(--accent)">3</strong> — ключовий, підтверджено · <strong style="color:var(--text-2)">2</strong> — релевантний, є дані · <strong style="color:var(--text-3)">1</strong> — незначний · <strong style="color:var(--text-3)">[?]</strong> — даних немає.</p>
+
+    <div class="matrix-wrap">
+      <table class="jtbd-table">
+        <thead>
+          <tr>
+            <th class="col-job">Job</th>
+            <th>Аня, 19 <span class="th-persona">primary</span></th>
+            <th>Денис, 24 <span class="th-persona">secondary</span></th>
+            <th>Ліза, 16 <span class="th-persona">secondary</span></th>
+            <th>Функція в МемКат</th>
+            <th>Конкуренти</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--accent);color:#fff">Main</span>Встигнути з мем-відео поки тренд живий</td>
+            <td><span class="imp imp-3">3</span>core scenario; benchmark вимірює тертя від наміру до публікації; Gap G1</td>
+            <td><span class="imp imp-2">2</span>аудиторія 16–30 [матриця конкурентів]; навмисний, але тренди релевантні</td>
+            <td><span class="imp imp-3">3</span>job #3 "викласти поки актуально" [personas.md]</td>
+            <td>Вбудована мем-бібліотека + таймлайн</td>
+            <td><span class="comp comp-no">✗ Не закритий</span>Gap G1 — жоден з 9 конкурентів</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R1</span>Знайти мем за настроєм / емоджі</td>
+            <td><span class="imp imp-3">3</span>"Intent — '😂 але тупо', а не текстовий запит" [Патерни]; job #2 Ані</td>
+            <td><span class="imp imp-q">?</span>немає даних</td>
+            <td><span class="imp imp-2">2</span>cold start, emoji знижує поріг входу; непрямо [H2]</td>
+            <td>Emoji / mood search у бібліотеці</td>
+            <td><span class="comp comp-no">✗ Не закритий</span>Тільки Telegram 40/40 (не редактор) [Benchmark]</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R2</span>Бачити актуальний контент з нуля (cold start)</td>
+            <td><span class="imp imp-2">2</span>зазвичай знає що шукає; trending знижує тертя при відкритті</td>
+            <td><span class="imp imp-1">1</span>навмисний, знає що хоче</td>
+            <td><span class="imp imp-3">3</span>"recents + favorites ламається на порожній history" [H2]; iOS GIF keyboard 3/5</td>
+            <td>Trending tab (Giphy/Tenor endpoint — $0)</td>
+            <td><span class="comp comp-partial">◑ Частково</span>Telegram 5/5 "trending без запиту" [Benchmark]</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R3</span>Вставити мем не виходячи з монтажу</td>
+            <td><span class="imp imp-3">3</span>app-switching pain: CapCut → Telegram/Giphy → назад [personas.md; G1]</td>
+            <td><span class="imp imp-2">2</span>монтує і з телефону, і з ноута; switching релевантне</td>
+            <td><span class="imp imp-2">2</span>implied; <span class="unknown">?</span> прямих даних немає</td>
+            <td>Inline мем-пікер (panel, не overlay)</td>
+            <td><span class="comp comp-no">✗ Не закритий</span>Gap G1 — жоден з 9 конкурентів</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R4</span>Повторно знайти мем без нового пошуку</td>
+            <td><span class="imp imp-2">2</span>implied: регулярний постинг; <span class="unknown">?</span> частота не верифікована</td>
+            <td><span class="imp imp-2">2</span>implied: навмисний контент, повторні меми; <span class="unknown">?</span></td>
+            <td><span class="imp imp-1">1</span>перший досвід, history порожня</td>
+            <td>Recents tab у бібліотеці</td>
+            <td><span class="comp comp-partial">◑ Частково</span>Telegram 5/5; Slack 1/5 (відсутній) [Benchmark]</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R5</span>Експортувати у форматі платформи</td>
+            <td><span class="imp imp-2">2</span>TikTok → 9:16 [CLAUDE.md]</td>
+            <td><span class="imp imp-3">3</span>job #3 Дениса "9:16 або 1:1" [personas.md]</td>
+            <td><span class="imp imp-2">2</span>TikTok → 9:16</td>
+            <td>Експорт 9:16 і 1:1</td>
+            <td><span class="comp comp-yes">✓ Закритий</span>CapCut, Kapwing, Canva — всі підтримують формати</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:rgba(167,139,250,.12);color:#a78bfa">E1</span>Відчути що процес не поборов</td>
+            <td><span class="imp imp-q">?</span>немає даних</td>
+            <td><span class="imp imp-q">?</span>немає даних</td>
+            <td><span class="imp imp-2">2</span>implied: перший редактор, Kapwing 17+ іконок; <span class="unknown">?</span> емоційна складова</td>
+            <td>Простий UX, мінімум кроків до першого результату</td>
+            <td><span class="comp comp-partial">◑ Непрямо</span>Gap G3 "між важкими і простими"; суб'єктивне</td>
+          </tr>
+          <tr>
+            <td class="job-cell"><span class="job-id-sm" style="background:rgba(167,139,250,.12);color:#a78bfa">E2</span>Відчути що встигла поки тренд живий</td>
+            <td><span class="imp imp-3">3</span>urgency: кожен зайвий крок = ризик запізнити [personas.md]</td>
+            <td><span class="imp imp-1">1</span>запланований контент, менш терміново</td>
+            <td><span class="imp imp-3">3</span>job #3 "викласти поки актуально" [personas.md]</td>
+            <td>Швидкий end-to-end flow: відкрити → мем → вставити → експорт</td>
+            <td><span class="comp comp-no">✗ Не закритий</span>Жоден конкурент не будує UX навколо speed to trend</td>
+          </tr>
+          <tr class="row-hyp">
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--yellow-dim);color:var(--yellow)">Г1</span>Бути сприйнятим як "людина в темі" (social)</td>
+            <td><span class="imp imp-q">?</span></td>
+            <td><span class="imp imp-q">?</span></td>
+            <td><span class="imp imp-q">?</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr class="row-hyp">
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--yellow-dim);color:var(--yellow)">Г2</span>Спробувати без реєстрації</td>
+            <td><span class="imp imp-2">2</span>login pain CapCut підтверджено; H4 <span class="s-part" style="font-size:10px">◑</span> (аудит 2026-06-14)</td>
+            <td><span class="imp imp-q">?</span>немає даних</td>
+            <td><span class="imp imp-2">2</span>implied; H4 <span class="s-part" style="font-size:10px">◑</span> (аудит 2026-06-14)</td>
+            <td>No-login старт</td>
+            <td><span class="comp comp-partial">◑ Частково</span>Kapwing без логіну; CapCut login-стіна</td>
+          </tr>
+          <tr class="row-hyp">
+            <td class="job-cell"><span class="job-id-sm" style="background:var(--yellow-dim);color:var(--yellow)">Г3</span>Повернутися після першого успіху (retention)</td>
+            <td><span class="imp imp-q">?</span></td>
+            <td><span class="imp imp-q">?</span></td>
+            <td><span class="imp imp-q">?</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:40px">Висновок матриці</h3>
+
+    <div class="conclusion-block">
+      <div class="conclusion-title">3 jobs у ядро MVP</div>
+      <p class="conclusion-sub">Критерій: важливість 3 для Ані (primary) + не закриті ринком.</p>
+      <div class="mvp-job">
+        <span class="job-id-sm" style="background:var(--accent);color:#fff;flex-shrink:0">Main</span>
+        <div><strong style="color:var(--text)">Встигнути з мем-відео поки тренд живий</strong> — Аня 3, Ліза 3, Денис 2. Єдиний job де всі три персони збігаються. Gap G1 = жоден з 9 конкурентів не закриває. Весь продукт будується навколо нього.<br><span class="func-tag">→ Вбудована бібліотека мемів + таймлайн</span></div>
+      </div>
+      <div class="mvp-job">
+        <span class="job-id-sm" style="background:var(--green-dim);color:var(--green);flex-shrink:0">R1</span>
+        <div><strong style="color:var(--text)">Знайти мем за настроєм / емоджі</strong> — Аня 3. Не закритий жодним відеоредактором — тільки Telegram, але він не редактор. Пряма, не скопійована перевага.<br><span class="func-tag">→ Emoji / mood search у бібліотеці</span></div>
+      </div>
+      <div class="mvp-job">
+        <span class="job-id-sm" style="background:var(--green-dim);color:var(--green);flex-shrink:0">R3</span>
+        <div><strong style="color:var(--text)">Вставити мем не виходячи з монтажу</strong> — Аня 3, Денис 2, Ліза 2. Gap G1 = жоден з 9 не вбудував picker у редактор. Усуває головний app-switching pain Ані.<br><span class="func-tag">→ Inline мем-пікер (panel, не overlay)</span></div>
+      </div>
+    </div>
+
+    <div class="conclusion-block" style="margin-top:16px">
+      <div class="conclusion-title">Функції-кандидати на виліт</div>
+      <p class="conclusion-sub">MVP-функції, що не закривають жоден job у матриці.</p>
+      <table class="jtbd-table" style="margin-top:8px">
+        <thead>
+          <tr>
+            <th>Функція</th>
+            <th>Job у матриці</th>
+            <th>Коментар</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--text);font-weight:500">Текст / субтитри вручну</td>
+            <td><span style="color:var(--text-3)">Жоден</span></td>
+            <td>Не фігурує в jobs жодної персони. Кандидат на виліт або відкладення.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--text);font-weight:500">Додавання звуку</td>
+            <td><span style="color:var(--text-3)">Жоден</span></td>
+            <td>Sound-specific job у матриці відсутній.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="source-note" style="margin-top:12px;margin-bottom:0">Відсутність у матриці ≠ непотрібність. Обидві функції можуть бути частиною ширшої "зробити відео" петлі. Рекомендація: не брати в MVP поки немає job що їх вимагає.</p>
+    </div>
+
+  </section>
+
+  <!-- ─── 8. AUDIT ─── -->
+  <section id="audit">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Аудит тверджень</h2>
+    </div>
+    <p class="source-note">Прискіплива перевірка кожного твердження з personas.md і jtbd.md. <span class="s-ok">✓ Підтверджено</span> — пряме джерело в research.md · <span class="s-hyp">[?] Гіпотеза</span> — логічний інференс або явна мітка [?] · <span class="s-inv">✗ Вигадано</span> — жодної основи в даних.</p>
+
+    <!-- ── TABLE 1 ── -->
+    <div class="audit-group">
+      <div class="audit-group-label">Аня, 19 — primary (personas.md)</div>
+      <div class="matrix-wrap">
+        <table class="jtbd-table">
+          <thead><tr><th style="min-width:280px">Твердження</th><th>Статус</th><th>Доказ / відсутність</th></tr></thead>
+          <tbody>
+            <tr><td>App-switching pain: CapCut → Telegram/Giphy → назад</td><td><span class="s-ok">✓</span></td><td>Gap G1 — жоден з 9 конкурентів не вбудував бібліотеку; Висновки</td></tr>
+            <tr><td>Login-стіна як pain</td><td><span class="s-ok">✓</span></td><td>capcut-editor-desktop.png — реєстрація до входу в редактор</td></tr>
+            <tr><td>Emoji/mood search job ("хочу щось типу 😂 але тупо")</td><td><span class="s-ok">✓</span></td><td>Патерни: "Intent мем-мейкера — 'хочу щось типу 😂 але тупо', а не точне слово"</td></tr>
+            <tr><td>Overlay picker вибиває з монтажу</td><td><span class="s-ok">✓</span></td><td>Benchmark: Telegram/Gboard 5/5 (inline) vs Discord/Slack 3/5 (overlay) по "не вибиває з потоку"</td></tr>
+            <tr><td>Speed to publish важливіший за якість монтажу</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: TikTok 2024–2025 пріоритизує неполірований контент над відредагованим (becreatives.co, influenceflow.io); вікно тренду вузьке і затримка = втрата моменту. Ранжування speed&gt;quality з вуст юзерів — досі [?]</td></tr>
+            <tr><td>Частота публікацій регулярна</td><td><span class="s-hyp">[?]</span></td><td>Демографія 16–30 [матриця конкурентів]; конкретна частота не підтверджено</td></tr>
+            <tr><td>Тригер: "побачила мем у стрічці" → хоче вставити зараз</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: FYP є реальним і домінуючим тригером участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела); мобайл = спонтанний контент (becreatives.co). [?] залишається на timing — "зараз" (секунди / хвилини / того ж дня пізніше)</td></tr>
+            <tr><td>H4: аудиторія 16–30 відкидає реєстрацію</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian 2025). Але Gen Z реєструється після показу цінності. Нюанс: відкидає реєстрацію <em>до</em> показу цінності — після показу реєструється. No-login MVP підтверджений для продукту без trust-сигналів.</td></tr>
+            <tr><td>Вік 19, конкретно TikTok</td><td><span class="s-inv">✗</span></td><td>Демографія 16–30 підтверджена; "19" і "TikTok" — конструкт персони без точних даних</td></tr>
+            <tr><td>Що переконує Аню прийти в МемКат</td><td><span class="s-inv">✗</span></td><td>Жодних даних; "побачила у стрічці або друг показав" — pure guess без будь-якої основи</td></tr>
+            <tr><td>Цитата-настрій</td><td><span class="s-inv">✗</span></td><td>Явно [?] у personas.md; форумного / App Store ресерчу не проводилось</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="audit-group">
+      <div class="audit-group-label">Денис, 24 — secondary 1 (personas.md)</div>
+      <div class="matrix-wrap">
+        <table class="jtbd-table">
+          <thead><tr><th style="min-width:280px">Твердження</th><th>Статус</th><th>Доказ / відсутність</th></tr></thead>
+          <tbody>
+            <tr><td>Kapwing складний для соло-автора</td><td><span class="s-ok">✓</span></td><td>kapwing-editor-desktop.png: 17+ іконок; позиціонування "для команд" [матриця конкурентів]</td></tr>
+            <tr><td>Жоден конкурент не має мем-бібліотеки (Gap G1)</td><td><span class="s-ok">✓</span></td><td>Матриця конкурентів — всі 9 перевірені</td></tr>
+            <tr><td>"Навмисний контент", YouTube Shorts/Reels</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: "навмисний контент" підтверджений батч-патерном — досвідченіші TikTok-креатори переважно батчують (60–70% запланованого + 30–40% тренд-реактивного) — becreatives.co, influenceflow.io. [?] залишається на конкретній платформі (YouTube Shorts/Reels) і розподілі пристроїв</td></tr>
+            <tr><td>Export format job (9:16, 1:1)</td><td><span class="s-hyp">[?]</span></td><td>Лише CLAUDE.md (продуктові рішення); не з даних юзерів</td></tr>
+            <tr><td>Монтує і з телефону, і з ноута</td><td><span class="s-inv">✗</span></td><td>Явно [?] у personas.md; жодних даних про пристрої</td></tr>
+            <tr><td>Вставляє мем у "інакше серйозне відео"</td><td><span class="s-inv">✗</span></td><td>Жодних даних; домислений сценарій без будь-якої основи</td></tr>
+            <tr><td>Watermark критичніший для 24-річного</td><td><span class="s-inv">✗</span></td><td>Явно [?] у personas.md; жодних даних про платіжну готовність за вотермарк</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="audit-group">
+      <div class="audit-group-label">Ліза, 16 — secondary 2 (personas.md)</div>
+      <div class="matrix-wrap">
+        <table class="jtbd-table">
+          <thead><tr><th style="min-width:280px">Твердження</th><th>Статус</th><th>Доказ / відсутність</th></tr></thead>
+          <tbody>
+            <tr><td>Cold start pain (порожня history)</td><td><span class="s-ok">✓</span></td><td>Висновки H2: "recents + favorites ламається на порожній history"; Benchmark iOS GIF keyboard 3/5</td></tr>
+            <tr><td>Перевантажений інтерфейс як pain</td><td><span class="s-ok">✓</span></td><td>kapwing-editor-desktop.png (17+ іконок); Gap G3 "між важкими і простими"</td></tr>
+            <tr><td>Login-стіна (CapCut)</td><td><span class="s-part">◑</span></td><td>capcut-editor-desktop.png — підтверджено. Аудит 2026-06-14: Gen Z загалом відмовляється від сервісів через privacy у 35% (найвищий серед усіх груп — Experian 2025). [?] залишається: чи 16-річна відмовляється <em>частіше</em>, ніж 24-річна — вікового розбиття в даних немає.</td></tr>
+            <tr><td>Демографія TikTok editor 16–25</td><td><span class="s-ok">✓</span></td><td>Матриця конкурентів: TikTok editor "16–25"</td></tr>
+            <tr><td>"Скопіювати формат мем-відео" як job</td><td><span class="s-hyp">[?]</span></td><td>Логічно для TikTok native user; не верифіковано прямими даними</td></tr>
+            <tr><td>Монтувала тільки в нативному TikTok editor</td><td><span class="s-inv">✗</span></td><td>Жодних даних; домисел для побудови "перший редактор" архетипу</td></tr>
+            <tr><td>Тригер приходу: пошук "як додати мем у відео"</td><td><span class="s-inv">✗</span></td><td>Жодних даних; чистий guess без жодної основи</td></tr>
+            <tr><td>Слабший пристрій і з'єднання</td><td><span class="s-inv">✗</span></td><td>Явно [?] у personas.md; жодних даних про характеристики пристроїв аудиторії</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="audit-group">
+      <div class="audit-group-label">JTBD (jtbd.md)</div>
+      <div class="matrix-wrap">
+        <table class="jtbd-table">
+          <thead><tr><th style="min-width:280px">Твердження</th><th>Статус</th><th>Доказ / відсутність</th></tr></thead>
+          <tbody>
+            <tr><td>R1: emoji/mood search як job</td><td><span class="s-ok">✓</span></td><td>Патерни: пряма цитата про intent мем-мейкера</td></tr>
+            <tr><td>R2: cold start / trending need</td><td><span class="s-ok">✓</span></td><td>Висновки H2; Benchmark (Telegram 5/5, iOS GIF 3/5)</td></tr>
+            <tr><td>R3: inline picker (no app-switch)</td><td><span class="s-ok">✓</span></td><td>Gap G1; Benchmark inline vs overlay порівняння</td></tr>
+            <tr><td>Main job urgency: "поки тренд живий"</td><td><span class="s-ok">✓</span></td><td>Аудит 2026-06-14: influenceflow.io — "by the time you've noticed, planned, and produced, the moment has passed"; вікно тренду вузьке підтверджено 3 незалежними джерелами</td></tr>
+            <tr><td>Main job trigger: "бачу мем у стрічці"</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: FYP підтверджений як домінуючий тригер участі в трендах (3 джерела). [?] залишається на timing — чи відкривають редактор одразу або пізніше того ж дня</td></tr>
+            <tr><td>R4: recents (implied від регулярного постингу)</td><td><span class="s-hyp">[?]</span></td><td>Benchmark показує цінність recents; частота постингу Ані — [?]</td></tr>
+            <tr><td>R5: export format як job</td><td><span class="s-hyp">[?]</span></td><td>Gap G3 + CLAUDE.md; не з даних юзерів</td></tr>
+            <tr><td>E1: "процес не поборов" (emotional)</td><td><span class="s-hyp">[?]</span></td><td>Implied від friction; явно [?] у jtbd.md; емоційна складова не верифікована</td></tr>
+            <tr><td>E2: urgency feeling "встигла поки тренд живий"</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: urgency підтверджена структурно (influenceflow.io: "the moment has passed"); суб'єктивне відчуття "встигла / запізно" — досі інференс без прямих слів юзерів</td></tr>
+            <tr><td>Г2: no-login як job</td><td><span class="s-part">◑</span></td><td>Login pain ✓; H4 частково підтверджено (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle). No-login MVP підтверджений для продукту без trust-сигналів. [?] на точних цифрах для відеоредактора залишається.</td></tr>
+            <tr><td>Г1: соціальне визнання "людина в темі"</td><td><span class="s-inv">✗</span></td><td>Явно мітка "Гіпотеза"; соціальний вимір не згаданий у research.md прямо</td></tr>
+            <tr><td>Г3: retention після першого успіху</td><td><span class="s-inv">✗</span></td><td>Явно мітка "Гіпотеза"; загальний UX-патерн без даних для нашої аудиторії</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── DANGEROUS LIST ── -->
+    <h3 style="margin-top:40px">Твердження що впливають на дизайн — і стоять на [?] або вигадано</h3>
+    <p class="source-note">Ці твердження не просто невідомі — вони вже зараз керують продуктовими рішеннями. Якщо виявляться хибними, доведеться переробляти.</p>
+
+    <div class="danger-item">
+      <div class="danger-num">1</div>
+      <div class="danger-body">
+        <strong>H4: аудиторія 16–30 відкидає реєстрацію</strong> <span class="s-part">◑ Частково підтверджено</span><br>
+        Аудит 2026-06-14: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian). Але та ж Gen Z реєструється після показу цінності (88% ділиться даними, Forbes 2024). Ключовий нюанс: відкидає реєстрацію <em>до</em> показу цінності; після — реєструється. CapCut-login не є топ-скаргою в оглядах — бо CapCut має trust (ByteDance/TikTok brand). МемКат без trust-сигналів → no-login MVP підтверджений.
+        <div class="danger-impact">→ Впливає на: no-login архітектуру (IndexedDB only, без синхронізації між пристроями). Рішення підтверджене для MVP-стадії без trust-сигналів. A/B тест після запуску покаже точні цифри для відеоредактора.</div>
+      </div>
+    </div>
+
+    <div class="danger-item">
+      <div class="danger-num">2</div>
+      <div class="danger-body">
+        <strong>Speed to publish важливіший за якість монтажу</strong> <span class="s-part">◑ Частково підтверджено</span><br>
+        Аудит 2026-06-14: TikTok 2024–2025 пріоритизує неполірований контент над відредагованим (becreatives.co, influenceflow.io); urgency підтверджена. [?] залишається на ранжуванні speed&gt;quality з вуст юзерів — прямих цитат немає.
+        <div class="danger-impact">→ Структурний аргумент для speed-first MVP підтверджений. [?] на прямих даних юзерів не знімає небезпеку повністю — A/B тест або якісне дослідження підтвердить після запуску.</div>
+      </div>
+    </div>
+
+    <div class="danger-item">
+      <div class="danger-num">3</div>
+      <div class="danger-body">
+        <strong>Main job trigger: "побачила мем у стрічці" → хоче вставити ЗАРАЗ</strong> <span class="s-part">◑ Частково підтверджено</span><br>
+        Аудит 2026-06-14: FYP підтверджений як домінуючий тригер (3 незалежні джерела); мобайл = спонтанний контент, desktop = запланований (becreatives.co). Обидві моделі реальні: 30–40% — тренд-реактивний мобайл-монтаж (influenceflow.io). [?] залишається на timing — "ЗАРАЗ" (секунди / хвилини / того ж дня).
+        <div class="danger-impact">→ R3 (inline picker) залишається в ядрі: спонтанний мобайл-монтаж підтверджений. [?] на timing не знімає небезпеку — уточнить A/B або пряме спостереження після запуску.</div>
+      </div>
+    </div>
+
+    <div class="danger-item">
+      <div class="danger-num">4</div>
+      <div class="danger-body">
+        <strong>E2: urgency — "публікація має сенс тільки поки тренд живий"</strong> <span class="s-part">◑ Частково підтверджено</span><br>
+        Аудит 2026-06-14: urgency підтверджена структурно — influenceflow.io: "by the time you've noticed, planned, and produced, the moment has passed"; вікно тренду вузьке підтверджено 3 джерелами. [?] залишається на суб'єктивному відчутті "встигла / запізно" — прямих слів юзерів немає.
+        <div class="danger-impact">→ Впливає на: time-to-publish як ключову метрику успіху, speed-first UX рішення. Структурний аргумент для speed-first підтверджений; суб'єктивне відчуття E2 — ще інференс.</div>
+      </div>
+    </div>
+
+    <div class="danger-item">
+      <div class="danger-num">5</div>
+      <div class="danger-body">
+        <strong>Ліза: тригер приходу — пошук "як додати мем у відео"</strong> <span class="s-inv">✗ Вигадано</span><br>
+        Повністю вигаданий тригер без жодної основи.
+        <div class="danger-impact">→ Впливає на: чи є Ліза (перший редактор) цільовою аудиторією взагалі, канал залучення (SEO vs social), onboarding дизайн. Якщо тригер інший — ми таргетуємо не той канал.</div>
+      </div>
+    </div>
+
+    <!-- ── 3 QUESTIONS ── -->
+    <h3 style="margin-top:40px">3 точкові питання</h3>
+    <p class="source-note">Ці питання закривають найважливіші дірки пп. 1–5 вище. Не потрібне повне дослідження — достатньо прицільного пошуку.</p>
+
+    <div class="q-card q-done">
+      <div class="q-num">Питання 1 <span class="s-ok" style="vertical-align:middle">✓ Досліджено</span></div>
+      <div class="q-text">Яким є реальний тригер монтажної сесії — спонтанний мем чи заплановане відео?</div>
+      <div class="q-row"><span class="q-label">Закриває</span> Main job trigger (п.3), E2 urgency (п.4), пріоритет R3 inline picker</div>
+      <div class="q-result">
+        <div class="q-result-label">Результат · 14.06.2026</div>
+        FYP підтверджений як домінуючий тригер участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела). Мобайл = спонтанний контент, десктоп = запланований (becreatives.co). Urgency підтверджено: "by the time you've noticed, planned, and produced, the moment has passed" (influenceflow.io). Оптимальний мікс досвідченіших: 60–70% запланованого + 30–40% тренд-реактивного (консенсус 3 джерел).<br>
+        <strong style="color:var(--text)">Висновок:</strong> обидві моделі реальні. R3 (inline picker) залишається в ядрі MVP — спонтанний мобайл-монтаж підтверджений. [?] залишається: точний timing між тригером і відкриттям редактора.
+      </div>
+    </div>
+
+    <div class="q-card q-done">
+      <div class="q-num">Питання 2 <span class="s-ok" style="vertical-align:middle">✓ Досліджено</span></div>
+      <div class="q-text">Чи реєстрація є причиною відмови від редактора, чи просто дратівливою точкою — і чи юзер все одно реєструється?</div>
+      <div class="q-row"><span class="q-label">Закриває</span> H4 (п.1), Г2 no-login architecture decision</div>
+      <div class="q-result">
+        <div class="q-result-label">Результат · 14.06.2026</div>
+        Реєстрація — <strong style="color:var(--text)">причина відмови, а не просто friction</strong>, але залежить від довіри і моменту. 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle). На мобайлі — до 86% abandon при immediate login wall. Gen Z зупиняла сервіси через privacy у 35% (найвищий показник серед усіх груп — Experian 2025). Але та ж Gen Z охоче реєструється після показу цінності (88%, Forbes 2024). CapCut-login не є топ-скаргою в оглядах — юзери знають бренд і довіряють. МемКат на старті = zero trust signals.<br>
+        <strong style="color:var(--text)">Висновок:</strong> No-login MVP підтверджений. H4 частково підтверджено: відкидає реєстрацію <em>до</em> показу цінності; після показу — реєструється. Рішення не переробляти: no-login at entry, registration offer after first export.
+      </div>
+    </div>
+
+    <div class="q-card q-done">
+      <div class="q-num">Питання 3 <span class="s-ok" style="vertical-align:middle">✓ Досліджено</span></div>
+      <div class="q-text">Як насправді шукають меми: пишуть текстовий запит, тикають емоджі, чи скролять trending?</div>
+      <div class="q-row"><span class="q-label">Закриває</span> R1 vs R2 пріоритет — що будувати першим: emoji search чи trending browse</div>
+      <div class="q-result">
+        <div class="q-result-label">Результат · 14.06.2026</div>
+        Домінуючий паттерн — <strong style="color:var(--text)">короткі емоційні TEXT-слова</strong> ("tired", "reaction", "funny"), а не emoji-символи. Tenor отримує 300M текстових пошуків/день; топ-запити — "Love", "Tired" (короткі слова, не 😂). <strong style="color:var(--text)">Trending browse — дефолтний UX</strong>: TikTok native editor відкриває trending GIF першим при відкритті панелі стікерів — текстовий пошук вторинний вибір. Tenor best practice — показувати trending і категорії поряд із пошуком до будь-якого введення. Emoji search — <strong style="color:var(--text)">нішевий диференціатор</strong>: є в Tenor GIF Keyboard і Giphy API, але у жодному відеоредакторі (ні TikTok native, ні CapCut) не реалізований.<br>
+        <strong style="color:var(--text)">Висновок:</strong> R2 (trending) — пріоритет першого табу за замовчуванням (відповідає звичному UX TikTok native). R1 (mood search) — диференціатор для відеоредакторів; реалізовувати як text-вхід + опціональний emoji-тригер, не emoji-only. Mood-intent Ані підтверджений; метод вираження — TEXT ("dumb laugh", "tired"), а не символ. <span class="unknown">?</span> залишається: чи 16–30 у video editor контексті активно тисне emoji чи пише текст — A/B після запуску.
+      </div>
+    </div>
+
+  </section>
+
   <footer>
     <h3 style="margin-top:0;margin-bottom:12px;">Джерела</h3>
     <div class="sources">
@@ -1226,7 +2056,8 @@
     </div>
   </footer>
 
-</div>
+</div><!-- /page -->
+</div><!-- /layout -->
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-inner">
@@ -1273,6 +2104,88 @@
     const link = e.target.closest('.screen-link');
     if (link) openLightbox(link.dataset.file);
   });
+
+  // Tab switching — кожен пункт меню показує свій екран
+  const navToSection = {
+    'summary': 'summary', 'competitors': 'competitors', 'benchmark': 'benchmark',
+    'patterns': 'patterns', 'conclusions': 'conclusions', 'screens': 'screens',
+    'personas': 'personas', 'jtbd': 'jtbd', 'audit': 'audit'
+  };
+  const anchorToNav = {
+    'summary': 'summary', 'competitors': 'competitors', 'benchmark': 'benchmark',
+    'patterns': 'patterns', 'conclusions': 'conclusions', 'screens': 'screens',
+    'personas': 'personas', 'jtbd': 'jtbd', 'audit': 'audit'
+  };
+
+  function expandGroupForNav(navId) {
+    const activeLink = document.querySelector(`.sidebar-link[data-section="${navId}"]`);
+    const groupId = activeLink?.dataset.group;
+    document.querySelectorAll('.sidebar-group').forEach(g => {
+      g.classList.add('collapsed');
+      g.classList.remove('active');
+    });
+    if (groupId) {
+      const activeGroup = document.querySelector(`.sidebar-group[data-group-id="${groupId}"]`);
+      if (activeGroup) {
+        activeGroup.classList.remove('collapsed');
+        activeGroup.classList.add('active');
+      }
+    }
+  }
+
+  function activateSection(navId, anchorId) {
+    const sectionId = navToSection[navId] || navId;
+    document.querySelectorAll('.page > section').forEach(s => s.classList.remove('active'));
+    const section = document.getElementById(sectionId);
+    if (section) section.classList.add('active');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    const activeLink = document.querySelector(`.sidebar-link[data-section="${navId}"]`);
+    if (activeLink) activeLink.classList.add('active');
+    expandGroupForNav(navId);
+    const anchor = anchorId ? document.getElementById(anchorId) : null;
+    if (anchor && anchor.tagName !== 'SECTION') {
+      window.scrollTo(0, 0);
+      setTimeout(() => anchor.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  document.querySelectorAll('.sidebar-link[data-section]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const navId = link.dataset.section;
+      const anchorId = link.getAttribute('href').slice(1);
+      activateSection(navId, anchorId);
+      history.replaceState(null, '', '#' + anchorId);
+    });
+  });
+
+  // Accordion toggle on group label click
+  document.querySelectorAll('.sidebar-group-label').forEach(label => {
+    label.addEventListener('click', () => {
+      const group = label.closest('.sidebar-group');
+      const isCollapsed = group.classList.contains('collapsed');
+      if (isCollapsed) {
+        // Expand: auto-activate first sub-item
+        const firstLink = group.querySelector('.sidebar-link[data-section]');
+        if (firstLink) {
+          const navId = firstLink.dataset.section;
+          const anchorId = firstLink.getAttribute('href').slice(1);
+          activateSection(navId, anchorId);
+          history.replaceState(null, '', '#' + anchorId);
+        }
+      } else {
+        // Collapse without changing active section
+        document.querySelectorAll('.sidebar-group').forEach(g => g.classList.add('collapsed'));
+      }
+    });
+  });
+
+  // Початковий стан — з хешу або дефолт
+  const initAnchor = location.hash.slice(1) || 'summary';
+  const initNav = anchorToNav[initAnchor] || 'summary';
+  activateSection(initNav, initAnchor);
 </script>
 </body>
 </html>
