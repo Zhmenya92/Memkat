@@ -3,3 +3,5 @@ package-lock.json
 package.json
 research/screens/screenshot.js
 research/screens/screenshot-retry.js
+
+.vercel
