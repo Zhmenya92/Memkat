@@ -9,11 +9,37 @@
 
 ---
 
+## Стан проекту
+
+| Фаза | Статус |
+|---|---|
+| UX-ресерч | ✅ Завершено |
+| Дизайн (персони → wireframes → UI) | 🔄 В процесі |
+| Розробка MVP | ⏳ Не розпочато |
+
+**Що зроблено в ресерчі:**
+- Конкурентний аналіз 9 продуктів (CapCut, Canva, Telegram, Kapwing та ін.)
+- UX benchmark 5 продуктів — 8 критеріїв, включно з emoji search і cold start
+- Виявлено Gap G1: жоден із 9 конкурентів не вбудував мем-бібліотеку в редактор
+- 3 персони (Аня 19, Денис 24, Ліза 16) з підтвердженими болями та джобами
+- JTBD-матриця: Main job + 5 related + 2 emotional, пріоритизація для MVP
+- Аудит 9 тверджень MVP — що підтверджено, що гіпотеза, що вигадано
+
+---
+
+## Research live
+
+**[research-wheat-seven.vercel.app](https://research-wheat-seven.vercel.app)** — інтерактивний HTML-звіт (mobile-friendly, sidebar + tab navigation)
+
+Розділи: Конкуренти · Бенчмарк · Патерни · Висновки · Скріни · Персони · JTBD · Аудит тверджень
+
+---
+
 ## Структура репо
 
 | Папка | Що тут |
 |---|---|
-| [`research/`](research/) | Ресерч, інсайти, джерела |
+| [`research/`](research/) | Ресерч, інсайти, джерела — MD + HTML |
 | [`research/screens/`](research/screens/) | Скріншоти конкурентів і референсів |
 | [`wireframes/`](wireframes/) | Вайрфрейми екранів (lo-fi) |
 | [`concept/`](concept/) | Концепт-арти, візуальний напрямок |
@@ -43,7 +69,7 @@
 - **Експорт:** WebCodecs (апаратне кодування на пристрої)
 - **Сховище:** IndexedDB (локально, офлайн)
 - **Контент:** Giphy API, Tenor API, CC0-звуки
-- **Хостинг:** Cloudflare Pages / Vercel / Netlify
+- **Хостинг:** Vercel (зараз — ресерч; пізніше — продукт)
 
 ---
 
@@ -51,9 +77,5 @@
 
 - [CLAUDE.md](CLAUDE.md) — повний бриф продукту, технічні рішення, принципи
 - [research/research.md](research/research.md) — ресерч і конкурентний аналіз
-
----
-
-## Research live
-
-**[research-wheat-seven.vercel.app](https://research-wheat-seven.vercel.app)** — інтерактивний HTML-звіт (конкуренти, персони, JTBD, аудит)
+- [research/personas.md](research/personas.md) — персони Аня, Денис, Ліза
+- [research/jtbd.md](research/jtbd.md) — JTBD-матриця і висновки
