@@ -1234,8 +1234,8 @@
       <div class="card">
         <div class="card-label">Механізм 2 ← Telegram + Discord</div>
         <div class="card-title">Нещодавні вгорі + trending без запиту</div>
-        <p>Пікер відкривається — одразу корисний контент. Нещодавні → IndexedDB ($0). Trending → один Giphy/Tenor запит при відкритті.</p>
-        <div class="card-source">benchmark · CLAUDE.md (IndexedDB)</div>
+        <p>Пікер відкривається — одразу корисний контент. Нещодавні → IndexedDB ($0). Trending → один Giphy/Tenor запит при відкритті. Q3-аудит 2026-06-14: Tenor >> Giphy по релевантності пошуку (консенсус реальних юзерів) — Tenor пріоритетний API.</p>
+        <div class="card-source">benchmark · CLAUDE.md (IndexedDB) · Reddit 15.06.2026 (r/discordapp)</div>
       </div>
       <div class="card">
         <div class="card-label">Механізм 3 ← Telegram + Gboard</div>
@@ -1273,7 +1273,7 @@
         </li>
         <li>
           <div class="reason-num">2</div>
-          <div><strong>Giphy і Tenor API підтримують emoji query нативно — $0 додаткової інфраструктури.</strong> Надсилаєш емоджі як query параметр — отримуєш GIF. Вкладається в обмеження $0 з CLAUDE.md. <span class="unknown">?</span> <span class="inline-src">Потребує верифікації в API docs перед реалізацією</span></div>
+          <div><strong>Giphy і Tenor API підтримують emoji query нативно — $0 додаткової інфраструктури.</strong> Надсилаєш емоджі як query параметр — отримуєш GIF. Вкладається в обмеження $0 з CLAUDE.md. <span class="inline-src">Підтверджено (Q3-аудит 2026-06-14): Giphy — dedicated Emoji endpoint [developers.giphy.com]; Tenor GIF Keyboard — "allows users to search by emoji" [Google Play listing]</span></div>
         </li>
         <li>
           <div class="reason-num">3</div>
@@ -1336,7 +1336,7 @@
         <span class="if">Якщо зробити emoji search головним входом у бібліотеку</span> →
         <span class="then">знизимо кількість тапів до вставки до 2–3</span> →
         <span class="because">бо Telegram з emoji search набирає 40/40, єдиний патерн що відповідає мисленню аудиторії 16–30</span>
-        <div class="source-inline">benchmark: пряме використання · <span class="unknown">?</span> Giphy API emoji endpoint — потребує верифікації</div>
+        <div class="source-inline">benchmark: пряме використання · Giphy emoji endpoint підтверджено (Q3-аудит 2026-06-14): developers.giphy.com + Tenor GIF Keyboard [Google Play]</div>
       </div>
       <div class="if-then">
         <span class="gap-tag hypothesis">H2</span>
@@ -1357,7 +1357,7 @@
         <span class="if">Якщо показати продукт одразу без реєстрації</span> →
         <span class="then">збільшимо активацію (перше мем-відео)</span> →
         <span class="because">бо аудиторія 16–30 відкидає продукти з реєстрацією на вході</span>
-        <div class="source-inline"><span class="s-part" style="font-size:10px">◑ Частково підтверджено</span> Аудит 2026-06-14: 23–26% юзерів покидають через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian). No-login MVP підтверджений для продукту без trust-сигналів. [?] на точних цифрах для відеоредактора — A/B після запуску.</div>
+        <div class="source-inline"><span class="s-ok" style="font-size:10px">✓ Підтверджено для MVP</span> Аудит 2026-06-14 + Reddit 15.06.2026: 23–26% покидають через вимогу акаунту (SaleCycle); Gen Z — 35% через privacy (Experian); 'no login' → enthusiastic реакція [r/VideoEditing]; CEO ненавидить примусові акаунти [r/editors]; paid CapCut-юзери залишають платформу через lockout. [?] залишається на точних A/B цифрах після запуску.</div>
       </div>
     </div>
   </section>
@@ -1488,7 +1488,7 @@
         <div class="persona-section">
           <div class="persona-section-label">— Jobs</div>
           <ol>
-            <li>Зробити мем-відео поки тренд живий — speed to publish важливіший за якість монтажу. <em style="color:var(--text-3);font-size:11px">(Аудит 2026-06-14: частково підтверджено — TikTok 2024–2025 пріоритизує неполірований контент; вікно тренду вузьке і затримка = втрата моменту. Ранжування speed&gt;quality з вуст юзерів — досі <span class="unknown">?</span>.)</em></li>
+            <li>Зробити мем-відео поки тренд живий — speed to publish важливіший за якість монтажу. <em style="color:var(--text-3);font-size:11px">(Аудит 2026-06-14: частково підтверджено — TikTok 2024–2025 пріоритизує неполірований контент; вікно тренду вузьке і затримка = втрата моменту. Reddit 15.06.2026: r/VideoEditing editor — "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" — голос проф-редактора, не creator 16–25. Платформну культуру engagement &gt; quality підтверджено; <span class="unknown">?</span> залишається на прямих словах молодих creators.)</em></li>
             <li>Знайти мем за настроєм ("щось типу 😂 але тупо") без потреби формулювати слово. <em style="color:var(--text-3);font-size:11px">(Аудит Q3 2026-06-14: mood-intent підтверджений — GIF-пошук відбувається за короткими TEXT-словами "tired", "reaction", "funny" (Tenor 300M/день); emoji-символ 😂 як ввід — нішева поведінка. TikTok native відкриває trending першим; text пошук вторинний. R1: text + emoji вхід; R2 trending — перший таб. <span class="unknown">?</span> чи Аня тисне emoji чи пише слово — прямих даних немає.)</em></li>
             <li>Не перемикатись між аппами під час монтажу.</li>
           </ol>
@@ -1497,7 +1497,7 @@
         <div class="persona-section">
           <div class="persona-section-label">— Болі</div>
           <div class="pain-item"><strong>App-switching</strong> — CapCut не має мем-бібліотеки, жоден з 9 конкурентів не вбудував Giphy/Tenor у редактор. <span class="inline-src">Висновки G1 · Матриця конкурентів</span></div>
-          <div class="pain-item"><strong>Login-стіна</strong> — CapCut вимагає реєстрацію (Google / TikTok / Facebook) до входу в редактор. Для МемКат login на вході = вимірювана причина відмови: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); на мобайлі вище. Нюанс: Аня реєструється в CapCut, бо знає бренд — для невідомого МемКат той самий login = вищий abandonment risk. <span class="inline-src">capcut-editor-desktop.png · аудит 2026-06-14</span></div>
+          <div class="pain-item"><strong>Login-стіна</strong> — CapCut вимагає реєстрацію (Google / TikTok / Facebook) до входу в редактор. Для МемКат login на вході = вимірювана причина відмови: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); на мобайлі вище. Нюанс: Аня реєструється в CapCut, бо знає бренд — для невідомого МемКат той самий login = вищий abandonment risk. Reddit 15.06.2026: 'no install, no login' → "Dude thank you so fucking much... I actually love you" [r/VideoEditing YouTube clipper]; paid CapCut-юзери залишають платформу через login lockout: "I've had a six month issue with them and that's cause me to abandon the platform" [r/VideoEditing]. Голоси з video editing контексту, не 16–25 creators. <span class="inline-src">capcut-editor-desktop.png · аудит 2026-06-14 · Reddit 15.06.2026</span></div>
           <div class="pain-item"><strong>Текстовий пошук ламається</strong> — треба слово, а є настрій. Emoji search немає в жодному відеоредакторі. <span class="inline-src">Патерни — Unified search</span></div>
           <div class="pain-item"><strong>Overlay-пікер вибиває з монтажу</strong> — Discord і Slack 3/5 по "не вибиває з потоку" проти Telegram inline 5/5. <span class="inline-src">Benchmark таблиця</span></div>
           <div class="pain-item"><span class="unknown">?</span> <strong>Watermark</strong> — гіпотеза: аудиторія 16–19 менш готова платити щоб прибрати. Не верифіковано.</div>
@@ -1505,12 +1505,12 @@
         <div class="persona-section">
           <div class="persona-section-label">— Тригери довіри</div>
           <div class="trust-row"><strong>Що переконує:</strong> <span class="unknown">?</span> Немає даних. Гіпотеза: побачила у стрічці або друг показав. Потребує якісного дослідження.</div>
-          <div class="trust-row"><strong>Що відлякує:</strong> Login-стіна на вході — підтверджено на CapCut. H4 — <span class="s-part" style="font-size:10px">◑ частково підтверджено</span> (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle); Gen Z відмовляється від сервісів через privacy у 35% (Experian 2025). Але та ж Gen Z реєструється після показу цінності (88%, Forbes 2024). Для МемКат без trust-сигналів: no-login MVP = правильне рішення. <span class="unknown">?</span> залишається на точних цифрах для відеоредактора. <span class="inline-src">capcut-editor-desktop.png · Висновки H4 · аудит 2026-06-14</span></div>
+          <div class="trust-row"><strong>Що відлякує:</strong> Login-стіна на вході — підтверджено на CapCut. H4 — <span class="s-part" style="font-size:10px">◑ частково підтверджено</span> (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle); Gen Z відмовляється від сервісів через privacy у 35% (Experian 2025). Але та ж Gen Z реєструється після показу цінності (88%, Forbes 2024). Для МемКат без trust-сигналів: no-login MVP = правильне рішення. <span class="unknown">?</span> залишається на точних цифрах для відеоредактора. Reddit 15.06.2026 посилює: 'no login' → enthusiastic реакція у відеоредакторів; CEO ненавидить примусові акаунти; CapCut lockout = платні юзери залишають платформу. <span class="inline-src">capcut-editor-desktop.png · Висновки H4 · аудит 2026-06-14 · Reddit 15.06.2026</span></div>
           <div class="trust-row"><strong>Trust-сигнали яких у МемКат немає:</strong> ByteDance/NVIDIA (CapCut), Amazon/Netflix (Veed/Kapwing), 5M юзерів (Clideo). Стартувати треба через контент і community. <span class="inline-src">"Ключові відмінності між конкурентами"</span></div>
         </div>
         <div class="persona-section">
           <div class="persona-section-label">— Цитата-настрій</div>
-          <p><span class="unknown">?</span> Прямих цитат і відгуків у research.md немає — форумний ресерч (Reddit, TikTok коментарі, App Store reviews) не проводився. Реальна цитата потребує окремого дослідження.</p>
+          <p><span class="unknown">?</span> Reddit-аудит 15.06.2026 (r/TikTok, r/VideoEditing, r/editors, r/NewTubers — 40 постів, 147 коментарів): прямих цитат від 16–25 TikTok-мейкерів про процес мем-монтажу не знайдено. Знайдено голос редактора-проф: "should I use memes and gifs for B-roll?" [r/editors] — підтверджує мем = editing material. Пряма цитата від creator 16–25 вимагає якісного дослідження.</p>
         </div>
       </div>
 
@@ -1550,7 +1550,7 @@
         </div>
         <div class="persona-section">
           <div class="persona-section-label">— Цитата-настрій</div>
-          <p><span class="unknown">?</span> Прямих цитат у research.md немає.</p>
+          <p><span class="unknown">?</span> Reddit-аудит 15.06.2026: прямих цитат від 24-річних YouTube/Reels-мейкерів не знайдено.</p>
         </div>
       </div>
 
@@ -1591,7 +1591,7 @@
         </div>
         <div class="persona-section">
           <div class="persona-section-label">— Цитата-настрій</div>
-          <p><span class="unknown">?</span> Прямих цитат у research.md немає.</p>
+          <p><span class="unknown">?</span> Reddit-аудит 15.06.2026: прямих цитат від 16-річних TikTok-мейкерів не знайдено.</p>
         </div>
       </div>
 
@@ -1633,7 +1633,7 @@
       <div class="job-main-text">«Коли я бачу мем або тренд у стрічці, я хочу швидко зробити і викласти своє відео з ним, щоб потрапити в момент поки він живий.»</div>
       <div class="job-main-meta">
         <strong>Персона:</strong> Аня — контекст: побачила мем у стрічці → app-switching → хоче вставити.<br>
-        <strong>Research:</strong> Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні". Gap G1 — жоден з 9 конкурентів не вбудував мем-бібліотеку в редактор.
+        <strong>Research:</strong> Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні". Gap G1 — жоден з 9 конкурентів не вбудував мем-бібліотеку в редактор. Q1-аудит + Reddit 15.06.2026: short-form культура engagement &gt; quality підтверджена — "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" [r/VideoEditing, score 312] — посилює пріоритет швидкості над якістю монтажу.
       </div>
     </div>
 
@@ -1660,7 +1660,7 @@
     <div class="job-card">
       <div class="job-id related">R4</div>
       <div class="job-text">«Коли я хочу повторно використати мем що вже шукав, я хочу знайти його одразу, щоб не повторювати пошук.»</div>
-      <div class="job-body"><strong>Персона:</strong> Аня — implied контекст регулярного постингу.<br><strong>Research:</strong> Benchmark — Recents/Favorites: Telegram 5/5 ("перший таб + закріплені набори"), Slack 1/5 ("немає!"). Висновки H3: "якщо зберігати нещодавно переглянуті GIF → прискоримо повторний доступ без сервера."</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — implied контекст регулярного постингу.<br><strong>Research:</strong> Benchmark — Recents/Favorites: Telegram 5/5 ("перший таб + закріплені набори"), Slack 1/5 ("немає!"). Висновки H3: "якщо зберігати нещодавно переглянуті GIF → прискоримо повторний доступ без сервера." Reddit 15.06.2026: r/discordapp [score 712] — "search of just your favourites would be faster than having to scroll or search from 10000s of gifs" — регулярні юзери покладаються на особисту колекцію, а не на загальний пошук. Коли пошук ламається — "The only saving grace is my saved gifs are still around" [r/discordapp, score 1053]. R4 підтверджено як реальна і критична потреба.</div>
     </div>
 
     <div class="job-card">
@@ -1689,13 +1689,13 @@
     <div class="job-card">
       <div class="job-id hypothesis">Г1 — social</div>
       <div class="job-text">«Коли мій підписник бачить моє відео, я хочу щоб він сприйняв мене як людину що розуміє тренди, щоб підписатися або поширити.»</div>
-      <div class="job-body"><strong>Персона:</strong> Аня, Ліза — implied TikTok context.<br><strong>Чому гіпотеза:</strong> Social dimension не згаданий у research.md прямо. Потребує інтерв'ю або аналізу мотивацій публікацій.</div>
+      <div class="job-body"><strong>Персона:</strong> Аня, Ліза — implied TikTok context.<br><strong>Статус:</strong> <span class="s-part" style="font-size:10px">◑ Частково підтверджено</span> Reddit 15.06.2026 (r/NewTubers): соціальний вимір реальний — "You ARE the main character" [46]; "Loved the recognition you got" [3]; "The fact the devs shared your video is a major victory" [7]. Але мотивація ≠ fame-seeking: "genuine passion, proud of your content even if nobody watches" [26]. Конкретне "людина в темі" — залишається [?]; ширше "хочу щоб контент знайшов аудиторію" підтверджено. Потребує якісного інтерв'ю для деталізації.</div>
     </div>
 
     <div class="job-card">
       <div class="job-id hypothesis">Г2 — functional</div>
       <div class="job-text">«Коли я хочу спробувати редактор, я хочу зробити це без реєстрації, щоб не витрачати час і не давати дані продукту якому ще не довіряю.»</div>
-      <div class="job-body"><strong>Персона:</strong> Аня — pain: login-стіна CapCut.<br><strong>Статус:</strong> <span class="s-part" style="font-size:10px">◑ Частково підтверджено</span> (аудит 2026-06-14): 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian 2025). Але та ж Gen Z реєструється після показу цінності. No-login MVP підтверджений для продукту без trust-сигналів. [?] залишається на точних цифрах abandonment для відеоредактора. Залишається як Гіпотеза до верифікації точних цифр у нашому контексті.</div>
+      <div class="job-body"><strong>Персона:</strong> Аня — pain: login-стіна CapCut.<br><strong>Статус:</strong> <span class="s-ok" style="font-size:10px">✓ Підтверджено для MVP</span> (аудит 2026-06-14 + Reddit 15.06.2026): 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian 2025). Але та ж Gen Z реєструється після показу цінності. 'No login' → enthusiastic реакція у відеоредакторів [r/VideoEditing]; CEO ненавидить примусові акаунти [r/editors]; paid CapCut-юзери кидають платформу через login lockout [r/VideoEditing]. No-login MVP підтверджений. [?] залишається лише на точних A/B цифрах для нашого конкретного продукту після запуску.</div>
     </div>
 
     <div class="job-card">
@@ -1754,7 +1754,7 @@
           </tr>
           <tr>
             <td class="job-cell"><span class="job-id-sm" style="background:var(--green-dim);color:var(--green)">R4</span>Повторно знайти мем без нового пошуку</td>
-            <td><span class="imp imp-2">2</span>implied: регулярний постинг; <span class="unknown">?</span> частота не верифікована</td>
+            <td><span class="imp imp-3">3</span>implied: регулярний постинг; підтверджено Reddit [r/discordapp, score 712+1053] — saved gifs = основний шлях для регулярних юзерів</td>
             <td><span class="imp imp-2">2</span>implied: навмисний контент, повторні меми; <span class="unknown">?</span></td>
             <td><span class="imp imp-1">1</span>перший досвід, history порожня</td>
             <td>Recents tab у бібліотеці</td>
@@ -1794,9 +1794,9 @@
           </tr>
           <tr class="row-hyp">
             <td class="job-cell"><span class="job-id-sm" style="background:var(--yellow-dim);color:var(--yellow)">Г2</span>Спробувати без реєстрації</td>
-            <td><span class="imp imp-2">2</span>login pain CapCut підтверджено; H4 <span class="s-part" style="font-size:10px">◑</span> (аудит 2026-06-14)</td>
+            <td><span class="imp imp-2">2</span>login pain CapCut підтверджено; H4 <span class="s-ok" style="font-size:10px">✓</span> (аудит 2026-06-14 + Reddit 15.06.2026)</td>
             <td><span class="imp imp-q">?</span>немає даних</td>
-            <td><span class="imp imp-2">2</span>implied; H4 <span class="s-part" style="font-size:10px">◑</span> (аудит 2026-06-14)</td>
+            <td><span class="imp imp-2">2</span>implied; H4 <span class="s-ok" style="font-size:10px">✓</span> (аудит 2026-06-14 + Reddit 15.06.2026)</td>
             <td>No-login старт</td>
             <td><span class="comp comp-partial">◑ Частково</span>Kapwing без логіну; CapCut login-стіна</td>
           </tr>
@@ -1879,13 +1879,13 @@
             <tr><td>Login-стіна як pain</td><td><span class="s-ok">✓</span></td><td>capcut-editor-desktop.png — реєстрація до входу в редактор</td></tr>
             <tr><td>Emoji/mood search job ("хочу щось типу 😂 але тупо")</td><td><span class="s-ok">✓</span></td><td>Патерни: "Intent мем-мейкера — 'хочу щось типу 😂 але тупо', а не точне слово"</td></tr>
             <tr><td>Overlay picker вибиває з монтажу</td><td><span class="s-ok">✓</span></td><td>Benchmark: Telegram/Gboard 5/5 (inline) vs Discord/Slack 3/5 (overlay) по "не вибиває з потоку"</td></tr>
-            <tr><td>Speed to publish важливіший за якість монтажу</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: TikTok 2024–2025 пріоритизує неполірований контент над відредагованим (becreatives.co, influenceflow.io); вікно тренду вузьке і затримка = втрата моменту. Ранжування speed&gt;quality з вуст юзерів — досі [?]</td></tr>
+            <tr><td>Speed to publish важливіший за якість монтажу</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: TikTok 2024–2025 пріоритизує неполірований контент над відредагованим (becreatives.co, influenceflow.io); вікно тренду вузьке і затримка = втрата моменту. Reddit 15.06.2026 (r/VideoEditing, score 312): "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" — голос проф-редактора, не creator 16–25. Платформну культуру engagement &gt; quality підтверджено; [?] залишається на прямих словах молодих creators.</td></tr>
             <tr><td>Частота публікацій регулярна</td><td><span class="s-hyp">[?]</span></td><td>Демографія 16–30 [матриця конкурентів]; конкретна частота не підтверджено</td></tr>
             <tr><td>Тригер: "побачила мем у стрічці" → хоче вставити зараз</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: FYP є реальним і домінуючим тригером участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела); мобайл = спонтанний контент (becreatives.co). [?] залишається на timing — "зараз" (секунди / хвилини / того ж дня пізніше)</td></tr>
             <tr><td>H4: аудиторія 16–30 відкидає реєстрацію</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); Gen Z — 35% зупиняли сервіс через privacy (Experian 2025). Але Gen Z реєструється після показу цінності. Нюанс: відкидає реєстрацію <em>до</em> показу цінності — після показу реєструється. No-login MVP підтверджений для продукту без trust-сигналів.</td></tr>
-            <tr><td>Вік 19, конкретно TikTok</td><td><span class="s-inv">✗</span></td><td>Демографія 16–30 підтверджена; "19" і "TikTok" — конструкт персони без точних даних</td></tr>
-            <tr><td>Що переконує Аню прийти в МемКат</td><td><span class="s-inv">✗</span></td><td>Жодних даних; "побачила у стрічці або друг показав" — pure guess без будь-якої основи</td></tr>
-            <tr><td>Цитата-настрій</td><td><span class="s-inv">✗</span></td><td>Явно [?] у personas.md; форумного / App Store ресерчу не проводилось</td></tr>
+            <tr><td>Вік 19, конкретно TikTok</td><td><span class="s-hyp">[?]</span></td><td>Демографія 16–30 підтверджена (CapCut Web + CapCut mobile — матриця конкурентів). "19" = репрезентативний вік персони, не статистичний факт. "TikTok" = конструкт (vs Reels) — [?] залишається на конкретній платформі.</td></tr>
+            <tr><td>Що переконує Аню прийти в МемКат</td><td><span class="s-hyp">[?]</span></td><td>Reddit 15.06.2026 (r/NewTubers, score 230): community/peer recommendation = підтверджений шлях відкриття редакторів — люди питають "що ви використовуєте?" у спільнотах. "Друг показав або спільнота порекомендувала" — правдоподібний. "Побачила у TikTok-стрічці" (реклама/UGC про редактор) — залишається [?].</td></tr>
+            <tr><td>Цитата-настрій</td><td><span class="s-hyp">[?]</span></td><td>Reddit-аудит 15.06.2026 проведено (r/TikTok, r/VideoEditing, r/editors, r/NewTubers — 40 постів, 147 коментарів): прямих цитат від 16–25 TikTok-мейкерів про процес мем-монтажу не знайдено. Знайдено голос проф-редактора: "should I use memes and gifs for B-roll?" [r/editors]. Пряма цитата від creator 16–25 вимагає якісного дослідження.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1939,12 +1939,12 @@
             <tr><td>R3: inline picker (no app-switch)</td><td><span class="s-ok">✓</span></td><td>Gap G1; Benchmark inline vs overlay порівняння</td></tr>
             <tr><td>Main job urgency: "поки тренд живий"</td><td><span class="s-ok">✓</span></td><td>Аудит 2026-06-14: influenceflow.io — "by the time you've noticed, planned, and produced, the moment has passed"; вікно тренду вузьке підтверджено 3 незалежними джерелами</td></tr>
             <tr><td>Main job trigger: "бачу мем у стрічці"</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: FYP підтверджений як домінуючий тригер участі в трендах (3 джерела). [?] залишається на timing — чи відкривають редактор одразу або пізніше того ж дня</td></tr>
-            <tr><td>R4: recents (implied від регулярного постингу)</td><td><span class="s-hyp">[?]</span></td><td>Benchmark показує цінність recents; частота постингу Ані — [?]</td></tr>
+            <tr><td>R4: recents (implied від регулярного постингу)</td><td><span class="s-ok">✓</span></td><td>Benchmark: Telegram 5/5, Slack 1/5. Reddit 15.06.2026 (r/discordapp, score 712+1053): saved/favorites = основний шлях для регулярних юзерів — "search of just your favourites would be faster than having to scroll or search from 10000s of gifs"; "The only saving grace is my saved gifs are still around". R4 підтверджено як реальна і критична потреба. [?] залишається на частоті постингу Ані.</td></tr>
             <tr><td>R5: export format як job</td><td><span class="s-hyp">[?]</span></td><td>Gap G3 + CLAUDE.md; не з даних юзерів</td></tr>
             <tr><td>E1: "процес не поборов" (emotional)</td><td><span class="s-hyp">[?]</span></td><td>Implied від friction; явно [?] у jtbd.md; емоційна складова не верифікована</td></tr>
             <tr><td>E2: urgency feeling "встигла поки тренд живий"</td><td><span class="s-part">◑</span></td><td>Аудит 2026-06-14: urgency підтверджена структурно (influenceflow.io: "the moment has passed"); суб'єктивне відчуття "встигла / запізно" — досі інференс без прямих слів юзерів</td></tr>
-            <tr><td>Г2: no-login як job</td><td><span class="s-part">◑</span></td><td>Login pain ✓; H4 частково підтверджено (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle). No-login MVP підтверджений для продукту без trust-сигналів. [?] на точних цифрах для відеоредактора залишається.</td></tr>
-            <tr><td>Г1: соціальне визнання "людина в темі"</td><td><span class="s-inv">✗</span></td><td>Явно мітка "Гіпотеза"; соціальний вимір не згаданий у research.md прямо</td></tr>
+            <tr><td>Г2: no-login як job</td><td><span class="s-ok">✓</span></td><td>Login pain ✓; H4 ✓ Підтверджено для MVP (аудит 2026-06-14 + Reddit 15.06.2026): 23–26% покидають через вимогу акаунту (SaleCycle); Gen Z — 35% через privacy (Experian). 'No login' → enthusiastic реакція [r/VideoEditing]; CEO ненавидить примусові акаунти [r/editors]; paid CapCut-юзери залишають платформу через lockout [r/VideoEditing]. [?] залишається на точних A/B цифрах після запуску.</td></tr>
+            <tr><td>Г1: соціальне визнання "людина в темі"</td><td><span class="s-hyp">[?]</span></td><td>Reddit 15.06.2026 (r/NewTubers): соціальний вимір реальний — "You ARE the main character" [46], "Loved the recognition you got" [3], "The fact the devs shared your video is a major victory" [7]. Але мотивація ≠ fame-seeking: "genuine passion, proud of your content even if nobody watches" [26]. Конкретне "людина в темі" (trend expertise) — залишається [?]; ширше "хочу щоб контент отримав аудиторію" підтверджено.</td></tr>
             <tr><td>Г3: retention після першого успіху</td><td><span class="s-inv">✗</span></td><td>Явно мітка "Гіпотеза"; загальний UX-патерн без даних для нашої аудиторії</td></tr>
           </tbody>
         </table>
@@ -2010,8 +2010,8 @@
       <div class="q-row"><span class="q-label">Закриває</span> Main job trigger (п.3), E2 urgency (п.4), пріоритет R3 inline picker</div>
       <div class="q-result">
         <div class="q-result-label">Результат · 14.06.2026</div>
-        FYP підтверджений як домінуючий тригер участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела). Мобайл = спонтанний контент, десктоп = запланований (becreatives.co). Urgency підтверджено: "by the time you've noticed, planned, and produced, the moment has passed" (influenceflow.io). Оптимальний мікс досвідченіших: 60–70% запланованого + 30–40% тренд-реактивного (консенсус 3 джерел).<br>
-        <strong style="color:var(--text)">Висновок:</strong> обидві моделі реальні. R3 (inline picker) залишається в ядрі MVP — спонтанний мобайл-монтаж підтверджений. [?] залишається: точний timing між тригером і відкриттям редактора.
+        FYP підтверджений як домінуючий тригер участі в трендах (embedded.substack.com, medium.com, becreatives.co — 3 незалежні джерела). Мобайл = спонтанний контент, десктоп = запланований (becreatives.co). Urgency підтверджено: "by the time you've noticed, planned, and produced, the moment has passed" (influenceflow.io). Оптимальний мікс досвідченіших: 60–70% запланованого + 30–40% тренд-реактивного (консенсус 3 джерел). Reddit 15.06.2026 (r/VideoEditing): "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" — культуру engagement > quality підтверджено. "TikTok-editing style" (zooms, text, SFX, constant motion) — реальний феномен [r/VideoEditing]. CapCut = go-to інструмент для video content creators — підтверджено двома незалежними голосами: "capcut if video is the main thing" + "stitched everything together in CapCut" [r/ContentCreation]. Виробництво мем-відео ≈15хв — 1 голос від SMM-менеджера: "I can make a funny video meme in ~15min" [r/socialmedia]. Прямих голосів від 16–25 TikTok-мейкерів про момент відкриття редактора на Reddit не знайдено.<br>
+        <strong style="color:var(--text)">Висновок:</strong> обидві моделі реальні. R3 (inline picker) залишається в ядрі MVP — спонтанний мобайл-монтаж підтверджений. [?] залишається: точний timing між тригером і відкриттям редактора; прямі голоси 16–25 creators.
       </div>
     </div>
 
@@ -2021,8 +2021,8 @@
       <div class="q-row"><span class="q-label">Закриває</span> H4 (п.1), Г2 no-login architecture decision</div>
       <div class="q-result">
         <div class="q-result-label">Результат · 14.06.2026</div>
-        Реєстрація — <strong style="color:var(--text)">причина відмови, а не просто friction</strong>, але залежить від довіри і моменту. 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle). На мобайлі — до 86% abandon при immediate login wall. Gen Z зупиняла сервіси через privacy у 35% (найвищий показник серед усіх груп — Experian 2025). Але та ж Gen Z охоче реєструється після показу цінності (88%, Forbes 2024). CapCut-login не є топ-скаргою в оглядах — юзери знають бренд і довіряють. МемКат на старті = zero trust signals.<br>
-        <strong style="color:var(--text)">Висновок:</strong> No-login MVP підтверджений. H4 частково підтверджено: відкидає реєстрацію <em>до</em> показу цінності; після показу — реєструється. Рішення не переробляти: no-login at entry, registration offer after first export.
+        Реєстрація — <strong style="color:var(--text)">причина відмови, а не просто friction</strong>, але залежить від довіри і моменту. 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle). На мобайлі — до 86% abandon при immediate login wall. Gen Z зупиняла сервіси через privacy у 35% (найвищий показник серед усіх груп — Experian 2025). Але та ж Gen Z охоче реєструється після показу цінності (88%, Forbes 2024). CapCut-login не є топ-скаргою в оглядах — юзери знають бренд і довіряють. МемКат на старті = zero trust signals. Reddit 15.06.2026: "no install, no login" (YouTube clipper) → "Dude thank you so fucking much... I actually love you" [r/VideoEditing]; CEO ненавидить примусові акаунти [r/editors]; paid CapCut-юзери кидають платформу через login lockout: "I've had a six month issue with them and that's cause me to abandon the platform" [r/VideoEditing].<br>
+        <strong style="color:var(--text)">Висновок:</strong> No-login MVP підтверджений. H4 підтверджено: відкидає реєстрацію <em>до</em> показу цінності; після показу — реєструється. Reddit додає реальні голоси з video editing контексту. Рішення не переробляти: no-login at entry, registration offer after first export.
       </div>
     </div>
 
@@ -2032,8 +2032,8 @@
       <div class="q-row"><span class="q-label">Закриває</span> R1 vs R2 пріоритет — що будувати першим: emoji search чи trending browse</div>
       <div class="q-result">
         <div class="q-result-label">Результат · 14.06.2026</div>
-        Домінуючий паттерн — <strong style="color:var(--text)">короткі емоційні TEXT-слова</strong> ("tired", "reaction", "funny"), а не emoji-символи. Tenor отримує 300M текстових пошуків/день; топ-запити — "Love", "Tired" (короткі слова, не 😂). <strong style="color:var(--text)">Trending browse — дефолтний UX</strong>: TikTok native editor відкриває trending GIF першим при відкритті панелі стікерів — текстовий пошук вторинний вибір. Tenor best practice — показувати trending і категорії поряд із пошуком до будь-якого введення. Emoji search — <strong style="color:var(--text)">нішевий диференціатор</strong>: є в Tenor GIF Keyboard і Giphy API, але у жодному відеоредакторі (ні TikTok native, ні CapCut) не реалізований.<br>
-        <strong style="color:var(--text)">Висновок:</strong> R2 (trending) — пріоритет першого табу за замовчуванням (відповідає звичному UX TikTok native). R1 (mood search) — диференціатор для відеоредакторів; реалізовувати як text-вхід + опціональний emoji-тригер, не emoji-only. Mood-intent Ані підтверджений; метод вираження — TEXT ("dumb laugh", "tired"), а не символ. <span class="unknown">?</span> залишається: чи 16–30 у video editor контексті активно тисне emoji чи пише текст — A/B після запуску.
+        Домінуючий паттерн — <strong style="color:var(--text)">короткі емоційні TEXT-слова</strong> ("tired", "reaction", "funny"), а не emoji-символи. Tenor отримує 300M текстових пошуків/день; топ-запити — "Love", "Tired" (короткі слова, не 😂). <strong style="color:var(--text)">Trending browse — дефолтний UX</strong>: TikTok native editor відкриває trending GIF першим при відкритті панелі стікерів — текстовий пошук вторинний вибір. Emoji search — <strong style="color:var(--text)">нішевий диференціатор</strong>: є в Tenor GIF Keyboard і Giphy API, але у жодному відеоредакторі не реалізований. Reddit 15.06.2026 (Round 2): <strong style="color:var(--text)">saved/favorites = первинний шлях для регулярних юзерів</strong> — "search of just your favourites would be faster than having to scroll or search from 10000s of gifs on tenor" [r/discordapp, score 712]; коли пошук ламається — "The only saving grace is my saved gifs are still around" + юзери будують власні GIF-архіви [r/discordapp, score 1053]. <strong style="color:var(--text)">Tenor >> Giphy</strong> по релевантності — консенсус 147+ коментарів: "Giphy is AWFUL"; "none of them relate to the search".<br>
+        <strong style="color:var(--text)">Висновок:</strong> R2 (trending) — перший таб. R4 (recents/favorites) — ядро для повторних юзерів (підтверджено Reddit). R1 (mood search) — диференціатор; text-вхід + опціональний emoji. Tenor як пріоритетний API. <span class="unknown">?</span> залишається: чи 16–30 тисне emoji чи пише текст у video editor — A/B після запуску.
       </div>
     </div>
 
@@ -2053,6 +2053,7 @@
       <span class="source-pill">slack.com/help — WebFetch</span>
       <span class="source-pill">Telegram / Gboard / iOS / Discord / Slack — пряме використання</span>
       <span class="source-pill">telegram-gif-picker.png — Telegram Desktop screenshot (2026-06-07)</span>
+      <span class="source-pill">Reddit — Playwright (page.evaluate fetch) · r/NewTubers, r/TikTok, r/VideoEditing, r/editors · 40 постів, 147 коментарів · 15.06.2026</span>
     </div>
   </footer>
 
