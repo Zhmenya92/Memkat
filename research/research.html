@@ -3946,9 +3946,7 @@ flowchart TD
     MP -. закрила .-> ED
     MP == вибрала ==> EXP["📱 Експорт"]:::screen
 
-    EXP == обрала формат ==> CROP_PREV["👁 Preview кадрування"]:::screen
-    CROP_PREV == виглядає добре ==> REND["⏳ Рендер WebCodecs"]:::state
-    CROP_PREV -. змінити формат .-> EXP
+    EXP == підтвердила ==> REND["⏳ Рендер WebCodecs"]:::state
     REND -. скасувати .-> EXP
     REND == OK ==> SHARE["📤 Поділитись / завершити"]:::screen
     REND -. збій .-> REND_E["🔴 Помилка рендеру"]:::state
@@ -3962,7 +3960,7 @@ flowchart TD
           <li><strong>⬜ empty</strong> — Список проектів: порожній стан з CTA «Новий проект» (blob-перевірка IndexedDB — прозора для юзера)</li>
           <li><strong>⏳ loading + 🔴 error</strong> — Вибір відео: завантаження → валідація (непідтримуваний формат / &gt;500 MB / пошкоджено) → «Спробувати інший файл»</li>
           <li><strong>✓ autosave</strong> — Редактор: silent toast «Збережено» (2 сек) або «Не вдалось зберегти» + retry</li>
-          <li><strong>👁 preview</strong> — Preview кадрування: перший кадр у обраному форматі + зсув вертикального кадру</li>
+          <li><strong>👁 preview</strong> — Екран Експорту: preview кадрування вбудований — оновлюється live при виборі формату</li>
           <li><strong>🔴 error</strong> — Рендер: помилка + «Повторити» або «Повернутись до редактора»</li>
           <li><strong>📤 share</strong> — Поділитись / завершити: system share sheet · список проектів · новий проект</li>
         </ul>
@@ -4288,12 +4286,9 @@ flowchart TD
     DIS -. додала кліп .-> ED
 
     EXP --> QF{Формат?}:::decide
-    QF == 9-16 · 1-1 ==> CROP_PREV["👁 Попередній перегляд кадрування"]:::screen
+    QF == 9-16 · 1-1 ==> REND
     QF -. 16-9 поза MVP .-> NA["⬜ Підказка: 16:9 не підтримується"]:::state
     NA -. вибрати інший .-> EXP
-
-    CROP_PREV == виглядає добре ==> REND
-    CROP_PREV -. змінити формат .-> EXP
     REND -. скасувати .-> EXP
     REND --> QWC{Browser підтримує WebCodecs?}:::decide
     QWC == так ==> QR{Рендер OK?}:::decide
@@ -4321,7 +4316,7 @@ flowchart TD
           <li>[Експорт] <strong>disabled</strong> поки немає кліпу</li>
           <li>9:16 <strong>pre-selected</strong> — більшість контенту вертикаль</li>
           <li>16:9 поза MVP — підказка пояснює, не ховаємо мовчки</li>
-          <li><strong>👁 preview</strong> — Попередній перегляд кадрування: перший кадр у обраному форматі + зсув вертикального кадру</li>
+          <li><strong>👁 preview</strong> — вбудований в Екран Експорту: оновлюється live при виборі формату</li>
           <li><strong>⏳ progress</strong> — видима смуга або % під час рендеру</li>
           <li><strong>📤 share</strong> — Поділитись / завершити: system share sheet · до списку проектів · новий проект</li>
         </ul>
@@ -4648,7 +4643,7 @@ flowchart TD
           <tr class="def-row-fixed">
             <td class="def-where">Екран Експорту · вибір формату</td>
             <td>Після вибору формату (9:16 або 1:1) немає задокументованого стану preview кадрування. Якщо джерельне відео горизонтальне (16:9) і юзер вибирає 9:16 — невідомо що буде обрізано по боках. Рендер займе час, а результат може бути невірним. Main job "зняв → мем → виклав" завалюється на останньому кроці.</td>
-            <td>Додано між вибором формату і рендером: <code>QF ==> CROP_PREV ["👁 Попередній перегляд кадрування"]</code>. Перший кадр у обраному форматі + зсув по вертикалі. Виходи: "Виглядає добре → REND" та "Змінити формат → EXP". Додано у Main і R5.</td>
+            <td>Preview кадрування вбудований в Екран Експорту — оновлюється live при виборі формату. Окремий екран CROP_PREV прибрано: <code>EXP == підтвердила ==> REND</code>. Main і R5 оновлено.</td>
             <td><span class="sev sev-h">HIGH</span><br><span class="sev sev-fixed">✓ виправлено</span></td>
           </tr>
         </tbody>
@@ -5255,7 +5250,7 @@ flowchart TD
   };
   // ── Additional entries for def-table tooltips ──
   Object.assign(FLOW_TT, {
-    Main: { title:'⚡ Main — "зняв → мем → виклав"', jobs:['Main'], persona:'Аня · Ліза · Денис', note:'Наскрізний основний job — петля від імпорту до публікації', rows:[['Шлях','IMP → ED → MP → OVL → EXP → CROP_PREV → REND → SHARE']] },
+    Main: { title:'⚡ Main — "зняв → мем → виклав"', jobs:['Main'], persona:'Аня · Ліза · Денис', note:'Наскрізний основний job — петля від імпорту до публікації', rows:[['Шлях','PL → ED → MP → EXP → REND → SHARE → OK']] },
     R1:   { title:'🔍 R1 — Пошук мема за emoji / mood', jobs:['R1'], persona:'Аня — primary', note:'Найчастіший related job для Ані: знайти мем за настроєм', rows:[['МП таб','Пошук (текстовий запит)'],['API','Giphy / Tenor search endpoint']] },
     R2:   { title:'🌀 R2 — Cold start: Trending + Пошук', jobs:['R2'], persona:'Аня — primary', note:'Без контексту: переглядати Trending і шукати без чіткого запиту', rows:[['МП таби','Trending → Пошук'],['API','Giphy / Tenor trending + search']] },
     R3:   { title:'🎭 R3 — Вставити мем-оверлей', jobs:['R3'], persona:'Аня — primary', note:'Не виходити з монтажу — bottom sheet поверх Редактора', rows:[['МП таб','Будь-який (де знайшла GIF)'],['Результат','GIF на таймлайні як OVL']] },
@@ -5284,14 +5279,14 @@ flowchart TD
     IMP_E1:{ title:'🔴 IMP_E1 — Непідтримуваний формат', jobs:['Main'], persona:'', note:'Файл не є відеофайлом або формат не підтримується WebCodecs. ✓ виправлено В4.', rows:[['Дія','спробувати інший файл або скасувати']] },
     IMP_E2:{ title:'🔴 IMP_E2 — Файл > 500 MB', jobs:['Main'], persona:'', note:'Файл занадто великий для обробки на клієнті. ✓ виправлено В4.', rows:[['Дія','спробувати менший файл або скасувати']] },
     IMP_E3:{ title:'🔴 IMP_E3 — Файл пошкоджено', jobs:['Main'], persona:'', note:'Файл порожній або пошкоджений, не читається. ✓ виправлено В4.', rows:[['Дія','спробувати інший файл або скасувати']] },
-    EXP_FMT:{ title:'📐 EXP_FMT — Вибір формату', jobs:['Main','R5'], persona:'', note:'Вибір формату виходу: 9:16 (TikTok/Reels) або 1:1 (Instagram)', rows:[['✓ виправлено','В12: QF ==> CROP_PREV ==> REND']] },
+    EXP_FMT:{ title:'📐 EXP_FMT — Вибір формату', jobs:['Main','R5'], persona:'', note:'Вибір формату виходу: 9:16 (TikTok/Reels) або 1:1 (Instagram). Preview кадрування вбудований — оновлюється live.', rows:[['✓ виправлено','В12: preview вбудований в EXP, EXP == підтвердила ==> REND']] },
     OVL_L:{ title:'⏳ OVL_L — GIF завантажується', jobs:['R3'], persona:'', note:'Стан завантаження GIF з CDN після вибору в мем-пікері. ✓ виправлено В2.', rows:[['Вихід','QOVL → OVL або CDN_E']] },
     CDN_E:{ title:'🔴 CDN_E — Помилка завантаження GIF', jobs:['R3'], persona:'', note:'CDN Giphy/Tenor не повернув GIF після вибору. ✓ виправлено В2.', rows:[['Виходи','повторити → OVL_L · інший GIF → MP']] },
     SRCH_L:{ title:'📋 SRCH_L — Результати пошуку', jobs:['R1'], persona:'', note:'GIF список завантажено після текстового пошуку', rows:[['API','Giphy / Tenor search endpoint']] },
     SHARE:{ title:'📲 SHARE — Поділитись / завершити', jobs:['Main','R5'], persona:'', note:'Post-success екран після рендеру. ✓ виправлено В1.', rows:[['CTA 1','Поділитись (system share sheet)'],['CTA 2','До Списку проектів'],['CTA 3','Новий проект']] },
     SAVE_OK:{ title:'💾 SAVE_OK — Autosave успішний', jobs:['Main'], persona:'', note:'Silent toast що зникає через ~2 сек. ✓ виправлено В9.', rows:[] },
     SAVE_ERR:{ title:'⚠️ SAVE_ERR — Autosave не вдався', jobs:['Main'], persona:'', note:'Видимий стан помилки autosave з retry. ✓ виправлено В9.', rows:[['Вихід','повторити → ED']] },
-    CROP_PREV:{ title:'👁 CROP_PREV — Preview кадрування', jobs:['Main','R5'], persona:'', note:'Попередній перегляд кадрування перед рендером. ✓ виправлено В12.', rows:[['Виходи','виглядає добре → REND · змінити формат → EXP']] },
+    CROP_PREV:{ title:'👁 Preview кадрування', jobs:['Main','R5'], persona:'', note:'Вбудований в Екран Експорту — оновлюється live при виборі формату. Окремого екрану немає. ✓ виправлено В12.', rows:[['Розміщення','частина EXP, не окремий екран']] },
     LIST_END:{ title:'⬜ LIST_END — Кінець результатів', jobs:['R1'], persona:'', note:'Кінець результатів пошуку. ✓ виправлено В11: LIST_END + CTA "змінити запит".', rows:[['Вихід','змінити запит → SRCH_E']] },
   });
 
