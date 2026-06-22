@@ -267,7 +267,7 @@ flowchart TD
     MP --> QH{Default таб?}:::decide
     MP -. закрила .-> ED
     QH -. немає + cold start .-> TREND["📱 Trending"]:::screen
-    QH == є (відновлення або history > 0) ==> REC["📱 Нещодавні"]:::screen
+    QH == є (відновлення або history ≥ 1) ==> REC["📱 Нещодавні"]:::screen
 
     REC --> QR{Потрібний GIF є?}:::decide
     REC -. закрила .-> ED
