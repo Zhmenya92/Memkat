@@ -1,0 +1,7 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/research/research.html", "permanent": false },
+    { "source": "/research", "destination": "/research/research.html", "permanent": false },
+    { "source": "/research/", "destination": "/research/research.html", "permanent": false }
+  ]
+}

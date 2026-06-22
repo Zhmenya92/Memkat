@@ -1,4 +1,4 @@
-# Персони — МемКат
+﻿# Персони — МемКат
 
 *Дата: 14.06.2026*
 *База: research/research.md — конкурентний аналіз (9 продуктів), UX benchmark (5 продуктів). Прямих інтерв'ю, опитувань і юзер-тестів немає — позначено [?].*
@@ -18,21 +18,27 @@
 1. Зробити мем-відео поки тренд живий — speed to publish важливіший за якість монтажу. *(Аудит 2026-06-14: частково підтверджено — TikTok 2024–2025 пріоритизує неполірований контент над відредагованим; вікно тренду вузьке і затримка = втрата моменту. Reddit 15.06.2026: r/VideoEditing editor — "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" — голос проф-редактора, не creator 16–25. Платформну культуру engagement > quality підтверджено; [?] залишається на прямих словах молодих creators.)*
 2. Знайти мем за настроєм ("щось типу 😂 але тупо") без потреби формулювати слово. *(Аудит 2026-06-14 Q3: mood-intent підтверджений — GIF-пошук відбувається за короткими емоційними TEXT-словами, "tired", "reaction", "funny" — Tenor 300M пошуків/день; emoji-символ 😂 як пошуковий ввід — нішева поведінка, у відеоредакторах відсутня. TikTok native editor показує trending першим при відкритті панелі — текстовий пошук вторинний. Для МемКат: R1 реалізовувати як text + опціональний emoji-ввід; R2 trending — перший таб. [?] залишається: чи Аня сама натискає emoji чи пише "funny" — прямих даних немає.)*
 3. Не перемикатись між аппами під час монтажу.
-*Джерело: Патерни — "Intent мем-мейкера — 'хочу щось типу 😂 але тупо', а не 'funny reaction GIF'"; Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні".*
+4. Викласти відео якнайшвидше після завершення монтажу — мінімум кроків від "готово" до файлу на пристрої. *(Implied з E2=3: urgency-job завершується тільки в момент публікації, не на таймлайні. [?] прямих даних про export-friction окремо від монтажного flow — немає.)*
+*Джерело: Патерни — "Intent мем-мейкера — 'хочу щось типу 😂 але тупо', а не 'funny reaction GIF'"; Benchmark — вимір "тертя від тригеру до готового файлу для публікації".*
 
 **— болі:**
 - *App-switching* — CapCut не має мем-бібліотеки, жоден з 9 конкурентів не вбудував Giphy/Tenor у редактор. Додатковий аппсвіч на кожен мем. *Джерело: Висновки G1; Матриця конкурентів.*
 - *Login-стіна* — CapCut вимагає реєстрацію (Google / TikTok / Facebook) до входу в редактор. *Джерело: capcut-editor-desktop.png.* Для МемКат login на вході = вимірюваний причина відмови (не просто friction): 23–26% юзерів покидають сервіс через вимогу акаунту (SaleCycle); на мобайлі вище. Нюанс: Аня реєструється в CapCut, бо знає бренд — для невідомого МемКат той самий login = higher abandonment risk. Reddit 15.06.2026: 'no install, no login' → "Dude thank you so fucking much... I actually love you" [r/VideoEditing YouTube clipper]; paid CapCut users залишають платформу через login lockout: "I've had a six month issue with them and that's cause me to abandon the platform" [r/VideoEditing]. Голоси з video editing контексту — нюанс (не 16–25 creators) зберігається. *Аудит 2026-06-14; Reddit 15.06.2026.*
 - *Текстовий пошук ламається* — треба слово, а є настрій. Emoji search немає в жодному відеоредакторі. *Джерело: Патерни — Unified search.*
 - *Overlay-пікер вибиває з монтажу* — Discord і Slack 3/5 по "не вибиває з потоку" проти Telegram inline 5/5. *Джерело: Benchmark таблиця.*
-- [?] *Watermark* — гіпотеза: аудиторія 16–19 менш готова платити щоб прибрати. Не верифіковано.
+- ✅ *Watermark / paywall* — **підтверджено Reddit 16.06.2026** (r/CapCut 2025–2026): усі 12 топових постів суб-реддіту за рік — про обхід/ненависть до CapCut Pro. "Pro price increase is the DEATH of CapCut" [309 upvotes]; "CapCut IS DONE" [174] — "transitions, speed curves, animations, effects, all under PRO. You also MUST log in with an account before you can do anything"; "CapCut has become a money grabbing scam" — "every time I enter the app, I discover a new feature that is locked... now I can't export a video in 1080p quality"; "Honestly Capcut was way better when it was THE free editing app"; "free until popular. popular until shit. it's called cashing out"; "I don't condone piracy, but capcuts pricing certainly does." Юзери активно пірейтять Pro або крекають — Tutorial "Free CapCut Pro on PC" [999 upvotes] — топ-пост суб-реддіту за рік. Висновок: **гіпотеза трансформована**: будь-яка вікова когорта не хоче платити CapCut → МемКат free-first без прихованих paywall'ів = стратегічна перевага. Аудиторія 16–19 специфічно: [?] залишається на вікових відмінностях — але загальна платіжна антипатія підтверджена незалежно від віку.
 
 **— тригери довіри:**
 - *Що переконує:* [?] Reddit-аудит 15.06.2026 (r/NewTubers, score 230): community/peer recommendation = підтверджений шлях відкриття відеоредакторів — люди питають "що ви використовуєте?" у спільнотах і приймають рішення на основі рекомендацій однолітків. "Друг показав або спільнота порекомендувала" — правдоподібний. "Побачила у TikTok-стрічці" (реклама або UGC про редактор) — залишається [?]. Потребує якісного дослідження.
 - *Що відлякує:* Login-стіна на вході — підтверджено на CapCut. H4 — "аудиторія 16–30 відкидає реєстрацію" — **частково підтверджено з нюансом** (аудит 2026-06-14): реєстрація до показу цінності = причина відмови (23–26%, SaleCycle); Gen Z відмовляється від сервісів через privacy у 35% випадків (Experian 2025). Але та ж Gen Z реєструється після показу цінності (88% ділиться даними за персоналізацію, Forbes 2024). Для МемКат без trust-сигналів: no-login MVP = правильне рішення. [?] знято з H4 в частині "до показу цінності"; A/B тест і далі потрібен для точних цифр. Reddit 15.06.2026 посилює: 'no login' → enthusiastic реакція у відеоредакторів; CEO ненавидить примусові акаунти; CapCut lockout = платні юзери залишають платформу. *Джерело: capcut-editor-desktop.png; Висновки H4; аудит 2026-06-14; Reddit 15.06.2026.*
 - *Trust-сигнали яких у МемКат немає:* ByteDance/NVIDIA (CapCut), Amazon/Netflix (Veed/Kapwing), 5M юзерів (Clideo). Стартувати треба через контент і community. *Джерело: "Ключові відмінності між конкурентами".*
 
-**— цитата-настрій:** [?] Reddit-аудит 15.06.2026 (r/TikTok, r/VideoEditing, r/editors, r/NewTubers — 40 постів, 147 коментарів): прямих цитат від 16–25 TikTok-мейкерів про процес мем-монтажу не знайдено. Знайдено голос редактора-проф: "should I use memes and gifs for B-roll?" [r/editors] — підтверджує мем = editing material. Пряма цитата від creator 16–25 вимагає якісного дослідження.
+**— цитата-настрій:** ◑ Reddit 16.06.2026 (r/VideoEditing, r/CapCut): прямих цитат від 16–25 TikTok-мейкерів про процес мем-монтажу не знайдено, але:
+- *Про культуру швидкості:* "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" [r/VideoEditing, 67 upvotes] — проф-редактор описує нову норму.
+- *Про CapCut paywall:* "i wish the worst for capcut, i hate this fucking app and i wish they fucking go to bankruptcy" — сильний емоційний сигнал антипатії.
+- *Про discovery:* "All I wanted to do was find software that would help me create better looking Instagram reels. Capcut keeps showing up on every list. So I downloaded it" [r/CapCut] — підтверджує search-based discovery (В1 часткове).
+- *Про перехід:* "I'm currently looking for a new software for mobile edits. Any suggestions would be great" [49 upvotes] — creator-спільнота шукає альтернативи через peer recommendation (Г3).
+Пряма цитата від молодого creator про мем-монтаж — [?] потребує якісного дослідження.
 
 ---
 
@@ -70,8 +76,8 @@
 
 ---
 
-**— контекст:** 16 років, дивиться TikTok і хоче повторювати формати зі стрічки. Монтувала тільки в нативному TikTok editor. До МемКат приходить [?] — тригер невідомий, гіпотеза: пошук "як додати мем у відео".
-*Демографія: Матриця конкурентів — TikTok editor "16–25".*
+**— контекст:** 16 років, дивиться TikTok і хоче повторювати формати зі стрічки. Монтувала тільки в нативному TikTok editor. До МемКат приходить через [?] — тригер невідомий; гіпотеза: пошук "як додати мем у відео".
+*Демографія: Матриця конкурентів — TikTok editor "16–25". Pew Research (Dec 2025): 68% підлітків використовують TikTok; 61% — щодня; 21% — "майже постійно". r/CapCut monthly post: "Is this good for a 16y/o editor?" [74 upvotes] — пряме підтвердження що 16-річні активно використовують CapCut для монтажу. В2 ([?] редагує ТІЛЬКИ в TikTok native) — ◑ часткове: один коментатор r/CapCut: "Normally I do da vinci then before posting on TikTok, will use the free editing tools in TikTok. Not the same as capcut app" — підтверджує що TikTok вбудований редактор = реальний competing tool.*
 
 **— jobs:**
 1. Скопіювати формат мем-відео що побачила у стрічці.
@@ -82,7 +88,7 @@
 - *Cold start* — відкриває пікер вперше, history порожня, не знає що шукати. "Recents + favorites ламається на порожній history". *(Аудит 2026-06-14 Q3: підтверджено — TikTok native editor, який Ліза вже використовує, відкриває trending GIF за замовчуванням при відкритті панелі стікерів; порожнього екрану немає. R2 (trending tab) = рішення cold start для Лізи, підтверджено поведінкою рідного редактора.)* *Джерело: Висновки H2; Benchmark — iOS GIF keyboard (Recents 3/5); аудит 2026-06-14 Q3 — flexclip.com.*
 - *Перевантажений інтерфейс* — 17+ іконок у Kapwing не для першого досвіду з редактором. *Джерело: kapwing-editor-desktop.png.*
 - *Login-стіна* — CapCut вимагає акаунт. H4 частково підтверджено (аудит 2026-06-14): Gen Z загалом відмовляється від сервісів через privacy у 35% (найвищий показник серед усіх вікових груп — Experian 2025). [?] залишається лише на "16-річна відмовляється частіше, ніж 24-річна" — вікового розбиття в даних немає. *Джерело: capcut-editor-desktop.png; Висновки H4; аудит 2026-06-14.*
-- [?] *Слабший пристрій і з'єднання* — гіпотеза. Benchmark показує: без кешу всі продукти 2/5 на слабкому з'єднанні, але специфіка пристроїв 16-річних не верифікована. *Джерело: Benchmark таблиця — "Слабке з'єднання".*
+- [?] *Слабший пристрій і з'єднання* — гіпотеза. Pew Research 2022: 95% підлітків США мають смартфон — майже загальний доступ. Тип пристрою (iPhone vs Android, бюджетний vs флагман) безкоштовними джерелами не верифіковано. Benchmark: без кешу всі продукти 2/5 на слабкому з'єднанні. [?] залишається на "16-річна специфічно має слабший девайс vs 24-річний". *Джерело: Benchmark таблиця — "Слабке з'єднання"; Pew 2022 Teens & Technology.*
 
 **— тригери довіри:**
 - *Що переконує:* [?] Повністю невідомо. Гіпотеза: social proof у TikTok-форматі. Не верифіковано.

@@ -24,6 +24,8 @@
 - 3 персони (Аня 19, Денис 24, Ліза 16) з підтвердженими болями та джобами
 - JTBD-матриця: Main job + 5 related + 2 emotional, пріоритизація для MVP
 - Аудит 9 тверджень MVP — що підтверджено, що гіпотеза, що вигадано
+- User flows: Main flow + 5 related jobs (R1–R5), аналіз 19 дефектів у 4 категоріях
+- IA / sitemap: екрани, компоненти, навігація, contextual flows, coverage matrix
 
 ---
 
@@ -31,7 +33,7 @@
 
 **[research-wheat-seven.vercel.app](https://research-wheat-seven.vercel.app)** — інтерактивний HTML-звіт (mobile-friendly, sidebar + tab navigation)
 
-Розділи: Конкуренти · Бенчмарк · Патерни · Висновки · Скріни · Персони · JTBD · Аудит тверджень
+Розділи: Конкуренти · Бенчмарк · Патерни · Висновки · Скріни · Персони · JTBD · Аудит тверджень · User Flows · IA / Sitemap
 
 ---
 
@@ -79,3 +81,5 @@
 - [research/research.md](research/research.md) — ресерч і конкурентний аналіз
 - [research/personas.md](research/personas.md) — персони Аня, Денис, Ліза
 - [research/jtbd.md](research/jtbd.md) — JTBD-матриця і висновки
+- [research/flows.md](research/flows.md) — user flows (Main + R1–R5), аналіз дефектів
+- [research/sitemap.md](research/sitemap.md) — IA: екрани, компоненти, навігація

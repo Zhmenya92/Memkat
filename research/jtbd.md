@@ -1,4 +1,4 @@
-# Jobs to Be Done — МемКат
+﻿# Jobs to Be Done — МемКат
 
 *Дата: 14.06.2026*
 *База: research/research.md + research/personas.md*
@@ -11,7 +11,7 @@
 **«Коли я бачу мем або тренд у стрічці, я хочу швидко зробити і викласти своє відео з ним, щоб потрапити в момент поки він живий.»**
 
 - Персона: Аня — контекст: побачила мем у стрічці → app-switching → хоче вставити.
-- Research: Benchmark — вимір "тертя від наміру вставити мем до елемента на таймлайні" як ключовий вимір продукту. Gap G1 — жоден з 9 конкурентів не вбудував мем-бібліотеку в редактор. CLAUDE.md: "петля 'зняв → додав мем → виклав' має працювати бездоганно." Q1-аудит + Reddit 15.06.2026: short-form культура engagement > quality підтверджена — "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" [r/VideoEditing, score 312] — посилює пріоритет швидкості над якістю монтажу як ключовий вимір MVP.
+- Research: Benchmark — вимір "тертя від тригеру («побачила у стрічці») до готового файлу для публікації" як ключовий вимір продукту. (Попереднє формулювання "до елемента на таймлайні" звужувало loop до picker-кроку — виправлено.) Gap G1 — жоден з 9 конкурентів не вбудував мем-бібліотеку в редактор. CLAUDE.md: "петля 'зняв → додав мем → виклав' має працювати бездоганно." Q1-аудит + Reddit 15.06.2026: short-form культура engagement > quality підтверджена — "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" [r/VideoEditing, score 312]. Reddit 16.06.2026 (r/VideoEditing, "Social Media Is Really Ruining Video", 308 upvotes): "It's why so many new guys just use a phone instead of a camera. Clients don't care about dof, colors, framing etc. Does the video get views/comments? Okay here is money." [67 upvotes]; "The more amateur it is the better views it gets" — посилює пріоритет швидкості над якістю монтажу. Pew 2025: 61% підлітків TikTok daily, 21% майже постійно — тренд-вікна вузькі. ✅ Культура speed>quality підтверджена.
 
 ---
 
@@ -63,15 +63,15 @@
 **E1. «Коли я закінчую монтаж, я хочу відчувати що процес не поборов мене, щоб не боятися братися за наступне відео.»**
 
 - Персона: Ліза — job #2: "зробити це швидко і без розуміння монтажу"; pain: перший редактор, перевантажений інтерфейс.
-- Research: Gap G3 — "порожнє місце між важкими і простими" — складні редактори (Kapwing 17+ іконок) відштовхують не-команду. Benchmark вимір: кількість тапів і час до результату як показник того, що friction впливає на досвід — опосередковано підтверджує що легкість процесу важлива.
-- [?] Емоційна складова ("не боятися наступного відео") — гіпотеза, прямих даних у ресерчі немає.
+- Research: Gap G3 — "порожнє місце між важкими і простими" — складні редактори (Kapwing 17+ іконок) відштовхують не-команду. Benchmark вимір: кількість тапів і час до результату. Reddit 16.06.2026 (r/CapCut, "ranting, forgive me" [8 upvotes]): "I'm a software engineer... Every single thing you want to do is counter-intuitive... Nothing makes sense. I stupidly thought I was missing something that was only available in the Pro version so I subscribed and now I can't figure out how to get a refund" — навіть технічний профі відчуває confusion і frustration. r/VideoEditing [19 upvotes]: "professional editing software is easily/cheaply available to more and more people who don't know how to edit, and often want the easiest/fastest way of doing something" — підтверджує що новачки прагнуть найшвидшого шляху. ◑ Частково підтверджено.
+- [?] Емоційна складова ("не боятися наступного відео") — гіпотеза, прямих даних для нашої молодої аудиторії немає.
 
 ---
 
 **E2. «Коли я роблю мем-відео, я хочу відчути що встигла поки тренд живий, щоб публікація мала сенс а не вийшла "запізно".»**
 
 - Персона: Аня — контекст: "мем цього тижня", urgency; Ліза — job #3: "викласти поки актуально."
-- Research: Main job benchmark вимірює саме швидкість як ключовий параметр. Аня's app-switching pain — кожен додатковий крок підвищує ризик втратити момент.
+- Research: Main job benchmark вимірює саме швидкість як ключовий параметр. Аня's app-switching pain — кожен додатковий крок підвищує ризик втратити момент. Reddit 16.06.2026 (r/VideoEditing, 308 upvotes "Social Media Is Really Ruining Video"): "Quality is not longer of any concern. The only goal is to get people to engage or stop scrolling" [67 upvotes] — підтверджує культуру engagement > quality; "feels like nowadays clips can't breathe or be boring, something needs to be constantly happening, fancy zooms, text jumping at you fast, sound effects" — підтверджує urgency of content tempo. Pew 2025: 21% підлітків на TikTok "майже постійно" — тренд-вікна реальні.
 - [?] Суб'єктивне відчуття "я встигла / запізно" — гіпотеза, прямих даних у ресерчі немає.
 
 ---
@@ -115,12 +115,12 @@
 
 | Job | Аня, 19 (primary) | Денис, 24 | Ліза, 16 | Функція в МемКат | Конкуренти |
 |---|---|---|---|---|---|
-| **Main** Встигнути з мем-відео поки тренд живий | **3** — core scenario; benchmark вимірює тертя від наміру до публікації; Gap G1 | **2** — аудиторія 16–30 [матриця конкурентів]; навмисний, але тренди релевантні | **3** — job #3 "викласти поки актуально" [personas.md] | Вбудована мем-бібліотека + таймлайн | ✗ Не закритий — Gap G1, жоден з 9 |
+| **Main** Встигнути з мем-відео поки тренд живий | **3** — core scenario; benchmark вимірює тертя від наміру до публікації; Gap G1 | **2** — аудиторія 16–30 [матриця конкурентів]; навмисний, але тренди релевантні | **3** — job #3 "викласти поки актуально" [personas.md] | Вбудована мем-бібліотека + таймлайн + швидкий export (завершення петлі) | ✗ Не закритий — Gap G1, жоден з 9 |
 | **R1** Знайти мем за настроєм / емоджі | **3** — "Intent мем-мейкера — '😂 але тупо'" [Патерни]; job #2 Ані | **[?]** | **2** — cold start, emoji знижує поріг; непрямо [H2] | Emoji / mood search у бібліотеці | ✗ Не закритий у редакторах — тільки Telegram (не редактор) 40/40 |
 | **R2** Бачити актуальний контент з нуля | **2** — зазвичай знає що шукає; trending знижує тертя | **1** — навмисний | **3** — "recents + favorites ламається на порожній history" [H2] | Trending tab (Giphy/Tenor endpoint) | ◑ Частково — Telegram 5/5 "trending без запиту" [Benchmark] |
 | **R3** Вставити мем не виходячи з монтажу | **3** — app-switching pain: CapCut → Telegram → назад [G1] | **2** — монтує і з телефону, і з ноута; switching релевантне | **2** — implied; [?] прямих даних немає | Inline мем-пікер (panel, не overlay) | ✗ Не закритий — Gap G1, жоден з 9 |
 | **R4** Повторно знайти мем без нового пошуку | **3** — implied: регулярний постинг; підтверджено Reddit [r/discordapp, score 712+1053] — saved gifs = основний шлях для регулярних юзерів | **2** — implied: навмисний контент; [?] | **1** — перший досвід, history порожня | Recents tab у бібліотеці | ◑ Частково — Telegram 5/5; Slack 1/5 (відсутній) |
-| **R5** Експортувати у форматі платформи | **2** — TikTok → 9:16 [CLAUDE.md] | **3** — job #3 "9:16 або 1:1" [personas.md] | **2** — TikTok → 9:16 | Експорт 9:16 і 1:1 | ✓ Закритий — CapCut, Kapwing, Canva |
+| **R5** Експортувати у форматі платформи | **3** — E2=3 вимагає export як фізичне завершення urgency-петлі; формат (9:16) очевидний, але сам крок export критичний [jtbd.md E2] | **3** — job #3 "9:16 або 1:1" [personas.md] | **2** — TikTok → 9:16 | Експорт 9:16 і 1:1 | ✓ Закритий — CapCut, Kapwing, Canva |
 | **E1** Відчути що процес не поборов | **[?]** | **[?]** | **2** — implied: перший редактор, Kapwing 17+ іконок; [?] емоційна складова | Простий UX, мінімум кроків | ◑ Непрямо — Gap G3; суб'єктивне |
 | **E2** Відчути що встигла поки тренд живий | **3** — urgency: кожен зайвий крок = ризик запізнити [personas.md] | **1** — запланований контент | **3** — job #3 "викласти поки актуально" | Швидкий end-to-end flow | ✗ Не закритий — жоден не будує UX навколо speed to trend |
 | **Г1** Бути сприйнятим як "людина в темі" | **[?]** | **[?]** | **[?]** | — | — |
@@ -136,7 +136,7 @@
 *Критерій: важливість 3 для Ані (primary) + не закриті ринком.*
 
 **1. Main job** — Аня 3, Ліза 3, Денис 2. Єдиний job де всі три персони збігаються. Gap G1 = жоден з 9 конкурентів не закриває. Весь продукт будується навколо нього.
-→ Функції: вбудована бібліотека мемів + таймлайн.
+→ Функції: вбудована бібліотека мемів + таймлайн + **швидкий export** (завершення петлі «зняв → додав мем → виклав»).
 
 **2. R1 — emoji/mood search** — Аня 3. Не закритий у жодному відеоредакторі — тільки Telegram, але він не редактор. Пряма, не скопійована конкурентна перевага.
 → Функція: emoji / mood search у бібліотеці.
