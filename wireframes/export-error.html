@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Екран експорту · error · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+      --err: #C05050; --err-bg: rgba(192,80,80,.08);
+      --col: 480px; /* колонка контенту на планшеті (640–1023) */
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    header {
+      padding: 14px 16px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .header-back {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 8px; font-size: 18px; color: var(--text);
+      cursor: pointer; flex-shrink: 0; border: none;
+    }
+    .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+
+    main {
+      flex: 1; padding: 0 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+    }
+
+    .error-block {
+      width: 100%; padding: 28px 20px;
+      background: var(--err-bg); border: 1px solid rgba(192,80,80,.2); border-radius: 16px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+    }
+    .error-icon { font-size: 36px; }
+    .error-title { font-size: 17px; font-weight: 600; color: var(--text); }
+    .error-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+    .error-code { font-size: 11px; color: var(--text-3); font-family: ui-monospace, monospace; margin-top: 4px; }
+
+    .btn-primary {
+      width: 100%; padding: 15px; background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
+    }
+    .btn-secondary {
+      width: 100%; padding: 13px; background: transparent; border: 1px solid var(--border);
+      border-radius: 12px; font-size: 15px; font-weight: 500; color: var(--text-2); font-family: inherit; cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 16px 24px; }
+      main { max-width: var(--col); margin: 0 auto; align-self: stretch; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 16px 40px; }
+      main { max-width: 640px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Екран експорту · error</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>export-error.html · помилка рендеру WebCodecs</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>Main · R5 (blocked) — «виклала» перервано на фінальному кроці</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Спробувати ще» → export-loading · «Повернутись до редактора» → 📱 Редактор</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">export-loading ⇒ WebCodecs fail ⇒</span>
+    <span class="wf-flow-here">📱 Екран експорту (error)</span><br>
+    <span class="wf-flow-dim">⇒ retry ⇒ export-loading | back ⇒ 📱 Редактор</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <header>
+      <button class="header-back" aria-label="Назад" onclick="history.back()">←</button>
+      <span class="header-title">Помилка рендеру</span>
+    </header>
+
+    <main>
+      <div class="error-block" role="alert">
+        <span class="error-icon">⚠</span>
+        <h1 class="error-title">Не вдалось зберегти відео</h1>
+        <p class="error-desc">Рендер WebCodecs завершився помилкою. Спробуйте ще раз або зменшіть якість відео.</p>
+        <p class="error-code">ERR_ENCODE_FAILED · WebCodecs API</p>
+      </div>
+
+      <button class="btn-primary" onclick="location.href='export-loading.html'+location.search">Спробувати ще</button>
+      <button class="btn-secondary" onclick="location.href='editor.html'+location.search">Повернутись до редактора</button>
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

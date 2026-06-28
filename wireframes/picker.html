@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мем-пікер · base · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+      --scrim: rgba(0,0,0,.65);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    /* ── Editor behind (dimmed) ── */
+    header {
+      padding: 14px 14px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-back {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 7px; font-size: 16px; color: var(--text);
+      flex-shrink: 0; border: none;
+    }
+    .header-title-wrap { flex: 1; }
+    .header-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .header-save-status { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .header-export {
+      padding: 8px 14px; background: var(--zone); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text-3); border: none;
+    }
+
+    .editor-behind {
+      flex: 1; position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .editor-behind-canvas {
+      width: 100%; aspect-ratio: 9/16; max-height: 200px;
+      background: var(--zone-deep);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; position: relative;
+    }
+    .editor-behind-canvas svg { width: 50%; height: 50%; opacity: .1; }
+    .editor-behind-toolbar {
+      padding: 8px 14px; background: var(--zone-deep);
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .tool-chip {
+      padding: 6px 10px; background: var(--zone); border: 1px solid var(--border);
+      border-radius: 7px; font-size: 12px; color: var(--text-3);
+    }
+
+    /* ── Scrim ── */
+    .scrim {
+      position: absolute; inset: 0;
+      background: var(--scrim);
+      z-index: 10;
+    }
+
+    /* ── Bottom sheet ── */
+    dialog.picker-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0; width: auto;
+      top: auto; margin: 0; padding: 0;
+      background: var(--surface);
+      border: none; border-top: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 24px rgba(0,0,0,.3);
+      display: flex; flex-direction: column;
+      max-height: 65%;
+      z-index: 20;
+    }
+    .sheet-handle {
+      width: 36px; height: 4px; background: var(--border); border-radius: 2px;
+      margin: 10px auto 0;
+      flex-shrink: 0;
+    }
+
+    /* Tabs */
+    nav.sheet-tabs {
+      display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .tab {
+      flex: 1; padding: 12px 8px; text-align: center;
+      font-size: 13px; font-weight: 500; color: var(--text-3);
+      background: none; border: none; border-bottom: 2px solid transparent;
+      cursor: pointer; font-family: inherit;
+    }
+    .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
+
+    /* GIF grid */
+    .gif-grid {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 10px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px;
+    }
+    .gif-item {
+      aspect-ratio: 1; background: var(--zone); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .gif-item svg { width: 40%; height: 40%; }
+    .gif-label {
+      position: absolute; bottom: 4px; left: 6px;
+      font-size: 9px; color: rgba(255,255,255,.3); font-family: ui-monospace, monospace;
+    }
+
+    .sheet-footer {
+      padding: 8px 12px 10px;
+      border-top: 1px solid var(--border); flex-shrink: 0;
+      text-align: center;
+    }
+    .sheet-attribution { font-size: 10px; color: var(--text-3); font-family: ui-monospace, monospace; }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 12px 24px; }
+      .editor-behind-canvas { max-height: 280px; }
+      dialog.picker-sheet { max-height: 55%; left: 50%; right: auto; width: 100%; max-width: 720px; transform: translateX(-50%); }
+      .gif-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 12px 40px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Мем-пікер · base</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker.html · Trending tab, cold start — пікер відкритий з контентом</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R2 · R3 · R4 — «побачила мем, підібрала схожий»</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap GIF → editor-loading · Пошук tab → picker-search-empty · свайп вниз → editor base</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">📱 Редактор ⇒ «Додати мем» ⇒</span>
+    <span class="wf-flow-here">⧉ Мем-пікер (Trending)</span><br>
+    <span class="wf-flow-dim">⇒ tap GIF ⇒ editor-loading ⇒ 📱 Редактор (base)</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <!-- Editor background (dimmed) -->
+    <header aria-hidden="true">
+      <div class="header-back">←</div>
+      <div class="header-title-wrap">
+        <p class="header-title">Відео для TikTok · 28 черв</p>
+        <p class="header-save-status">✓ Збережено</p>
+      </div>
+      <div class="header-export">Експорт</div>
+    </header>
+
+    <div class="editor-behind" aria-hidden="true">
+      <div class="editor-behind-canvas">
+        <svg viewBox="0 0 120 80" fill="none" stroke="white">
+          <line x1="0" y1="0" x2="120" y2="80"/><line x1="120" y1="0" x2="0" y2="80"/>
+        </svg>
+      </div>
+      <div class="editor-behind-toolbar">
+        <div class="tool-chip">＋ Додати мем</div>
+        <div class="tool-chip">✂ Обрізати</div>
+      </div>
+    </div>
+
+    <!-- Scrim -->
+    <div class="scrim" aria-hidden="true" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: закрити пікер →"></div>
+
+    <!-- Bottom sheet (picker) -->
+    <dialog class="picker-sheet" open aria-label="Мем-пікер">
+      <div class="sheet-handle" aria-hidden="true"></div>
+
+      <nav class="sheet-tabs" aria-label="Вкладки пікера">
+        <button class="tab active" aria-current="true">Trending</button>
+        <button class="tab" style="cursor:default" title="Нещодавні — поза прототипом (окремого екрана немає)">Нещодавні</button>
+        <button class="tab" onclick="location.href='picker-search-empty.html'+location.search">Пошук</button>
+      </nav>
+
+      <div class="gif-grid" role="list" aria-label="GIF меми">
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 1"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 2"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 3"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 4"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 5"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 6"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 7"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 8"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+      </div>
+
+      <footer class="sheet-footer">
+        <span class="sheet-attribution">Powered by GIPHY</span>
+      </footer>
+    </dialog>
+
+  </div>
+</div>
+
+</body>
+</html>

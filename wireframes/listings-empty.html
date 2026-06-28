@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Список проектів · empty · МемКат</title>
+  <style>
+    :root {
+      --bg:                 #141414;
+      --surface:            #1E1E1E;
+      --zone:               #272727;
+      --zone-deep:          #2F2F2F;
+      --border:             #383838;
+      --text:               #EDEDED;
+      --text-2:             #8A8A8A;
+      --text-3:             #515151;
+      --interactive-pri:    #D8D8D8;
+      --interactive-pri-fg: #141414;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim  { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; flex-direction: row; }
+    .screen {
+      flex: 1; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column;
+      min-height: 780px; position: relative;
+    }
+
+    header {
+      padding: 14px 16px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .header-brand { font-size: 30px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    .header-action { display: none; }
+
+    main {
+      flex: 1; padding: 0 16px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px; text-align: center; padding: 24px 16px;
+    }
+    .empty-illustration {
+      width: 120px; height: 120px;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .empty-illustration svg { width: 60%; height: 60%; }
+    .empty-title {
+      font-size: 17px; font-weight: 600; color: var(--text);
+      margin-top: 8px;
+    }
+    .empty-sub { font-size: 14px; color: var(--text-2); line-height: 1.5; max-width: 240px; }
+    .empty-cta {
+      margin-top: 8px; padding: 14px 32px;
+      background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 600; font-family: inherit;
+      cursor: pointer;
+    }
+
+    footer {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 16px 16px 28px;
+      background: linear-gradient(to bottom, transparent, var(--bg) 38%);
+    }
+    button.fab {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 15px 24px;
+      background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; font-family: inherit;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.3); letter-spacing: -.1px;
+    }
+    .fab-icon { font-size: 22px; font-weight: 300; line-height: 1; }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .app-layout { max-width: 100%; }
+      .screen { min-height: 100vh; }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; }
+      .header-brand { font-size: 22px; }
+      .header-action {
+        display: flex; align-items: center; gap: 8px;
+        padding: 10px 18px; background: var(--interactive-pri);
+        color: var(--interactive-pri-fg); border: none; border-radius: 10px;
+        font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
+      }
+      .header-action-icon { font-size: 18px; font-weight: 300; line-height: 1; }
+      footer { display: none; }
+      main { padding: 24px 24px 48px; }
+      /* On tablet header button covers the CTA — hide empty-cta */
+      .empty-cta { display: none; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 16px 40px; }
+      main { padding: 28px 40px 48px; }
+      /* Desktop: show CTA under empty state again alongside header button */
+      .empty-cta { display: block; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Список проектів · empty</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>listings-empty.html · стан: history = 0, жодного проекту в IndexedDB</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>Main — тригер старту петлі; FAB = єдина точка дії</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap FAB / CTA → 📱 Вибір відео</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">▶ Побачила мем у стрічці</span><br>
+    ⇒ <span class="wf-flow-here">📱 Список проектів (empty)</span> — жодного проекту<br>
+    <span class="wf-flow-dim">⇒ 📱 Вибір відео → 📱 Редактор → ⧉ Мем-пікер → 📱 Експорт → ✅</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <header>
+      <h1 class="header-brand">МемКат</h1>
+      <button class="header-action" type="button" onclick="location.href='import.html'+location.search">
+        <span class="header-action-icon" aria-hidden="true">+</span> Новий проект
+      </button>
+    </header>
+
+    <main>
+      <section class="empty-state" aria-label="Порожній стан">
+        <div class="empty-illustration" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="var(--text-3)" stroke-width="2">
+            <rect x="8" y="12" width="32" height="24" rx="4"/>
+            <path d="M16 28 L24 20 L32 28"/>
+            <circle cx="18" cy="21" r="3"/>
+            <path d="M6 36 L42 36" stroke-dasharray="3 3"/>
+          </svg>
+        </div>
+        <h2 class="empty-title">Поки немає проектів</h2>
+        <p class="empty-sub">Створіть перший — це займе менше хвилини</p>
+        <button class="empty-cta" type="button" onclick="location.href='import.html'+location.search">Новий проект</button>
+      </section>
+    </main>
+
+    <footer>
+      <nav aria-label="Головна дія">
+        <button class="fab" type="button" onclick="location.href='import.html'+location.search">
+          <span class="fab-icon" aria-hidden="true">+</span> Новий проект
+        </button>
+      </nav>
+    </footer>
+
+  </div>
+</div>
+
+</body>
+</html>

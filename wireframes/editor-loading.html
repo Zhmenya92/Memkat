@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Редактор · loading · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    header {
+      padding: 14px 14px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-back {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 7px; font-size: 16px; color: var(--text);
+      cursor: pointer; flex-shrink: 0; border: none;
+    }
+    .header-title-wrap { flex: 1; min-width: 0; }
+    .header-title { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-save-status { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .header-export {
+      padding: 8px 14px; background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; flex-shrink: 0;
+    }
+
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    .canvas-zone { background: #000; flex-shrink: 0; position: relative; }
+    .canvas-video {
+      width: 100%; aspect-ratio: 9 / 16; max-height: 340px; overflow: hidden;
+      position: relative;
+    }
+    .canvas-video-bg {
+      position: absolute; inset: 0; background: var(--zone-deep);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .canvas-video-bg svg { width: 60%; height: 60%; opacity: .2; }
+
+    /* Loading overlay */
+    .canvas-loading-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.55);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px;
+    }
+    .spinner {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,.1);
+      border-top-color: var(--interactive-pri);
+    }
+    .canvas-loading-label { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 500; }
+
+    .canvas-controls {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .play-btn {
+      width: 32px; height: 32px; background: rgba(255,255,255,.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;
+    }
+    .play-btn svg { width: 12px; height: 12px; fill: white; }
+    .playhead-bar { flex: 1; height: 3px; background: rgba(255,255,255,.2); border-radius: 3px; }
+    .time-label { font-size: 11px; color: rgba(255,255,255,.5); font-family: ui-monospace, monospace; }
+
+    .toolbar {
+      padding: 10px 14px; background: var(--zone-deep);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .tool-btn {
+      display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+    }
+    .tool-btn.disabled {
+      background: #202020; border-color: #282828; color: #404040; cursor: not-allowed;
+    }
+    .tool-btn:not(.disabled) { color: var(--text); }
+
+    .timeline {
+      flex: 1; padding: 12px 14px; background: var(--zone-deep);
+      overflow-x: auto; display: flex; flex-direction: column; gap: 6px; min-height: 0;
+    }
+    .timeline-track { display: flex; align-items: center; gap: 6px; }
+    .track-label { width: 48px; flex-shrink: 0; font-size: 9px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; }
+    .clip { height: 36px; border-radius: 5px; position: relative; display: flex; align-items: center; padding: 0 8px; }
+    .clip.video-clip { width: 180px; background: #1A2E1A; border: 1px solid #2A4A2A; }
+    .clip.overlay-loading { width: 80px; margin-left: 54px; background: var(--zone); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; }
+    .clip-label { font-size: 10px; color: var(--text-2); font-weight: 600; }
+    .clip-loading-dots { font-size: 14px; color: var(--text-3); letter-spacing: 3px; }
+    .timeline-ruler { height: 16px; display: flex; align-items: center; padding-left: 54px; }
+    .ruler-marks { display: flex; gap: 0; }
+    .ruler-mark { width: 60px; font-size: 9px; color: var(--text-3); font-family: ui-monospace, monospace; border-left: 1px solid var(--border); padding-left: 4px; }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 12px 24px; }
+      .canvas-video { max-height: 480px; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 12px 40px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Редактор · loading (GIF)</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>editor-loading.html · GIF вибрано в пікері, CDN завантажує файл</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R3 — «додав мем» (в процесі)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>GIF завантажився → editor base · помилка CDN → picker-error</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">⧉ Мем-пікер (вибрано GIF) ⇒</span>
+    <span class="wf-flow-here">📱 Редактор (loading GIF)</span><br>
+    <span class="wf-flow-dim">⇒ OK → 📱 Редактор (base) | fail → picker-error</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <header>
+      <button class="header-back" aria-label="Назад" onclick="history.back()">←</button>
+      <div class="header-title-wrap">
+        <p class="header-title">Відео для TikTok · 28 черв</p>
+        <p class="header-save-status">✓ Збережено</p>
+      </div>
+      <button class="header-export" onclick="location.href='export.html'+location.search">Експорт</button>
+    </header>
+
+    <main>
+
+      <div class="canvas-zone">
+        <div class="canvas-video">
+          <div class="canvas-video-bg" aria-hidden="true">
+            <svg viewBox="0 0 120 80" fill="none" stroke="white">
+              <line x1="0" y1="0" x2="120" y2="80"/><line x1="120" y1="0" x2="0" y2="80"/>
+            </svg>
+          </div>
+
+          <!-- Loading overlay for GIF -->
+          <div class="canvas-loading-overlay" role="status" aria-label="Завантаження GIF" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: GIF завантажено →">
+            <div class="spinner" aria-hidden="true"></div>
+            <p class="canvas-loading-label">Завантаження GIF...</p>
+          </div>
+
+          <div class="canvas-controls">
+            <button class="play-btn" aria-label="Відтворити"><svg viewBox="0 0 12 12"><polygon points="2,1 11,6 2,11"/></svg></button>
+            <div class="playhead-bar"></div>
+            <span class="time-label">0:00 / 0:20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-right">
+
+        <div class="toolbar" role="toolbar">
+          <button class="tool-btn disabled" disabled aria-disabled="true">＋ Додати мем</button>
+          <button class="tool-btn disabled" disabled aria-disabled="true">✂ Обрізати</button>
+        </div>
+
+        <div class="timeline" role="region" aria-label="Таймлайн">
+          <div class="timeline-ruler" aria-hidden="true">
+            <div class="ruler-marks">
+              <span class="ruler-mark">0:00</span>
+              <span class="ruler-mark">0:05</span>
+              <span class="ruler-mark">0:10</span>
+              <span class="ruler-mark">0:15</span>
+              <span class="ruler-mark">0:20</span>
+            </div>
+          </div>
+          <div class="timeline-track">
+            <span class="track-label">Відео</span>
+            <div class="clip video-clip"><span class="clip-label">відео_тікток.mp4</span></div>
+          </div>
+          <div class="timeline-track">
+            <span class="track-label">Мем</span>
+            <div class="clip overlay-loading" aria-label="GIF завантажується">
+              <span class="clip-loading-dots">···</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.editor-right -->
+
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>
