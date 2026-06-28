@@ -1,10 +1,11 @@
 # User Flows — МемКат
 
-*База: sitemap.md · 21.06.2026*
-*Кожен вузол-екран відповідає екрану з sitemap.md. Стани (empty / loading / error) — окремі вузли всередині того самого екрану. Нових екранів не виявлено.*
+*База: sitemap.md · 21.06.2026 · оновлено 28.06.2026 (Component taxonomy)*
+*Кожен вузол відповідає екрану або компоненту з sitemap.md. Стани (empty / loading / error) — окремі вузли всередині того самого екрана чи компонента.*
 
 **Умовні позначення**
-- 📱 прямокутник — Екран (точка навігації)
+- 📱 прямокутник — Екран (точка навігації; push у navigation stack)
+- ⧉ прямокутник — Компонент (overlay / bottom sheet; не навігаційна точка; екран за ним залишається активним)
 - ⬜ ⏳ 🔴 прямокутник — Стан (empty / loading / error)
 - ◆ Ромб — Точка рішення
 - ✅ Успіх — job виконано
@@ -19,6 +20,7 @@
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
@@ -37,13 +39,13 @@ flowchart TD
     IMP_E -. спробувати інший .-> IMP
     Q3 == завантажено ==> ED
 
-    ED == Додати мем ==> MP["📱 Мем-пікер"]:::screen
+    ED == Додати мем ==> MP["⧉ Мем-пікер"]:::panel
     MP -. закрила .-> ED
     MP == вибрала ==> EXP["📱 Експорт"]:::screen
 
     EXP == підтвердила ==> REND["⏳ Рендер WebCodecs"]:::state
     REND -. скасувати .-> EXP
-    REND == OK ==> SHARE["📤 Поділитись / завершити"]:::screen
+    REND == OK ==> SHARE["⧉ Поділитись / завершити"]:::panel
     REND -. збій .-> REND_E["🔴 Помилка рендеру"]:::state
     REND_E -. повторити .-> REND
     SHARE == поділитись ==> OK(["✅ Виклала\nзняв → мем → виклав ✓"]):::ok
@@ -74,12 +76,13 @@ flowchart TD
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
     classDef fail    fill:#22080a,stroke:#903030,color:#f05060
 
-    MP["📱 Мем-пікер"]:::screen -- тапнула Пошук --> SRCH_E["📱 Пошук · empty\nпідказки: 😂 funny wow"]:::screen
+    MP["⧉ Мем-пікер"]:::panel -- тапнула Пошук --> SRCH_E["📱 Пошук · empty\nпідказки: 😂 funny wow"]:::screen
     MP -. закрила .-> ED["📱 Редактор"]:::screen
 
     SRCH_E == ввела запит ==> SRCH_L["⏳ Завантаження · Giphy / Tenor"]:::state
@@ -124,6 +127,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
@@ -133,7 +137,7 @@ flowchart TD
     S(["▶ Відкрила Мем-пікер"]):::trigger
     GIF["📱 Редактор — GIF на таймлайні"]:::screen
 
-    S ==> MP["📱 Мем-пікер"]:::screen
+    S ==> MP["⧉ Мем-пікер"]:::panel
     MP --> QH{Є нещодавні GIF?}:::decide
     MP -. закрила .-> ED["📱 Редактор"]:::screen
     QH == ні, cold start ==> TREND["📱 Trending"]:::screen
@@ -180,6 +184,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
@@ -190,13 +195,13 @@ flowchart TD
     QC -. ні .-> DIS["⬜ Редактор\nДодати мем — disabled"]:::state
     DIS -. додала відео .-> ED
 
-    QC == є кліп ==> ADD["📱 Мем-пікер відкривається"]:::screen
+    QC == є кліп ==> ADD["⧉ Мем-пікер відкривається"]:::panel
 
     ADD --> QBS{Відкрився як bottom sheet?}:::decide
     QBS -. ні, відкрився на весь екран .-> FAIL["⚠ Порушення R3\nтаймлайн і прев'ю приховані"]:::warn
     FAIL -. закрити .-> ED
 
-    QBS == так, таймлайн видно ==> MP["📱 Мем-пікер · bottom sheet"]:::screen
+    QBS == так, таймлайн видно ==> MP["⧉ Мем-пікер · bottom sheet"]:::panel
     MP --> QG{GIF вибрано?}:::decide
     QG -. закрила без вибору .-> ED
     QG == вибрала GIF ==> OVL_L["⏳ Завантаження GIF з CDN"]:::state
@@ -230,12 +235,13 @@ flowchart TD
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
     classDef fail    fill:#22080a,stroke:#903030,color:#f05060
 
-    ED["📱 Редактор"]:::screen == тапнула Додати мем ==> MP["📱 Мем-пікер"]:::screen
+    ED["📱 Редактор"]:::screen == тапнула Додати мем ==> MP["⧉ Мем-пікер"]:::panel
 
     MP --> QH{Default таб?}:::decide
     MP -. закрила .-> ED
@@ -282,6 +288,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     classDef screen  fill:#192233,stroke:#3a6090,color:#90c0f0
+    classDef panel   fill:#0a1e1e,stroke:#28a0a0,color:#50d0d0
     classDef state   fill:#271e0a,stroke:#c07a28,color:#f0a060
     classDef decide  fill:#1c1528,stroke:#6050a0,color:#c0b0f8
     classDef ok      fill:#0a1e0f,stroke:#28a060,color:#50d880
@@ -303,7 +310,7 @@ flowchart TD
     QWC == так ==> QR{Рендер OK?}:::decide
     QWC -. ні .-> FB["⏳ Fallback рендер"]:::state
 
-    QR == OK ==> SHARE["📤 Поділитись / завершити"]:::screen
+    QR == OK ==> SHARE["⧉ Поділитись / завершити"]:::panel
     QR -. збій .-> RE["🔴 Помилка рендеру"]:::state
     RE --> QRT{Повторити?}:::decide
     QRT == так ==> REND
