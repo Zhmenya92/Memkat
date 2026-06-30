@@ -1612,6 +1612,12 @@
         <a href="#wf-export-error"    class="mobile-nav-link" data-section="wf-export-error"    data-group="wireframes"><span class="mobile-nav-num">↳</span>Експорт · error</a>
         <a href="#wf-share"           class="mobile-nav-link" data-section="wf-share"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Поділитись</a>
         <a href="#proto-main"         class="mobile-nav-link" data-section="proto-main"         data-group="wireframes"><span class="mobile-nav-num">19</span>Clickable prototype · Main flow</a>
+        <a href="#proto-r1"           class="mobile-nav-link" data-section="proto-r1"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Prototype · R1 Пошук</a>
+        <a href="#proto-r2"           class="mobile-nav-link" data-section="proto-r2"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Prototype · R2 Trending</a>
+        <a href="#proto-r3"           class="mobile-nav-link" data-section="proto-r3"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Prototype · R3 Inline-мем</a>
+        <a href="#proto-r4"           class="mobile-nav-link" data-section="proto-r4"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Prototype · R4 Нещодавні</a>
+        <a href="#proto-r5"           class="mobile-nav-link" data-section="proto-r5"           data-group="wireframes"><span class="mobile-nav-num">↳</span>Prototype · R5 Експорт</a>
+        <a href="#proto-audit"        class="mobile-nav-link" data-section="proto-audit"        data-group="wireframes"><span class="mobile-nav-num">20</span>Аудит прототипів</a>
       </div>
     </div>
   </div>
@@ -1671,7 +1677,7 @@
     <div class="sidebar-group-items">
       <a href="#screenstates" class="sidebar-link" data-section="screenstates" data-group="wireframes"><span class="sidebar-num">16</span>Screen states</a>
       <a href="#wireframes-files" class="sidebar-link" data-section="wireframes-files" data-group="wireframes"><span class="sidebar-num">17</span>Wireframe rules</a>
-      <details class="sidebar-subgroup" id="wf-subgroup" open>
+      <details class="sidebar-subgroup" id="wf-subgroup">
         <summary class="sidebar-subgroup-label">
           <span class="sidebar-num">18</span>
           Wireframes
@@ -1696,14 +1702,20 @@
         <a href="#wf-export-error"   class="sidebar-link sidebar-sublink" data-section="wf-export-error"   data-group="wireframes">Експорт<span class="wf-sublink-badge" data-t="err">err</span></a>
         <a href="#wf-share"          class="sidebar-link sidebar-sublink" data-section="wf-share"          data-group="wireframes">Поділитись<span class="wf-sublink-badge" data-t="base">base</span></a>
       </details>
-      <details class="sidebar-subgroup" id="proto-subgroup" open>
+      <details class="sidebar-subgroup" id="proto-subgroup">
         <summary class="sidebar-subgroup-label">
           <span class="sidebar-num">19</span>
           Clickable prototypes
           <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-subgroup-chev"><polyline points="2,4 6,8 10,4"/></svg>
         </summary>
         <a href="#proto-main" class="sidebar-link sidebar-sublink" data-section="proto-main" data-group="wireframes">Main flow<span class="wf-sublink-badge" data-t="base">flow</span></a>
+        <a href="#proto-r1" class="sidebar-link sidebar-sublink" data-section="proto-r1" data-group="wireframes">R1 · Пошук<span class="wf-sublink-badge" data-t="base">flow</span></a>
+        <a href="#proto-r2" class="sidebar-link sidebar-sublink" data-section="proto-r2" data-group="wireframes">R2 · Trending<span class="wf-sublink-badge" data-t="base">flow</span></a>
+        <a href="#proto-r3" class="sidebar-link sidebar-sublink" data-section="proto-r3" data-group="wireframes">R3 · Inline-мем<span class="wf-sublink-badge" data-t="base">flow</span></a>
+        <a href="#proto-r4" class="sidebar-link sidebar-sublink" data-section="proto-r4" data-group="wireframes">R4 · Нещодавні<span class="wf-sublink-badge" data-t="base">flow</span></a>
+        <a href="#proto-r5" class="sidebar-link sidebar-sublink" data-section="proto-r5" data-group="wireframes">R5 · Експорт<span class="wf-sublink-badge" data-t="base">flow</span></a>
       </details>
+      <a href="#proto-audit" class="sidebar-link" data-section="proto-audit" data-group="wireframes"><span class="sidebar-num">20</span>Аудит прототипів</a>
     </div>
   </div>
 </aside>
@@ -4316,7 +4328,7 @@ flowchart TD
     classDef fail    fill:#22080a,stroke:#903030,color:#f05060
     classDef warn    fill:#201a0a,stroke:#a08020,color:#f0d060
 
-    ED["📱 Редактор · монтаж в процесі"]:::screen --> QC{Є кліп?}:::decide
+    ED["📱 Редактор · є відео, мему ще немає\n(editor-no-meme · старт R3)"]:::screen --> QC{Є кліп?}:::decide
     QC -. ні .-> DIS["⬜ Редактор\nДодати мем — disabled"]:::state
     DIS -. додала відео .-> ED
 
@@ -4464,8 +4476,6 @@ flowchart TD
 
     EXP --> QF{Формат?}:::decide
     QF == 9-16 · 1-1 ==> REND
-    QF -. 16-9 поза MVP .-> NA["⬜ Підказка: 16:9 не підтримується"]:::state
-    NA -. вибрати інший .-> EXP
     REND -. скасувати .-> EXP
     REND --> QWC{Browser підтримує WebCodecs?}:::decide
     QWC == так ==> QR{Рендер OK?}:::decide
@@ -4492,7 +4502,7 @@ flowchart TD
         <ul>
           <li>[Експорт] <strong>disabled</strong> поки немає кліпу</li>
           <li>9:16 <strong>pre-selected</strong> — більшість контенту вертикаль</li>
-          <li>16:9 поза MVP — підказка пояснює, не ховаємо мовчки</li>
+          <li>лише <strong>9:16 / 1:1</strong> у MVP — 16:9 взагалі не пропонується, тож окремої підказки «не підтримується» немає</li>
           <li><strong>👁 preview</strong> — вбудований в Екран Експорту: оновлюється live при виборі формату</li>
           <li><strong>⏳ progress</strong> — видима смуга або % під час рендеру</li>
           <li><strong>📤 share</strong> — Поділитись / завершити: system share sheet · до списку проектів · новий проект</li>
@@ -5076,7 +5086,7 @@ flowchart TD
       <p class="card-label" style="margin-bottom:3px">Job</p>
       <p style="margin-bottom:10px">Main — «зняв → <strong>додав мем</strong> → виклав»: основне робоче середовище. R3 — «знайти і вставити не виходячи з монтажу, щоб не збирати фокус заново.»</p>
       <p class="card-label" style="margin-bottom:3px">Місце у flow</p>
-      <p style="margin-bottom:12px">Крок 2. <code>Q3 == завантажено ==> ED</code>. Звідси: <code>ED == Додати мем ==> MP</code> і <code>ED == [Експорт] ==> EXP</code>.</p>
+      <p style="margin-bottom:12px">Крок 2. <code>Q3 == завантажено ==> ED</code>. Звідси: <code>ED == Додати мем ==> MP</code> і <code>ED == [Експорт] ==> EXP</code>. Старт R3 — під-стан <code>editor-no-meme</code> (відео є, мему ще немає, [Додати мем] активний).</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div style="padding:8px 10px;background:var(--green-dim);border-radius:6px;border:1px solid rgba(74,222,128,.2)">
           <p class="card-label" style="margin-bottom:3px;color:var(--green)">⬜ Порожній — ✓</p>
@@ -5822,7 +5832,22 @@ wireframes/&lt;назва&gt;-loading.html   ← стан завантаженн
     slider.addEventListener('input', function() { setW(parseInt(this.value), false); bpBtns.forEach(b => b.classList.remove('active')); });
     bpBtns.forEach(btn => btn.addEventListener('click', function() { setW(parseInt(this.dataset.w), true); }));
   }
+  // Перемикач станів/гілок прототипу — завантажує обраний екран у той самий вʼюпорт
+  function protoState(btn, file) {
+    const sec = btn.closest('section');
+    const f = sec.querySelector('.wf-frame');
+    if (f) f.src = '../wireframes/' + file + '?embed=1';
+    sec.querySelectorAll('.proto-states button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
   </script>
+  <style>
+    .proto-states { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0 0; }
+    .proto-states-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); margin-right: 2px; }
+    .proto-states button { font-family: inherit; font-size: 12px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: all .12s; }
+    .proto-states button:hover { background: rgba(255,255,255,.05); color: var(--text); }
+    .proto-states button.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+  </style>
 
   <!-- ─── WF: Список проектів · empty ─── -->
   <section id="wf-listings-empty">
@@ -6662,6 +6687,378 @@ wireframes/&lt;назва&gt;-loading.html   ← стан завантаженн
     <script>(function(){ initWfS(document.getElementById('proto-main')); })();</script>
   </section>
 
+  <!-- ─── PROTO · R1 ─── -->
+  <section id="proto-r1">
+    <div class="section-header"><h2>⧉ Clickable prototype · R1 — Пошук за настроєм</h2></div>
+    <p class="source-note">Точка входу: <code>picker-search-empty.html</code> · вкладка Пошук Мем-пікера · переходи за flows.md · R1</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;background:rgba(255,255,255,.02);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0 0 10px">Пікер відкритий на вкладці <strong style="color:var(--text)">Пошук</strong>. Натисни підказку (😂 funny · wow · fail) або поле пошуку — і пройди: запит → ⏳ завантаження → 📱 список GIF → tap GIF → ⏳ GIF з CDN → Редактор.</p>
+      <ul style="margin:0;padding-left:18px">
+        <li><strong>Підказка / поле</strong> → завантаження → результати.</li>
+        <li>У результатах <strong>tap GIF</strong> веде в редактор; знизу — «Більше немає» зі «Змінити запит».</li>
+        <li>Гілка «нічого не знайдено» → назад до підказок. Tab Trending / Нещодавні перемикають вкладки.</li>
+      </ul>
+    </div>
+    <div class="wf-controls">
+      <div class="wf-bp-group">
+        <button class="wf-bp wf-bps active" data-w="390">📱 390<span class="wf-bp-label">Mobile</span></button>
+        <button class="wf-bp wf-bps" data-w="640">⊡ 640<span class="wf-bp-label">Tablet</span></button>
+        <button class="wf-bp wf-bps" data-w="1024">⬛ 1024<span class="wf-bp-label">Desktop</span></button>
+      </div>
+      <div class="wf-slider-wrap">
+        <input type="range" class="wf-slider" min="320" max="1440" value="390">
+        <span class="wf-width-label">390px <span class="wf-bp-badge">Mobile</span></span>
+      </div>
+    </div>
+    <div class="wf-preview-wrap">
+      <iframe class="wf-frame" src="../wireframes/picker-search-empty.html?embed=1" width="390" height="820" title="Clickable prototype — R1 Пошук (старт: вкладка Пошук)" loading="lazy"></iframe>
+    </div>
+    <p class="source-note" style="margin-top:12px">Path: 📱 Пошук (empty) → ⏳ Giphy/Tenor → 📱 Список GIF → ⏳ CDN → 📱 Редактор · гілки: ⬜ Нічого не знайдено · ⬜ Більше немає. · <a href="../wireframes/picker-search-empty.html" target="_blank" style="color:var(--accent)">Відкрити повноекранно ↗</a></p>
+    <nav class="proto-states" aria-label="Стани та гілки R1">
+      <span class="proto-states-label">Стани / гілки:</span>
+      <button class="active" onclick="protoState(this,'picker-search-empty.html')">старт · Пошук</button>
+      <button onclick="protoState(this,'picker-search-loading.html')">⏳ завантаження</button>
+      <button onclick="protoState(this,'picker-search-results.html')">список GIF</button>
+      <button onclick="protoState(this,'picker-search-noresults.html')">⬜ нічого не знайдено</button>
+      <button onclick="protoState(this,'picker-search-end.html')">⬜ більше немає</button>
+      <button onclick="protoState(this,'picker-error.html')">🔴 помилка API</button>
+    </nav>
+    <script>(function(){ initWfS(document.getElementById('proto-r1')); })();</script>
+  </section>
+
+  <!-- ─── PROTO · R2 ─── -->
+  <section id="proto-r2">
+    <div class="section-header"><h2>⧉ Clickable prototype · R2 — Cold start / Trending</h2></div>
+    <p class="source-note">Точка входу: <code>picker-trending-loading.html</code> · cold start (history = 0) → Trending · flows.md · R2</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;background:rgba(255,255,255,.02);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0 0 10px">Холодний старт Лізи: пікер відкривається на <strong style="color:var(--text)">Trending</strong>, поки Giphy/Tenor віддає тренди (скелетон). Натисни активну вкладку Trending — побачиш завантажений список.</p>
+      <ul style="margin:0;padding-left:18px">
+        <li><strong>Tab Trending</strong> (loading → loaded) → 📱 список трендів.</li>
+        <li><strong>Tab Нещодавні</strong> → екран Нещодавніх; <strong>Tab Пошук</strong> → вкладка пошуку.</li>
+        <li>tap GIF у будь-якій вкладці → ⏳ CDN → Редактор.</li>
+      </ul>
+    </div>
+    <div class="wf-controls">
+      <div class="wf-bp-group">
+        <button class="wf-bp wf-bps active" data-w="390">📱 390<span class="wf-bp-label">Mobile</span></button>
+        <button class="wf-bp wf-bps" data-w="640">⊡ 640<span class="wf-bp-label">Tablet</span></button>
+        <button class="wf-bp wf-bps" data-w="1024">⬛ 1024<span class="wf-bp-label">Desktop</span></button>
+      </div>
+      <div class="wf-slider-wrap">
+        <input type="range" class="wf-slider" min="320" max="1440" value="390">
+        <span class="wf-width-label">390px <span class="wf-bp-badge">Mobile</span></span>
+      </div>
+    </div>
+    <div class="wf-preview-wrap">
+      <iframe class="wf-frame" src="../wireframes/picker-trending-loading.html?embed=1" width="390" height="820" title="Clickable prototype — R2 Trending (старт: cold start loading)" loading="lazy"></iframe>
+    </div>
+    <p class="source-note" style="margin-top:12px">Path: ⏳ Trending skeleton → 📱 Trending → tap GIF → ⏳ CDN → 📱 Редактор · вкладки: Trending · Нещодавні · Пошук. · <a href="../wireframes/picker-trending-loading.html" target="_blank" style="color:var(--accent)">Відкрити повноекранно ↗</a></p>
+    <nav class="proto-states" aria-label="Стани та гілки R2">
+      <span class="proto-states-label">Стани / гілки:</span>
+      <button class="active" onclick="protoState(this,'picker-trending-loading.html')">⏳ старт · skeleton</button>
+      <button onclick="protoState(this,'picker.html')">Trending</button>
+      <button onclick="protoState(this,'picker-recents.html')">Нещодавні</button>
+      <button onclick="protoState(this,'picker-search-empty.html')">Пошук</button>
+      <button onclick="protoState(this,'picker-error.html')">🔴 помилка API</button>
+    </nav>
+    <script>(function(){ initWfS(document.getElementById('proto-r2')); })();</script>
+  </section>
+
+  <!-- ─── PROTO · R3 ─── -->
+  <section id="proto-r3">
+    <div class="section-header"><h2>⧉ Clickable prototype · R3 — Вставити мем inline</h2></div>
+    <p class="source-note">Точка входу: <code>editor-no-meme.html</code> · Редактор (відео є, мему ще немає) → Додати мем → bottom sheet → оверлей · flows.md · R3</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;background:rgba(255,255,255,.02);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0 0 10px">У Редакторі натисни <strong style="color:var(--text)">«＋ Додати мем»</strong> — пікер відкривається <strong>bottom sheet</strong>, таймлайн і прев'ю лишаються видимі (це і є R3). Вибери GIF → завантаження з CDN → оверлей зʼявляється вибраним з handles.</p>
+      <ul style="margin:0;padding-left:18px">
+        <li><strong>Додати мем</strong> → пікер → tap GIF → ⏳ CDN → 📱 оверлей вибраний (resize-handles, «Замінити» / «Видалити»).</li>
+        <li>«Замінити» → знову пікер; «Видалити» → редактор без оверлею.</li>
+        <li>Гілка помилки CDN — окремий екран <code>picker-cdn-error</code> (перелік екранів наприкінці розділу 20).</li>
+      </ul>
+    </div>
+    <div class="wf-controls">
+      <div class="wf-bp-group">
+        <button class="wf-bp wf-bps active" data-w="390">📱 390<span class="wf-bp-label">Mobile</span></button>
+        <button class="wf-bp wf-bps" data-w="640">⊡ 640<span class="wf-bp-label">Tablet</span></button>
+        <button class="wf-bp wf-bps" data-w="1024">⬛ 1024<span class="wf-bp-label">Desktop</span></button>
+      </div>
+      <div class="wf-slider-wrap">
+        <input type="range" class="wf-slider" min="320" max="1440" value="390">
+        <span class="wf-width-label">390px <span class="wf-bp-badge">Mobile</span></span>
+      </div>
+    </div>
+    <div class="wf-preview-wrap">
+      <iframe class="wf-frame" src="../wireframes/editor-no-meme.html?embed=1" width="390" height="820" title="Clickable prototype — R3 Inline-мем (старт: Редактор без мему)" loading="lazy"></iframe>
+    </div>
+    <p class="source-note" style="margin-top:12px">Path: 📱 Редактор → ⧉ Мем-пікер → ⏳ CDN → 📱 Оверлей вибраний → (Замінити ↔ пікер · Видалити → редактор). · <a href="../wireframes/editor.html" target="_blank" style="color:var(--accent)">Відкрити повноекранно ↗</a></p>
+    <nav class="proto-states" aria-label="Стани та гілки R3">
+      <span class="proto-states-label">Стани / гілки:</span>
+      <button class="active" onclick="protoState(this,'editor-no-meme.html')">старт · без мему</button>
+      <button onclick="protoState(this,'picker.html')">⧉ пікер</button>
+      <button onclick="protoState(this,'editor-loading.html')">⏳ CDN</button>
+      <button onclick="protoState(this,'editor-overlay-selected.html')">оверлей вибраний</button>
+      <button onclick="protoState(this,'picker-cdn-error.html')">🔴 помилка CDN</button>
+    </nav>
+    <script>(function(){ initWfS(document.getElementById('proto-r3')); })();</script>
+  </section>
+
+  <!-- ─── PROTO · R4 ─── -->
+  <section id="proto-r4">
+    <div class="section-header"><h2>⧉ Clickable prototype · R4 — Повторно знайти мем</h2></div>
+    <p class="source-note">Точка входу: <code>picker-recents.html</code> · вкладка Нещодавні (history &gt; 0) · flows.md · R4</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;background:rgba(255,255,255,.02);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0 0 10px">Аня повертається — пікер відкривається одразу на <strong style="color:var(--text)">Нещодавні</strong> (без нового пошуку). Tap нещодавнього GIF → одразу в редактор. Порожня гілка (кеш очищено) — окремий екран із виходами в Пошук / Trending.</p>
+      <ul style="margin:0;padding-left:18px">
+        <li><strong>tap GIF</strong> у Нещодавніх → ⏳ CDN → Редактор (нуль пошуку).</li>
+        <li>Перемикання вкладок: Trending · Пошук.</li>
+        <li>Тупик (порожні Нещодавні) → <code>picker-recents-empty</code> з CTA «Пошук» / «Тренди» (перелік екранів наприкінці розділу 20).</li>
+      </ul>
+    </div>
+    <div class="wf-controls">
+      <div class="wf-bp-group">
+        <button class="wf-bp wf-bps active" data-w="390">📱 390<span class="wf-bp-label">Mobile</span></button>
+        <button class="wf-bp wf-bps" data-w="640">⊡ 640<span class="wf-bp-label">Tablet</span></button>
+        <button class="wf-bp wf-bps" data-w="1024">⬛ 1024<span class="wf-bp-label">Desktop</span></button>
+      </div>
+      <div class="wf-slider-wrap">
+        <input type="range" class="wf-slider" min="320" max="1440" value="390">
+        <span class="wf-width-label">390px <span class="wf-bp-badge">Mobile</span></span>
+      </div>
+    </div>
+    <div class="wf-preview-wrap">
+      <iframe class="wf-frame" src="../wireframes/picker-recents.html?embed=1" width="390" height="820" title="Clickable prototype — R4 Нещодавні (старт: вкладка Нещодавні)" loading="lazy"></iframe>
+    </div>
+    <p class="source-note" style="margin-top:12px">Path: 📱 Нещодавні → tap GIF → ⏳ CDN → 📱 Редактор · тупик: ⬜ Нещодавні порожні → Пошук / Trending. · <a href="../wireframes/picker-recents.html" target="_blank" style="color:var(--accent)">Відкрити повноекранно ↗</a></p>
+    <nav class="proto-states" aria-label="Стани та гілки R4">
+      <span class="proto-states-label">Стани / гілки:</span>
+      <button class="active" onclick="protoState(this,'picker-recents.html')">старт · Нещодавні</button>
+      <button onclick="protoState(this,'picker-recents-empty.html')">⬜ порожні (тупик)</button>
+      <button onclick="protoState(this,'picker.html')">Trending</button>
+      <button onclick="protoState(this,'picker-search-empty.html')">Пошук</button>
+    </nav>
+    <script>(function(){ initWfS(document.getElementById('proto-r4')); })();</script>
+  </section>
+
+  <!-- ─── PROTO · R5 ─── -->
+  <section id="proto-r5">
+    <div class="section-header"><h2>⧉ Clickable prototype · R5 — Експорт у форматі платформи</h2></div>
+    <p class="source-note">Точка входу: <code>export.html</code> · вибір формату → рендер → Поділитись · flows.md · R5</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;background:rgba(255,255,255,.02);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0 0 10px">Екран експорту з форматами <strong style="color:var(--text)">9:16 ↔ 1:1</strong> (live-reframe прев'ю). Натисни формат, потім «Зберегти відео» → рендер → ⧉ Поділитись.</p>
+      <ul style="margin:0;padding-left:18px">
+        <li><strong>Toggle 9:16 ↔ 1:1</strong> — прев'ю кадрується <strong style="color:var(--text)">in-place</strong> усередині екрана (<code>setFmt()</code>), без переходу на окремий екран.</li>
+        <li><strong>Зберегти</strong> → ⏳ рендер → ⧉ Поділитись.</li>
+        <li>Гілки: ⏳ <code>export-fallback</code> (старий браузер) · 💀 <code>export-unsupported</code> → назад у редактор (перелік екранів наприкінці розділу 20).</li>
+      </ul>
+    </div>
+    <div class="wf-controls">
+      <div class="wf-bp-group">
+        <button class="wf-bp wf-bps active" data-w="390">📱 390<span class="wf-bp-label">Mobile</span></button>
+        <button class="wf-bp wf-bps" data-w="640">⊡ 640<span class="wf-bp-label">Tablet</span></button>
+        <button class="wf-bp wf-bps" data-w="1024">⬛ 1024<span class="wf-bp-label">Desktop</span></button>
+      </div>
+      <div class="wf-slider-wrap">
+        <input type="range" class="wf-slider" min="320" max="1440" value="390">
+        <span class="wf-width-label">390px <span class="wf-bp-badge">Mobile</span></span>
+      </div>
+    </div>
+    <div class="wf-preview-wrap">
+      <iframe class="wf-frame" src="../wireframes/export.html?embed=1" width="390" height="820" title="Clickable prototype — R5 Експорт (старт: вибір формату)" loading="lazy"></iframe>
+    </div>
+    <p class="source-note" style="margin-top:12px">Path: 📱 Експорт (9:16 ↔ 1:1) → ⏳ Рендер → ⧉ Поділитись · гілки: ⏳ Fallback → Поділитись · 💀 Unsupported → Редактор. · <a href="../wireframes/export.html" target="_blank" style="color:var(--accent)">Відкрити повноекранно ↗</a></p>
+    <nav class="proto-states" aria-label="Стани та гілки R5">
+      <span class="proto-states-label">Стани / гілки:</span>
+      <button class="active" onclick="protoState(this,'export.html')">старт · 9:16 ↔ 1:1 (in-place)</button>
+      <button onclick="protoState(this,'export-loading.html')">⏳ рендер</button>
+      <button onclick="protoState(this,'export-fallback.html')">⏳ fallback</button>
+      <button onclick="protoState(this,'export-error.html')">🔴 помилка</button>
+      <button onclick="protoState(this,'export-unsupported.html')">💀 не підтримується</button>
+    </nav>
+    <script>(function(){ initWfS(document.getElementById('proto-r5')); })();</script>
+  </section>
+
+  <!-- ─── PROTO · AUDIT ─── -->
+  <section id="proto-audit">
+    <div class="section-header"><span class="section-num">20</span><h2>Аудит набору прототипів — узгодженість</h2></div>
+    <p class="source-note">12 нових екранів (R1–R5) звірено між собою та з Main flow · зони · нейминг · навігація · 28.06.2026 → синхронізовано з wireframes/_audit.md</p>
+
+    <div style="border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:18px;background:rgba(80,180,120,.05);font-size:14px;color:var(--text-2);line-height:1.6">
+      <p style="margin:0;color:var(--green);font-weight:600">Консистентно ✅</p>
+      <ul style="margin:8px 0 0;padding-left:18px">
+        <li>Всі 12 мають <code>.wf-meta</code>-анотацію + <code>?embed=1</code> механіку (12/12).</li>
+        <li>BUG-01 (orphan <code>@media 1024</code> поза <code>&lt;/style&gt;</code>) — не повторено в жодному (0/12).</li>
+        <li>Палітра: 10 базових токенів + контекстні (<code>--scrim</code>/<code>--err</code>/<code>--col</code>) лише де вжито.</li>
+        <li>Рами переюзані: picker-сімейство = той самий sheet (handle · tabs · scrim · editor-behind 200/280); editor = той самий header/toolbar/timeline; export = колонка <code>--col</code>.</li>
+        <li>Кнопка [←] = <code>history.back()</code> — збігається з усталеним патерном editor/export/import.</li>
+        <li>Усі переходи через <code>location.href+location.search</code> (зберігає embed). Жодного битого лінка (перевірено: усі цілі існують).</li>
+      </ul>
+    </div>
+
+    <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);margin:0 0 8px">Незбіги знайдені та виправлені</h3>
+    <table>
+      <thead><tr><th>#</th><th>Незбіг (розрив ланцюга)</th><th>Файли</th><th>Було → Стало</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Вкладка <strong>Нещодавні</strong> мертва (<code>cursor:default</code>, «поза прототипом») — тепер екран існує</td><td>picker · picker-loading · picker-error · picker-search-empty</td><td>заглушка → <code>picker-recents.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>2</td><td>R1-вхід не вів уперед: підказки/поле Пошуку кидали назад у Trending</td><td>picker-search-empty</td><td><code>picker.html</code> → <code>picker-search-loading.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>3</td><td>Після завантаження GIF Редактор не показував щойно доданий оверлей вибраним (R3 не замикався)</td><td>editor-loading</td><td><code>editor.html</code> → <code>editor-overlay-selected.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>4</td><td>Вкладка <strong>Пошук</strong> мертва в loading-стані пікера</td><td>picker-loading</td><td>заглушка → <code>picker-search-empty.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>5</td><td><strong>R1 глухо застрягав на спінері</strong>: екран завантаження не вів уперед на результати</td><td>picker-search-loading</td><td>немає → <code>picker-search-results.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>6</td><td>Стан «Більше немає» недосяжний кліком (нічого не лінкувало)</td><td>picker-search-results</td><td>додано «Завантажити ще» → <code>picker-search-end.html</code></td><td style="color:var(--green)">✅ виправлено</td></tr>
+        <tr><td>7</td><td>Анотація <code>wf-meta</code> застаріла після фіксу #3 (брехала про цілі переходів)</td><td>editor-loading</td><td>«→ editor base / picker-error» → «→ overlay-selected / picker-cdn-error»</td><td style="color:var(--green)">✅ виправлено</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);margin:20px 0 8px">Проходимість флоу — кожен сценарій клікається від входу до success</h3>
+    <table>
+      <thead><tr><th>Флоу</th><th>Вхід</th><th>Happy path</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><span class="job-id main">Main</span></td><td>listings</td><td>import → editor → picker → loading → overlay → export → render → share</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td><span class="job-id related">R1</span></td><td>search-empty</td><td>loading → results → (GIF) editor-loading → overlay · results → end</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td><span class="job-id related">R2</span></td><td>trending-loading</td><td>picker(Trending) → GIF → editor-loading → overlay · вкладки Recents/Search</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td><span class="job-id related">R3</span></td><td>editor</td><td>picker → GIF → editor-loading → overlay (Замінити↔picker · Видалити→editor) → export</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td><span class="job-id related">R4</span></td><td>recents</td><td>GIF → editor-loading → overlay · тупик recents-empty → Пошук/Trending</td><td style="color:var(--green)">✅</td></tr>
+        <tr><td><span class="job-id related">R5</span></td><td>export</td><td>9:16↔1:1 (in-place JS) → render → share · гілки fallback/unsupported</td><td style="color:var(--green)">✅</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);margin:20px 0 8px">Свідомі рішення / залишкові нюанси</h3>
+    <table>
+      <thead><tr><th>Питання</th><th>Рішення</th></tr></thead>
+      <tbody>
+        <tr><td>Нейминг нових «base»-одиниць (<code>picker-recents</code>, <code>picker-trending-loading</code>)</td><td>Складені імена в межах сімейства picker — узгоджено з наявним патерном <code>picker-search-*</code>. <code>-empty</code>/<code>-loading</code> суфікси збережено.</td></tr>
+        <tr><td>CDN-помилка (<code>picker-cdn-error</code>) у happy-path прототипі R3</td><td>Не на авто-шляху (loading авто-просувається в успіх). Лишається в галереї wireframes як unhappy-гілка — досяжна прямим лінком, задокументована у flows.md.</td></tr>
+        <tr><td>Атрибуція «Powered by GIPHY» у <code>picker-trending-loading</code></td><td>Свідомо прибрана: показуються лише скелетони без реального контенту. Зʼявляється у <code>picker.html</code>/<code>picker-recents.html</code> де є grid. (Юридичне per-source — лишається на фінальне рішення.)</td></tr>
+        <tr><td>R3-прото стартує з <code>editor-no-meme.html</code></td><td>Після аудиту: створено найпорожніший функціональний вхід — редактор із відео, але без мему ([Додати мем] активний). Чистіший старт демо R3. Додавання мему до проєкту, де мем уже є — теж норм (проєкт = кілька відео/мемів).</td></tr>
+        <tr><td><code>export-square</code> — надлишковий</td><td>✅ Виведено з клік-шляху: <code>export.html</code> робить reframe 9:16↔1:1 in-place через <code>setFmt()</code>, тож окрему кнопку «1:1» у перемикачі станів R5 прибрано. Файл лишається статичним знімком (галерея нижче).</td></tr>
+        <tr><td>5 станів-гілок лише в галереї (noresults · cdn-error · recents-empty · fallback · unsupported)</td><td>Свідомо: досяжні прямим лінком (перелік нижче), не в happy-клік-шляху — так само, як Main тримає свої error/empty стани. Консистентно.</td></tr>
+      </tbody>
+    </table>
+    <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);margin:20px 0 8px">12 нових екранів — прямі лінки</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;font-size:13px">
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+        <p style="margin:0 0 6px;color:var(--text);font-weight:600"><span class="job-id related">R1</span> Пошук</p>
+        <ul style="margin:0;padding-left:16px;line-height:1.9;color:var(--text-2)">
+          <li><a href="../wireframes/picker-search-loading.html" target="_blank" style="color:var(--accent)">picker-search-loading</a> · ⏳</li>
+          <li><a href="../wireframes/picker-search-results.html" target="_blank" style="color:var(--accent)">picker-search-results</a> · base</li>
+          <li><a href="../wireframes/picker-search-noresults.html" target="_blank" style="color:var(--accent)">picker-search-noresults</a> · ⬜</li>
+          <li><a href="../wireframes/picker-search-end.html" target="_blank" style="color:var(--accent)">picker-search-end</a> · ⬜</li>
+        </ul>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+        <p style="margin:0 0 6px;color:var(--text);font-weight:600"><span class="job-id related">R2</span> Trending</p>
+        <ul style="margin:0;padding-left:16px;line-height:1.9;color:var(--text-2)">
+          <li><a href="../wireframes/picker-trending-loading.html" target="_blank" style="color:var(--accent)">picker-trending-loading</a> · ⏳</li>
+          <li><a href="../wireframes/picker-recents.html" target="_blank" style="color:var(--accent)">picker-recents</a> · base</li>
+        </ul>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+        <p style="margin:0 0 6px;color:var(--text);font-weight:600"><span class="job-id related">R3</span> Inline-мем</p>
+        <ul style="margin:0;padding-left:16px;line-height:1.9;color:var(--text-2)">
+          <li><a href="../wireframes/editor-no-meme.html" target="_blank" style="color:var(--accent)">editor-no-meme</a> · старт</li>
+          <li><a href="../wireframes/editor-overlay-selected.html" target="_blank" style="color:var(--accent)">editor-overlay-selected</a> · base</li>
+          <li><a href="../wireframes/picker-cdn-error.html" target="_blank" style="color:var(--accent)">picker-cdn-error</a> · 🔴</li>
+        </ul>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+        <p style="margin:0 0 6px;color:var(--text);font-weight:600"><span class="job-id related">R4</span> Нещодавні</p>
+        <ul style="margin:0;padding-left:16px;line-height:1.9;color:var(--text-2)">
+          <li><a href="../wireframes/picker-recents-empty.html" target="_blank" style="color:var(--accent)">picker-recents-empty</a> · ⬜</li>
+        </ul>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+        <p style="margin:0 0 6px;color:var(--text);font-weight:600"><span class="job-id related">R5</span> Експорт</p>
+        <ul style="margin:0;padding-left:16px;line-height:1.9;color:var(--text-2)">
+          <li><a href="../wireframes/export-square.html" target="_blank" style="color:var(--accent)">export-square</a> · 1:1 (статичний знімок, поза клік-шляхом)</li>
+          <li><a href="../wireframes/export-fallback.html" target="_blank" style="color:var(--accent)">export-fallback</a> · ⏳</li>
+          <li><a href="../wireframes/export-unsupported.html" target="_blank" style="color:var(--accent)">export-unsupported</a> · 💀</li>
+        </ul>
+      </div>
+    </div>
+    <!-- ───────── РАУНД 2 ───────── -->
+    <div style="margin-top:32px;padding-top:24px;border-top:2px solid var(--border)">
+      <div class="section-header" style="margin-bottom:8px"><h2 style="font-size:18px">Раунд 2 — прискіпливий дефект-аудит</h2></div>
+      <p class="source-note" style="margin-bottom:16px">Усі 31 <code>wireframes/*.html</code> звірено з <code>_conventions.md</code> · <code>sitemap.md</code> · <code>flows.md</code> · review-only (wireframes не чіпались) → <code>_audit.md</code> раунд 4</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <span style="font-size:12px;padding:4px 10px;border-radius:6px;background:var(--green-dim);color:var(--green)">✅ Заглушки (lorem / «Заголовок N»): 0</span>
+        <span style="font-size:12px;padding:4px 10px;border-radius:6px;background:var(--green-dim);color:var(--green)">✅ Пропущені стани (_screens.md): 0 / 14</span>
+        <span style="font-size:12px;padding:4px 10px;border-radius:6px;background:var(--green-dim);color:var(--green)">✅ Глухі кути: 0</span>
+      </div>
+
+      <table>
+        <thead><tr><th>#</th><th>Екран(и)</th><th>Тип</th><th>Що не так</th><th>Як виправити</th><th>Пріор.</th><th>Статус</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>усі <strong>loading</strong>: export-loading · export-fallback · import-loading · editor-loading · picker-loading · picker-trending-loading · picker-search-loading</td>
+            <td>зона без головної дії</td>
+            <td>Перехід <strong>уперед</strong> = невидимий клік по екрану/зоні (лише <code>cursor</code>+<code>title</code>), видимого «готово» немає. Дало скаргу «R1 крутиться вічно».</td>
+            <td>Видима підказка «торкніться, щоб продовжити» / кнопка далі; або авто-перехід по таймеру (конфліктує з перемикачем станів).</td>
+            <td><span style="color:var(--red);font-weight:700">HIGH</span></td>
+            <td><span style="color:var(--text-3)">⏭ свідомо ні</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>editor-no-meme</code></td>
+            <td>екран не з карти</td>
+            <td>Немає в <code>sitemap.md</code> і <code>flows.md</code> (створений пост-аудит як старт R3).</td>
+            <td>Додати під-стан екрана 3 у sitemap + вузол у flows R3, або позначити «прото-допоміжний».</td>
+            <td><span style="color:var(--yellow);font-weight:700">MED</span></td>
+            <td><span style="color:var(--green)">✅ зроблено</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>export-square</code></td>
+            <td>екран не з карти</td>
+            <td>Надлишковий: <code>export.html</code> робить reframe 9:16↔1:1 in-place через JS; у flows лише вузол-стан <code>QF</code>, не окремий екран.</td>
+            <td>Прибрати з набору / лишити статичним знімком поза клік-шляхом.</td>
+            <td><span style="color:var(--yellow);font-weight:700">MED</span></td>
+            <td><span style="color:var(--green)">✅ зроблено</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>editor-empty</code></td>
+            <td>зона без головної дії</td>
+            <td>Головна дія (додати відео) = пасивний лейбл «Додайте відео щоб розпочати» + вторинна toolbar-кнопка «＋ Кліп»; виразного CTA немає.</td>
+            <td>Зробити «Додати відео» головним CTA.</td>
+            <td><span style="color:var(--text-3);font-weight:700">LOW-MED</span></td>
+            <td><span style="color:var(--green)">✅ зроблено</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>picker-trending-loading</code></td>
+            <td>зона без головної дії</td>
+            <td>Перехід уперед = клік по вже активній вкладці Trending — неінтуїтивно.</td>
+            <td>Клікабельний скелетон або підказка.</td>
+            <td><span style="color:var(--text-3);font-weight:700">LOW</span></td>
+            <td><span style="color:var(--text-3)">⏭ свідомо ні</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>import-loading</code></td>
+            <td>анотація</td>
+            <td><code>wf-meta</code> «Скасувати → Список проектів», а кнопка → <code>import.html</code> (Вибір відео).</td>
+            <td>Узгодити анотацію з переходом.</td>
+            <td><span style="color:var(--text-3);font-weight:700">LOW</span></td>
+            <td><span style="color:var(--green)">✅ зроблено</span></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><code>export</code> (flows.md)</td>
+            <td>пропущений стан (minor)</td>
+            <td>Вузол flows <code>NA</code> «16:9 не підтримується» без екрана. Але 16:9 не пропонується (лише 9:16/1:1) — підказка зайва.</td>
+            <td>Прибрати вузол <code>NA</code> з flows.md або лишити свідомо нереалізованим.</td>
+            <td><span style="color:var(--text-3);font-weight:700">LOW</span></td>
+            <td><span style="color:var(--green)">✅ зроблено</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="source-note" style="margin-top:12px">Вивід: набір здоровий — без заглушок, тупиків і пропущених станів. Впроваджено #2, #3, #4, #6, #7 (гігієна карти + дрібний полір). #1 (невидимий forward на loading) і #5 (trending-loading) свідомо лишено як є — авто-перехід конфліктує з перемикачем станів §19.</p>
+    </div>
+
+    <p class="source-note" style="margin-top:14px">Повний журнал — <code>wireframes/_audit.md</code> (раунди 1–4). Інвентар файлів — <code>wireframes/_wireframes.md</code>.</p>
+  </section>
+
   <footer>
     <h3 style="margin-top:0;margin-bottom:12px;">Джерела</h3>
     <div class="sources">
@@ -7175,7 +7572,7 @@ wireframes/&lt;назва&gt;-loading.html   ← стан завантаженн
     },
     EXP: {
       title: '📱 Екран експорту', jobs: ['Main','R5','E2'], persona: 'Аня · Ліза · Денис (R5)',
-      rows: [['Зони','Format picker + Progress bar · [Зберегти]'],['Хедер','Кнопка назад · "Експорт"'],['Формати','9:16 · 1:1 · 16:9 поза MVP (підказка)']]
+      rows: [['Зони','Format picker + Progress bar · [Зберегти]'],['Хедер','Кнопка назад · "Експорт"'],['Формати','9:16 · 1:1 (16:9 поза MVP — не пропонується)']]
     },
     SRCH_E: {
       title: '📱 Редактор · Мем-пікер', jobs: ['R1'], persona: 'Аня — primary',

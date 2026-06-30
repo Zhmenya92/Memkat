@@ -191,6 +191,16 @@ Wireframe має читатись як дизайн-документ, а не т
 - Аватар / іконка: коло `background: #D8D8D8`
 - GIF-карточка: прямокутник 1:1 або 4:3, `background: #E4E4E4`
 
+**GIF-сітка пікера (єдиний стандарт для всіх вкладок/станів):**
+Усі grid-екрани пікера (Trending, Нещодавні, Пошук-результати, loading-стани) використовують ОДНУ адаптивну сітку — перемикання вкладок не змінює розмір плиток:
+```css
+.sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; padding: 8–12px; }  /* скролиться обгортка, не grid */
+.gif-grid     { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }  /* 2 в ряд на 320px → 3→4 зі зростанням ширини; БЕЗ ручних @640/@1024 */
+.gif-item     { aspect-ratio: 1; background: var(--zone); border-radius: 8px; }  /* квадрат, borderless */
+.gif-item svg { width: 36%; height: 36%; }
+```
+**Чому `.sheet-scroll` обгортка, а не `flex:1` на самому `.gif-grid`:** грид із заданою висотою схлопує авто-рядки (контент-мінімум = крихітний SVG), і `aspect-ratio` робить плитку вищою за рядок → плитки налазять. Скрол на обгортці + авто-висота гриду це усуває.
+
 **Інтерактивні елементи:**
 - Primary CTA: `background: #D8D8D8; color: #141414; border-radius: 12px`
 - Secondary: `background: #2A2A2A; color: #EDEDED`

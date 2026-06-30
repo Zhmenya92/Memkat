@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Екран експорту · fallback · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+      --col: 480px; /* колонка контенту на планшеті (640–1023) */
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    header {
+      padding: 14px 16px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .header-back {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 8px; font-size: 18px; color: var(--text-3);
+      flex-shrink: 0; border: none; cursor: not-allowed;
+    }
+    .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+
+    main {
+      flex: 1; padding: 0 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    }
+
+    /* Progress block */
+    .render-block { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+
+    .render-info { text-align: center; }
+    .render-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .render-sub { font-size: 13px; color: var(--text-3); }
+
+    /* Fallback notice — резервний шлях, без WebCodecs */
+    .fallback-note {
+      width: 100%; padding: 12px 14px;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 10px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--text-2); line-height: 1.4;
+    }
+    .fallback-note-icon { font-size: 18px; flex-shrink: 0; }
+
+    .progress-track {
+      width: 100%; position: relative;
+    }
+    progress {
+      width: 100%; height: 6px; border-radius: 6px; appearance: none; border: none;
+      background: var(--zone);
+    }
+    progress::-webkit-progress-bar { background: var(--zone); border-radius: 6px; }
+    progress::-webkit-progress-value { background: var(--interactive-pri); border-radius: 6px; }
+    .progress-pct {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;
+    }
+
+    .render-preview {
+      width: 80px; aspect-ratio: 9/16;
+      background: var(--zone); border-radius: 8px; position: relative; overflow: hidden;
+      margin: 0 auto; border: 1px solid var(--border);
+    }
+    .render-preview svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .render-preview-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.4);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .render-preview-overlay .spinner {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,.12);
+      border-top-color: var(--interactive-pri);
+    }
+
+    .btn-cancel {
+      padding: 12px 32px; background: transparent; border: 1px solid var(--border);
+      border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--text-3);
+      font-family: inherit; cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 16px 24px; }
+      main { max-width: var(--col); margin: 0 auto; padding: 40px 24px; align-self: stretch; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 16px 40px; }
+      main { max-width: 640px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Екран експорту · fallback</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>export-fallback.html · браузер без WebCodecs · резервний рендер (38%)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>Main · R5 — «виклала» (резервний рендер, повільніший шлях)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Скасувати» → 📱 Екран експорту · рендер завершено → share</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">Рендер ⇒ WebCodecs? ні ⇒</span>
+    <span class="wf-flow-here">⏳ Fallback рендер</span><br>
+    <span class="wf-flow-dim">⇒ OK ⇒ ⧉ share | fail ⇒ 💀 export-unsupported</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen" onclick="location.href='share.html'+location.search" style="cursor:pointer" title="Прототип: резервний рендер завершено →">
+    <header>
+      <button class="header-back" aria-label="Назад (недоступно під час рендеру)" disabled>←</button>
+      <span class="header-title">Резервний рендер...</span>
+    </header>
+
+    <main>
+      <div class="render-block">
+
+        <div class="render-preview" aria-hidden="true">
+          <svg viewBox="0 0 80 142" fill="none" stroke="rgba(255,255,255,.12)">
+            <line x1="0" y1="0" x2="80" y2="142"/>
+            <line x1="80" y1="0" x2="0" y2="142"/>
+          </svg>
+          <div class="render-preview-overlay">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <div class="fallback-note" role="note">
+          <span class="fallback-note-icon" aria-hidden="true">⏳</span>
+          <span>Резервний рендер · може зайняти довше. Цей браузер не підтримує швидке кодування — зберігаємо запасним шляхом.</span>
+        </div>
+
+        <div class="render-info" role="status">
+          <p class="render-title">Рендер відео</p>
+          <p class="render-sub">9:16 · MP4 · резервний шлях</p>
+        </div>
+
+        <div class="progress-track">
+          <progress value="38" max="100" aria-label="Прогрес резервного рендеру 38%"></progress>
+          <div class="progress-pct">
+            <span>Резервний рендер · 0:34</span>
+            <span>38%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn-cancel" onclick="event.stopPropagation();location.href='export.html'+location.search">Скасувати</button>
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

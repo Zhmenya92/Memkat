@@ -86,6 +86,12 @@
     }
     .canvas-empty-icon { font-size: 36px; opacity: .15; }
     .canvas-empty-label { font-size: 13px; color: var(--text-3); text-align: center; }
+    .canvas-cta {
+      margin-top: 4px; padding: 9px 18px;
+      background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer;
+    }
 
     /* ── Toolbar ── */
     .toolbar {
@@ -142,7 +148,7 @@
   <p class="wf-meta-title">Редактор · empty</p>
   <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>editor-empty.html · порожній таймлайн — жодного кліпу</span></div>
   <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>Main (blocked at step 1) — «Додати мем» і «Експорт» недоступні</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«+ Кліп» → 📱 Вибір відео · «←» → 📱 Список проектів</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«＋ Додати відео» (CTA) / «＋ Кліп» → 📱 Вибір відео · «←» → 📱 Список проектів</span></div>
   <div class="wf-flow">
     <span class="wf-flow-dim">📱 Вибір відео (cancelled) ⇒</span>
     <span class="wf-flow-here">📱 Редактор (empty)</span><br>
@@ -166,7 +172,8 @@
       <div class="canvas-zone">
         <div class="canvas-video" aria-label="Порожній canvas">
           <div class="canvas-empty-icon" aria-hidden="true">▶</div>
-          <p class="canvas-empty-label">Додайте відео щоб розпочати</p>
+          <p class="canvas-empty-label">Порожній проект — почніть з відео</p>
+          <button class="canvas-cta" onclick="location.href='import.html'+location.search">＋ Додати відео</button>
         </div>
       </div>
 

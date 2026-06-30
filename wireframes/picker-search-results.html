@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мем-пікер · search empty · МемКат</title>
+  <title>Мем-пікер · search results · МемКат</title>
   <style>
     :root {
       --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
@@ -84,38 +84,32 @@
     .tab { flex: 1; padding: 12px 8px; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: inherit; }
     .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
 
-    /* Search input */
+    /* Search input — filled query */
     .search-wrap { padding: 10px 12px; flex-shrink: 0; }
     .search-field {
       display: flex; align-items: center; gap: 8px;
       background: var(--zone); border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 12px;
+      padding: 10px 12px; cursor: pointer; width: 100%; text-align: left; font-family: inherit;
     }
     .search-icon { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
-    .search-input-mock {
-      flex: 1; font-size: 15px; color: var(--text-3);
-      display: flex; align-items: center; gap: 1px;
-    }
-    .cursor { width: 1.5px; height: 18px; background: var(--interactive-pri); border-radius: 1px; flex-shrink: 0; }
+    .search-value { flex: 1; font-size: 15px; color: var(--text); }
+    .search-clear { font-size: 16px; color: var(--text-3); flex-shrink: 0; }
 
-    /* Suggestions */
-    .suggestions-label {
-      padding: 0 12px 8px;
-      font-size: 11px; font-weight: 700; color: var(--text-3);
-      text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0;
+    /* GIF grid — 2 columns */
+    .sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0 12px 12px; min-height: 0; }
+    .gif-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px;
     }
-    .suggestion-pills {
-      padding: 0 12px 12px; display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0;
+    .gif-item {
+      aspect-ratio: 1; background: var(--zone); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; overflow: hidden;
     }
-    .pill {
-      padding: 7px 12px; background: var(--zone); border: 1px solid var(--border);
-      border-radius: 100px; font-size: 13px; color: var(--text-2); cursor: pointer;
-    }
+    .gif-item svg { width: 36%; height: 36%; }
+    .gif-label { position: absolute; bottom: 5px; left: 7px; font-size: 9px; color: rgba(255,255,255,.3); font-family: ui-monospace, monospace; }
 
-    .search-empty-zone {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-    }
-    .search-hint { font-size: 13px; color: var(--text-3); text-align: center; }
+    .sheet-footer { padding: 8px 12px 10px; border-top: 1px solid var(--border); flex-shrink: 0; text-align: center; }
+    .sheet-attribution { font-size: 10px; color: var(--text-3); font-family: ui-monospace, monospace; }
 
     @media (min-width: 640px) {
       body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
@@ -124,7 +118,6 @@
       header { padding: 12px 24px; }
       .editor-behind-canvas { max-height: 280px; }
       dialog.picker-sheet { max-height: 55%; left: 50%; right: auto; width: 100%; max-width: 720px; transform: translateX(-50%); }
-      .suggestion-pills { gap: 8px; }
     }
     @media (min-width: 1024px) {
       header { padding: 12px 40px; }
@@ -141,14 +134,14 @@
 <body>
 
 <aside class="wf-meta">
-  <p class="wf-meta-title">Мем-пікер · Пошук (empty)</p>
-  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-search-empty.html · вкладка Пошуку до введення запиту</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R1 — «побачила мем, знайшла схожий через пошук»</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap підказки → запит · ввести запит → результати · Trending tab → picker base</span></div>
+  <p class="wf-meta-title">Мем-пікер · Пошук (results)</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-search-results.html · список GIF по запиту «😂» (success / happy path)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R1 · Аня — «знайшла мем за емодзі, обирає GIF»</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap GIF → editor-loading · поле/Trending → інший запит · скрол до кінця → picker-search-end · свайп вниз → editor</span></div>
   <div class="wf-flow">
-    <span class="wf-flow-dim">⧉ Мем-пікер (Trending) ⇒ tab Пошук ⇒</span>
-    <span class="wf-flow-here">⧉ Пошук (empty)</span><br>
-    <span class="wf-flow-dim">⇒ ввела запит ⇒ результати ⇒ tap GIF ⇒ editor-loading</span>
+    <span class="wf-flow-dim">⏳ Завантаження ⇒ API OK ⇒</span>
+    <span class="wf-flow-here">📱 Список GIF</span><br>
+    <span class="wf-flow-dim">⇒ вибрала GIF ⇒ editor-loading ⇒ ✅ GIF на таймлайні</span>
   </div>
 </aside>
 
@@ -182,32 +175,34 @@
 
       <nav class="sheet-tabs" aria-label="Вкладки пікера">
         <button class="tab" onclick="location.href='picker.html'+location.search">Trending</button>
-        <button class="tab" onclick="location.href='picker-recents.html'+location.search">Нещодавні</button>
+        <button class="tab" style="cursor:default" title="Нещодавні — поза прототипом (окремого екрана немає)">Нещодавні</button>
         <button class="tab active" aria-current="true">Пошук</button>
       </nav>
 
       <form class="search-wrap" role="search" aria-label="Пошук GIF">
-        <div class="search-field" onclick="location.href='picker-search-loading.html'+location.search" style="cursor:text" title="Прототип: ввести запит →">
+        <button class="search-field" type="button" onclick="location.href='picker-search-empty.html'+location.search" aria-label="Запит: 😂 — змінити">
           <span class="search-icon" aria-hidden="true">⌕</span>
-          <div class="search-input-mock" aria-label="Порожнє поле пошуку">
-            <span style="color:var(--text-3)">Знайти мем...</span>
-            <div class="cursor" aria-hidden="true"></div>
-          </div>
-        </div>
+          <span class="search-value">😂</span>
+          <span class="search-clear" aria-hidden="true">✕</span>
+        </button>
       </form>
 
-      <p class="suggestions-label">Популярні запити</p>
-      <div class="suggestion-pills" role="list" aria-label="Підказки">
-        <button class="pill" role="listitem" onclick="location.href='picker-search-loading.html'+location.search">😂 funny</button>
-        <button class="pill" role="listitem" onclick="location.href='picker-search-loading.html'+location.search">wow</button>
-        <button class="pill" role="listitem" onclick="location.href='picker-search-loading.html'+location.search">omg</button>
-        <button class="pill" role="listitem" onclick="location.href='picker-search-loading.html'+location.search">fail</button>
-        <button class="pill" role="listitem" onclick="location.href='picker-search-loading.html'+location.search">relatable</button>
+      <div class="sheet-scroll">
+      <div class="gif-grid" role="list" aria-label="Результати пошуку: GIF меми за запитом 😂">
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 1 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 2 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 3 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 4 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 5 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" tabindex="0" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 6 — додати на таймлайн"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
       </div>
 
-      <div class="search-empty-zone">
-        <p class="search-hint">Введіть запит або оберіть підказку</p>
-      </div>
+      <button type="button" onclick="location.href='picker-search-end.html'+location.search" style="display:block;width:100%;margin:8px 0 0;padding:10px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text-2);font:inherit;font-size:13px;cursor:pointer" title="Прототип: догорнути до кінця списку →">Завантажити ще</button>
+      </div><!-- /.sheet-scroll -->
+
+      <footer class="sheet-footer">
+        <span class="sheet-attribution">Powered by GIPHY</span>
+      </footer>
     </dialog>
 
   </div>

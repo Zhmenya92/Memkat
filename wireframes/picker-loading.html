@@ -76,11 +76,11 @@
     .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
 
     /* GIF grid with loading skeletons */
+    .sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px; min-height: 0; }
     .gif-grid {
-      flex: 1; overflow-y: auto; padding: 10px;
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px;
     }
-    .gif-item { aspect-ratio: 1; background: var(--zone); border-radius: 6px; }
+    .gif-item { aspect-ratio: 1; background: var(--zone); border-radius: 8px; }
     .gif-item.selected-loading {
       position: relative; overflow: hidden;
       background: var(--zone-deep); border: 2px solid var(--text-3);
@@ -104,7 +104,6 @@
       header { padding: 12px 24px; }
       .editor-behind-canvas { max-height: 280px; }
       dialog.picker-sheet { max-height: 55%; left: 50%; right: auto; width: 100%; max-width: 720px; transform: translateX(-50%); }
-      .gif-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
     }
     @media (min-width: 1024px) {
       header { padding: 12px 40px; }
@@ -157,10 +156,11 @@
 
       <nav class="sheet-tabs" aria-label="Вкладки пікера">
         <button class="tab active">Trending</button>
-        <button class="tab" style="cursor:default" title="Нещодавні — поза прототипом (окремого екрана немає)">Нещодавні</button>
-        <button class="tab">Пошук</button>
+        <button class="tab" onclick="location.href='picker-recents.html'+location.search">Нещодавні</button>
+        <button class="tab" onclick="location.href='picker-search-empty.html'+location.search">Пошук</button>
       </nav>
 
+      <div class="sheet-scroll">
       <div class="gif-grid" role="list" aria-label="GIF сітка">
         <!-- Selected GIF loading -->
         <article class="gif-item selected-loading" role="listitem" aria-label="GIF завантажується" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: GIF завантажено →">
@@ -176,6 +176,7 @@
         <article class="gif-item skeleton" role="listitem" aria-label="GIF 5"></article>
         <article class="gif-item skeleton" role="listitem" aria-label="GIF 6"></article>
       </div>
+      </div><!-- /.sheet-scroll -->
     </dialog>
 
   </div>

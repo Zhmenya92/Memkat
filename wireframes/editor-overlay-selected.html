@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Редактор · GIF-оверлей вибраний · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    /* ── Editor header (ідентичний editor.html) ── */
+    header {
+      padding: 14px 14px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-back {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 7px; font-size: 16px; color: var(--text);
+      cursor: pointer; flex-shrink: 0; border: none;
+    }
+    .header-title-wrap { flex: 1; min-width: 0; }
+    .header-title {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .header-save-status { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .save-ok { color: #5A9A5A; }
+    .header-export {
+      padding: 8px 14px; background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; flex-shrink: 0;
+    }
+
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Canvas ── */
+    .canvas-zone { background: #000; flex-shrink: 0; position: relative; overflow: hidden; }
+    .canvas-video {
+      width: 100%; aspect-ratio: 9 / 16; position: relative; max-height: 340px; overflow: hidden;
+    }
+    .canvas-video-bg {
+      position: absolute; inset: 0; background: var(--zone-deep);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .canvas-video-bg svg { width: 60%; height: 60%; opacity: .2; }
+
+    /* ── Вибраний GIF-оверлей: менший сірий прямокутник поверх відео ── */
+    .overlay-selected {
+      position: absolute;
+      top: 22%; left: 16%; width: 68%;
+      aspect-ratio: 16 / 9;
+      background: rgba(255,255,255,.10);
+      border: 2px solid var(--interactive-pri);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .overlay-label { font-size: 10px; color: rgba(255,255,255,.45); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+
+    /* Кутові resize-handles (квадратики) */
+    .handle {
+      position: absolute; width: 11px; height: 11px;
+      background: #fff; border: 1px solid var(--interactive-pri-fg);
+      border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,.5);
+    }
+    .handle.tl { top: -6px; left: -6px; cursor: nwse-resize; }
+    .handle.tr { top: -6px; right: -6px; cursor: nesw-resize; }
+    .handle.bl { bottom: -6px; left: -6px; cursor: nesw-resize; }
+    .handle.br { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+    /* Контекстні дії над оверлеєм */
+    .overlay-actions {
+      position: absolute; top: -42px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; white-space: nowrap;
+    }
+    .ovl-act {
+      display: flex; align-items: center; gap: 5px;
+      padding: 7px 12px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 12px; font-weight: 600; color: var(--text);
+      font-family: inherit; cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,.4);
+    }
+    /* Destructive — приглушений червоний текст (єдиний відступ від сірого, див. conventions) */
+    .ovl-act.destructive { color: #C05050; }
+
+    /* Контекстна підказка під оверлеєм */
+    .overlay-hint {
+      position: absolute; bottom: -26px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: rgba(255,255,255,.4); white-space: nowrap;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Play control */
+    .canvas-controls {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .play-btn {
+      width: 32px; height: 32px; background: rgba(255,255,255,.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;
+    }
+    .play-btn svg { width: 12px; height: 12px; fill: white; }
+    .playhead-bar { flex: 1; height: 3px; background: rgba(255,255,255,.2); border-radius: 3px; position: relative; }
+    .playhead-fill { width: 35%; height: 100%; background: var(--interactive-pri); border-radius: 3px; }
+    .playhead-dot {
+      position: absolute; top: 50%; right: calc(65% - 6px); transform: translateY(-50%);
+      width: 12px; height: 12px; background: white; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.4);
+    }
+    .time-label { font-size: 11px; color: rgba(255,255,255,.5); font-family: ui-monospace, monospace; }
+
+    /* ── Toolbar (ідентичний editor.html) ── */
+    .toolbar {
+      padding: 10px 14px; background: var(--zone-deep);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .tool-btn {
+      display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-weight: 600; color: var(--text); font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+    }
+    .tool-btn.primary-tool { background: var(--surface); border-color: var(--text-3); }
+
+    /* ── Timeline (ідентичний editor.html) ── */
+    .timeline {
+      flex: 1; padding: 12px 14px; background: var(--zone-deep);
+      overflow-x: auto; overflow-y: hidden;
+      display: flex; flex-direction: column; gap: 6px; min-height: 0;
+    }
+    .timeline-track { display: flex; align-items: center; gap: 6px; }
+    .track-label {
+      width: 48px; flex-shrink: 0; font-size: 9px; font-weight: 700;
+      color: var(--text-3); text-transform: uppercase; letter-spacing: .04em;
+    }
+    .track-clips { display: flex; gap: 3px; }
+    .clip {
+      height: 36px; border-radius: 5px; position: relative;
+      background: var(--zone); border: 1px solid var(--border);
+      overflow: hidden; display: flex; align-items: center; padding: 0 8px;
+    }
+    .clip.video-clip { width: 180px; background: #1A2E1A; border-color: #2A4A2A; }
+    .clip.overlay-clip { width: 80px; background: #1A1A2E; border-color: #2A2A4A; }
+    /* Вибраний overlay-кліп на таймлайні — підсвічена рамка */
+    .clip.overlay-clip.selected {
+      border-color: var(--interactive-pri);
+      box-shadow: 0 0 0 1px var(--interactive-pri);
+    }
+    .clip-label { font-size: 10px; color: var(--text-2); font-weight: 600; white-space: nowrap; }
+    .clip-thumb-strip { position: absolute; inset: 0; display: flex; }
+    .clip-thumb-strip span {
+      flex: 1; border-right: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 100%);
+    }
+
+    .timeline-ruler { height: 16px; display: flex; align-items: center; padding-left: 54px; }
+    .ruler-marks { display: flex; gap: 0; }
+    .ruler-mark { width: 60px; font-size: 9px; color: var(--text-3); font-family: ui-monospace, monospace; border-left: 1px solid var(--border); padding-left: 4px; }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 12px 24px; }
+      .canvas-video { max-height: 480px; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 12px 40px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Редактор · GIF-оверлей вибраний (позиціонування)</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>editor-overlay-selected.html · GIF вставлено, оверлей виділено — resize + контекстні дії</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R3 · Аня — «вставити мем не виходячи з монтажу» (стан «Позиція ок?»)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Замінити» → picker · «Видалити» → editor base · перетягнути/resize → лишається тут · готово → ✅</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">⏳ Завантаження GIF з CDN ⇒</span>
+    <span class="wf-flow-here">📱 Редактор — GIF оверлей вибраний</span><br>
+    <span class="wf-flow-dim">⇒ Замінити ⇒ picker | Видалити ⇒ editor base | позиція ок ⇒ ✅ R3 виконано</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <header>
+      <button class="header-back" aria-label="Назад" onclick="history.back()">←</button>
+      <div class="header-title-wrap">
+        <p class="header-title">Відео для TikTok · 28 черв</p>
+        <p class="header-save-status"><span class="save-ok">✓</span> Збережено</p>
+      </div>
+      <button class="header-export" onclick="location.href='export.html'+location.search">Експорт</button>
+    </header>
+
+    <main>
+
+      <!-- Canvas -->
+      <div class="canvas-zone">
+        <div class="canvas-video">
+          <!-- Відео-плейсхолдер: сірий прямокутник + діагональний хрест -->
+          <div class="canvas-video-bg" aria-hidden="true">
+            <svg viewBox="0 0 120 80" fill="none" stroke="white">
+              <line x1="0" y1="0" x2="120" y2="80"/>
+              <line x1="120" y1="0" x2="0" y2="80"/>
+            </svg>
+          </div>
+
+          <!-- Вибраний GIF-оверлей з resize-handles + контекстними діями -->
+          <div class="overlay-selected" role="group" aria-label="GIF-оверлей · вибрано">
+            <!-- Контекстні дії над оверлеєм -->
+            <div class="overlay-actions" role="toolbar" aria-label="Дії з оверлеєм">
+              <button class="ovl-act" onclick="location.href='picker.html'+location.search">⟳ Замінити</button>
+              <button class="ovl-act destructive" onclick="location.href='editor.html'+location.search">🗑 Видалити</button>
+            </div>
+
+            <span class="overlay-label">GIF · мем</span>
+
+            <!-- Кутові resize-квадратики -->
+            <span class="handle tl" aria-hidden="true"></span>
+            <span class="handle tr" aria-hidden="true"></span>
+            <span class="handle bl" aria-hidden="true"></span>
+            <span class="handle br" aria-hidden="true"></span>
+
+            <!-- Підказка позиціонування під оверлеєм -->
+            <span class="overlay-hint" aria-hidden="true">↤ перетягни · кути — розмір ↦</span>
+          </div>
+
+          <div class="canvas-controls" aria-label="Контролі відтворення">
+            <button class="play-btn" aria-label="Відтворити">
+              <svg viewBox="0 0 12 12"><polygon points="2,1 11,6 2,11"/></svg>
+            </button>
+            <div class="playhead-bar" role="slider" aria-label="Позиція відтворення">
+              <div class="playhead-fill"></div>
+              <div class="playhead-dot"></div>
+            </div>
+            <span class="time-label">0:07 / 0:20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-right">
+
+        <!-- Toolbar -->
+        <div class="toolbar" role="toolbar" aria-label="Інструменти редактора">
+          <button class="tool-btn primary-tool" onclick="location.href='picker.html'+location.search">＋ Додати мем</button>
+          <button class="tool-btn">✂ Обрізати</button>
+          <button class="tool-btn">T Текст</button>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline" role="region" aria-label="Таймлайн">
+          <div class="timeline-ruler" aria-hidden="true">
+            <div class="ruler-marks">
+              <span class="ruler-mark">0:00</span>
+              <span class="ruler-mark">0:05</span>
+              <span class="ruler-mark">0:10</span>
+              <span class="ruler-mark">0:15</span>
+              <span class="ruler-mark">0:20</span>
+            </div>
+          </div>
+
+          <div class="timeline-track">
+            <span class="track-label">Відео</span>
+            <div class="track-clips">
+              <div class="clip video-clip">
+                <div class="clip-thumb-strip" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <span class="clip-label">відео_тікток.mp4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-track">
+            <span class="track-label">Мем</span>
+            <div class="track-clips">
+              <div class="clip overlay-clip selected" style="margin-left:54px" aria-label="GIF-оверлей · вибрано">
+                <span class="clip-label">GIF</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.editor-right -->
+
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мем-пікер · base · МемКат</title>
+  <title>Мем-пікер · Нещодавні · МемКат</title>
   <style>
     :root {
       --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
@@ -127,8 +127,15 @@
     }
     .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
 
-    /* GIF grid */
-    .sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px; min-height: 0; }
+    /* Recents section label */
+    .recents-label {
+      flex-shrink: 0; padding: 10px 12px 4px;
+      font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* GIF grid — 2 columns of recently viewed GIFs */
+    .sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 4px 10px 10px; min-height: 0; }
     .gif-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px;
     }
@@ -173,14 +180,14 @@
 <body>
 
 <aside class="wf-meta">
-  <p class="wf-meta-title">Мем-пікер · base</p>
-  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker.html · Trending tab, cold start — пікер відкритий з контентом</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R2 · R3 · R4 — «побачила мем, підібрала схожий»</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap GIF → editor-loading · Пошук tab → picker-search-empty · свайп вниз → editor base</span></div>
+  <p class="wf-meta-title">Мем-пікер · Нещодавні</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-recents.html · вкладка Нещодавні з контентом (default коли history &gt; 0) — спільний для R2 і R4</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R4 · Аня — «повторно знайти мем без нового пошуку»</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap GIF → editor-loading (CDN) · Trending tab → picker · Пошук tab → picker-search-empty · свайп вниз → editor base</span></div>
   <div class="wf-flow">
-    <span class="wf-flow-dim">📱 Редактор ⇒ «Додати мем» ⇒</span>
-    <span class="wf-flow-here">⧉ Мем-пікер (Trending)</span><br>
-    <span class="wf-flow-dim">⇒ tap GIF ⇒ editor-loading ⇒ 📱 Редактор (base)</span>
+    <span class="wf-flow-dim">📱 Редактор ⇒ «Додати мем» ⇒ history &gt; 0 ⇒</span>
+    <span class="wf-flow-here">⧉ Нещодавні</span><br>
+    <span class="wf-flow-dim">⇒ tap GIF ⇒ 📱 editor-loading (CDN) ⇒ 📱 Редактор · GIF на таймлайні</span>
   </div>
 </aside>
 
@@ -190,7 +197,7 @@
     <header aria-hidden="true">
       <div class="header-back">←</div>
       <div class="header-title-wrap">
-        <p class="header-title">Відео для TikTok · 28 черв</p>
+        <p class="header-title">Мем з котом · 26 черв</p>
         <p class="header-save-status">✓ Збережено</p>
       </div>
       <div class="header-export">Експорт</div>
@@ -211,26 +218,28 @@
     <!-- Scrim -->
     <div class="scrim" aria-hidden="true" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: закрити пікер →"></div>
 
-    <!-- Bottom sheet (picker) -->
-    <dialog class="picker-sheet" open aria-label="Мем-пікер">
+    <!-- Bottom sheet (picker · Нещодавні) -->
+    <dialog class="picker-sheet" open aria-label="Мем-пікер · Нещодавні">
       <div class="sheet-handle" aria-hidden="true"></div>
 
       <nav class="sheet-tabs" aria-label="Вкладки пікера">
-        <button class="tab active" aria-current="true">Trending</button>
-        <button class="tab" onclick="location.href='picker-recents.html'+location.search">Нещодавні</button>
+        <button class="tab" onclick="location.href='picker.html'+location.search">Trending</button>
+        <button class="tab active" aria-current="true">Нещодавні</button>
         <button class="tab" onclick="location.href='picker-search-empty.html'+location.search">Пошук</button>
       </nav>
 
       <div class="sheet-scroll">
-      <div class="gif-grid" role="list" aria-label="GIF меми">
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 1"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 2"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 3"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 4"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 5"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 6"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 7"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 8"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+      <p class="recents-label">Нещодавно переглянуті</p>
+
+      <div class="gif-grid" role="list" aria-label="Нещодавно переглянуті GIF">
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 1"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 2"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 3"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 4"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 5"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 6"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 7"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="Нещодавній GIF 8"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
       </div>
       </div><!-- /.sheet-scroll -->
 

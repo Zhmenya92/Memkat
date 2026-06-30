@@ -31,6 +31,56 @@
 
 ---
 
+## Прототипи решти флоу (R1–R5) · 28.06.2026
+
+Головний flow (18 файлів вище) готовий. Нижче — 12 нових екранів, що добудовують клікабельні прототипи флоу R1–R5 (раніше «виключені» зі скоупу Main у `_screens.md`). Зроблено 5 паралельними агентами, по одному на флоу; зведення консистентності — `_audit.md` (раунд 3).
+
+| # | Файл | Флоу | Стан | Точка входу прото |
+|---|---|---|---|---|
+| 19 | `picker-search-loading.html` | R1 | ⏳ запит Giphy/Tenor | — |
+| 20 | `picker-search-results.html` | R1 | base · список GIF | — |
+| 21 | `picker-search-noresults.html` | R1 | ⬜ нічого не знайдено | — |
+| 22 | `picker-search-end.html` | R1 | ⬜ більше немає | — |
+| 23 | `picker-trending-loading.html` | R2 | ⏳ скелетон Trending | ★ старт R2 |
+| 24 | `picker-recents.html` | R2/R4 | base · Нещодавні | ★ старт R4 |
+| 25 | `picker-cdn-error.html` | R3 | 🔴 CDN вибраного GIF | — |
+| 26 | `editor-overlay-selected.html` | R3 | base · оверлей вибраний | — |
+| 27 | `picker-recents-empty.html` | R4 | ⬜ Нещодавні порожні | — |
+| 28 | `export-square.html` | R5 | статичний знімок 1:1 · поза клік-шляхом (reframe in-place в export.html) | — |
+| 29 | `export-fallback.html` | R5 | ⏳ резервний рендер | — |
+| 30 | `export-unsupported.html` | R5 | 💀 браузер без WebCodecs | — |
+| 31 | `editor-no-meme.html` | R3 | base · відео є, мему ще немає | ★ старт R3 |
+
+**Разом: 31 файл.** Точки входу прототипів (research.html §19): Main → `listings.html` · R1 → `picker-search-empty.html` · R2 → `picker-trending-loading.html` · R3 → `editor-no-meme.html` · R4 → `picker-recents.html` · R5 → `export.html`.
+
+**editor-no-meme.html** (доданий після аудиту, 28.06.2026): найпорожніший функціональний вхід для R3 — копія `editor.html` без мем-оверлею (canvas: підказка «＋ мем сюди»; трек «Мем» порожній, dashed «ще немає мему»), [Додати мем] активний. Проєкт може мати кілька відео й мемів, тож додавання до проєкту з контентом — теж норм; цей екран лише дає чистіший старт демонстрації.
+
+**Перемикач станів у прото (research.html §19):** кожна секція R1–R5 має ряд кнопок «Стани / гілки» — завантажують будь-який стан/гілку (зокрема error/dead-end екрани, що поза happy-клік-шляхом) у той самий вʼюпорт. JS-хелпер `protoState()`.
+
+### Виправлені розриви ланцюга (щоб прототипи клікались наскрізь)
+| Файл | Було | Стало |
+|---|---|---|
+| picker · picker-loading · picker-error · picker-search-empty | вкладка [Нещодавні] мертва | → `picker-recents.html` |
+| picker-search-empty | підказки/поле → `picker.html` | → `picker-search-loading.html` (вхід R1) |
+| editor-loading | success → `editor.html` | → `editor-overlay-selected.html` (замикає R3) |
+| picker-loading | вкладка [Пошук] мертва | → `picker-search-empty.html` |
+
+### Специфікація нових екранів (зони · вихідні переходи)
+- **picker-search-loading** — sheet: tabs · поле з запитом «😂» · spinner «Шукаю в Giphy/Tenor…». → поле→search-empty · Trending→picker · scrim→editor.
+- **picker-search-results** — sheet: поле «😂» · grid 2-кол GIF. → tap GIF→editor-loading · поле→search-empty.
+- **picker-search-noresults** — sheet: довгий запит · «Нічого не знайдено» + CTA «Змінити запит»→search-empty.
+- **picker-search-end** — як results + рядок «Більше результатів немає» + «Змінити запит»→search-empty.
+- **picker-trending-loading** — sheet: tab Trending active · skeleton-grid. → Trending→picker (loaded) · tabs · scrim→editor. Атрибуція GIPHY свідомо прихована (лише скелетони).
+- **picker-recents** — sheet: tab Нещодавні active · grid 2-кол · footer «Powered by GIPHY». → tap GIF→editor-loading · Trending→picker · Пошук→search-empty. Спільний для R2 і R4.
+- **picker-cdn-error** — sheet: прев'ю впалого GIF + «Не вдалось завантажити GIF» + «Повторити»→editor-loading · «Вибрати інший»→picker. Відмінність від picker-error: CDN конкретного GIF (після вибору), не API списку (до вибору).
+- **editor-overlay-selected** — редактор (header/toolbar/timeline як editor.html); canvas: оверлей з resize-handles + «Замінити»→picker · «Видалити»→editor.
+- **picker-recents-empty** — sheet: empty-state «Тут зʼявляться нещодавні меми» + «Пошук»→search-empty · «Подивитись тренди»→picker · scrim→editor.
+- **export-square** — статичний знімок формату 1:1. Поза клік-шляхом прото: `export.html` робить reframe 9:16↔1:1 in-place через `setFmt()`, тож окремий екран у флоу не потрібен. Лишається як довідковий знімок (галерея §20).
+- **export-fallback** — резервний рендер: progress + нотатка «може зайняти довше» · OK→share · «Скасувати»→export.
+- **export-unsupported** — 💀 «Цей браузер не може зберегти відео» · «Повернутись до редактора»→editor.
+
+---
+
 ## Специфікація по файлах
 
 ### listings-empty.html

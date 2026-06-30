@@ -1,15 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мем-пікер · error · МемКат</title>
+  <title>Мем-пікер · search no results · МемКат</title>
   <style>
     :root {
       --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
       --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
       --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
-      --err: #C05050; --err-bg: rgba(192,80,80,.08); --scrim: rgba(0,0,0,.65);
+      --scrim: rgba(0,0,0,.65);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -49,7 +49,11 @@
       overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
     }
 
-    header { padding: 14px 14px; background: var(--bg); border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+    header {
+      padding: 14px 14px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
     .header-back { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--zone); border-radius: 7px; font-size: 16px; color: var(--text); flex-shrink: 0; border: none; }
     .header-title-wrap { flex: 1; }
     .header-title { font-size: 15px; font-weight: 600; color: var(--text); }
@@ -57,7 +61,12 @@
     .header-export { padding: 8px 14px; background: var(--zone); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text-3); border: none; }
 
     .editor-behind { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-    .editor-behind-canvas { width: 100%; aspect-ratio: 9/16; max-height: 200px; background: var(--zone-deep); flex-shrink: 0; }
+    .editor-behind-canvas {
+      width: 100%; aspect-ratio: 9/16; max-height: 200px;
+      background: var(--zone-deep); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .editor-behind-canvas svg { width: 50%; height: 50%; opacity: .1; }
     .editor-behind-toolbar { padding: 8px 14px; background: var(--zone-deep); border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
     .tool-chip { padding: 6px 10px; background: var(--zone); border: 1px solid var(--border); border-radius: 7px; font-size: 12px; color: var(--text-3); }
 
@@ -75,23 +84,39 @@
     .tab { flex: 1; padding: 12px 8px; text-align: center; font-size: 13px; font-weight: 500; color: var(--text-3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: inherit; }
     .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
 
-    /* Error state inside sheet */
-    .sheet-error {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; padding: 24px 20px; text-align: center;
+    /* Search input — filled query */
+    .search-wrap { padding: 10px 12px; flex-shrink: 0; }
+    .search-field {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 10px;
+      padding: 10px 12px; cursor: pointer; width: 100%; text-align: left; font-family: inherit;
     }
-    .sheet-err-icon { font-size: 28px; }
-    .sheet-err-title { font-size: 15px; font-weight: 600; color: var(--text); }
-    .sheet-err-sub { font-size: 13px; color: var(--text-2); }
+    .search-icon { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .search-value { flex: 1; font-size: 15px; color: var(--text); }
+    .search-clear { font-size: 16px; color: var(--text-3); flex-shrink: 0; }
 
-    .btn-retry {
-      padding: 12px 28px; background: var(--interactive-pri); color: var(--interactive-pri-fg);
-      border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
+    /* No-results zone */
+    .noresults-zone {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; padding: 24px 32px; text-align: center;
     }
-    .btn-search {
-      padding: 10px 24px; background: transparent; border: 1px solid var(--border);
-      border-radius: 10px; font-size: 13px; color: var(--text-2); font-family: inherit; cursor: pointer;
+    .noresults-icon {
+      width: 56px; height: 56px; border-radius: 12px;
+      background: var(--zone); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: var(--text-3);
     }
+    .noresults-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .noresults-hint { font-size: 13px; color: var(--text-2); max-width: 240px; line-height: 1.5; }
+    .noresults-cta {
+      margin-top: 6px; padding: 11px 20px;
+      background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 12px; font-size: 14px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+    }
+
+    .sheet-footer { padding: 8px 12px 10px; border-top: 1px solid var(--border); flex-shrink: 0; text-align: center; }
+    .sheet-attribution { font-size: 10px; color: var(--text-3); font-family: ui-monospace, monospace; }
 
     @media (min-width: 640px) {
       body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
@@ -116,14 +141,14 @@
 <body>
 
 <aside class="wf-meta">
-  <p class="wf-meta-title">Мем-пікер · error</p>
-  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-error.html · API Giphy/Tenor недоступне</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R1 · R2 (blocked) — петля перервана на пошуку мему</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Повторити» → picker base · «Перейти до пошуку» → picker-search-empty · свайп ↓ → editor base</span></div>
+  <p class="wf-meta-title">Мем-пікер · Пошук (no results)</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-search-noresults.html · Giphy / Tenor відповіли, але порожньо</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R1 · Аня — «за запитом нічого не знайшлось»</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Змінити запит» → picker-search-empty · поле/Trending → інший запит · свайп вниз → editor</span></div>
   <div class="wf-flow">
-    <span class="wf-flow-dim">⧉ Мем-пікер (відкрито) ⇒ API fail ⇒</span>
-    <span class="wf-flow-here">⧉ Мем-пікер (error)</span><br>
-    <span class="wf-flow-dim">⇒ retry ⇒ picker base | close ⇒ 📱 Редактор</span>
+    <span class="wf-flow-dim">⏳ Завантаження ⇒ API OK, 0 GIF ⇒</span>
+    <span class="wf-flow-here">⬜ Нічого не знайдено</span><br>
+    <span class="wf-flow-dim">⇒ змінити запит ⇒ ⧉ Пошук (empty)</span>
   </div>
 </aside>
 
@@ -139,30 +164,46 @@
     </header>
 
     <div class="editor-behind" aria-hidden="true">
-      <div class="editor-behind-canvas"></div>
+      <div class="editor-behind-canvas">
+        <svg viewBox="0 0 120 80" fill="none" stroke="white">
+          <line x1="0" y1="0" x2="120" y2="80"/><line x1="120" y1="0" x2="0" y2="80"/>
+        </svg>
+      </div>
       <div class="editor-behind-toolbar">
         <div class="tool-chip">＋ Додати мем</div>
+        <div class="tool-chip">✂ Обрізати</div>
       </div>
     </div>
 
     <div class="scrim" aria-hidden="true" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: закрити пікер →"></div>
 
-    <dialog class="picker-sheet" open aria-label="Мем-пікер · помилка">
+    <dialog class="picker-sheet" open aria-label="Мем-пікер · Пошук">
       <div class="sheet-handle" aria-hidden="true"></div>
 
       <nav class="sheet-tabs" aria-label="Вкладки пікера">
-        <button class="tab active">Trending</button>
-        <button class="tab" onclick="location.href='picker-recents.html'+location.search">Нещодавні</button>
-        <button class="tab" onclick="location.href='picker-search-empty.html'+location.search">Пошук</button>
+        <button class="tab" onclick="location.href='picker.html'+location.search">Trending</button>
+        <button class="tab" style="cursor:default" title="Нещодавні — поза прототипом (окремого екрана немає)">Нещодавні</button>
+        <button class="tab active" aria-current="true">Пошук</button>
       </nav>
 
-      <div class="sheet-error" role="alert">
-        <span class="sheet-err-icon">🔴</span>
-        <h2 class="sheet-err-title">Не вдалось завантажити GIF</h2>
-        <p class="sheet-err-sub">Перевірте підключення до інтернету або спробуйте пізніше</p>
-        <button class="btn-retry" onclick="location.href='picker.html'+location.search">Повторити</button>
-        <button class="btn-search" onclick="location.href='picker-search-empty.html'+location.search">Перейти до пошуку</button>
+      <form class="search-wrap" role="search" aria-label="Пошук GIF">
+        <button class="search-field" type="button" onclick="location.href='picker-search-empty.html'+location.search" aria-label="Запит: смішний кіт у касці — змінити">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <span class="search-value">смішний кіт у касці</span>
+          <span class="search-clear" aria-hidden="true">✕</span>
+        </button>
+      </form>
+
+      <div class="noresults-zone" role="status" aria-live="polite">
+        <div class="noresults-icon" aria-hidden="true">⌕</div>
+        <p class="noresults-title">Нічого не знайдено</p>
+        <p class="noresults-hint">За цим запитом мемів немає. Спробуйте коротший запит або емодзі — напр. 😂, wow, fail.</p>
+        <button class="noresults-cta" type="button" onclick="location.href='picker-search-empty.html'+location.search">Змінити запит</button>
       </div>
+
+      <footer class="sheet-footer">
+        <span class="sheet-attribution">Powered by GIPHY</span>
+      </footer>
     </dialog>
 
   </div>

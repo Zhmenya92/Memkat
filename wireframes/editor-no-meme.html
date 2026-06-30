@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Редактор · loading · МемКат</title>
+  <title>Редактор · готовий до мему · МемКат</title>
   <style>
     :root {
       --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
@@ -48,6 +48,7 @@
       overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
     }
 
+    /* ── Editor header ── */
     header {
       padding: 14px 14px; background: var(--bg);
       border-bottom: 1px solid var(--border); flex-shrink: 0;
@@ -59,8 +60,12 @@
       cursor: pointer; flex-shrink: 0; border: none;
     }
     .header-title-wrap { flex: 1; min-width: 0; }
-    .header-title { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-title {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .header-save-status { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .save-ok { color: #5A9A5A; }
     .header-export {
       padding: 8px 14px; background: var(--interactive-pri); color: var(--interactive-pri-fg);
       border: none; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: inherit;
@@ -69,44 +74,57 @@
 
     main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-    .canvas-zone { background: #000; flex-shrink: 0; position: relative; }
+    /* ── Canvas ── */
+    .canvas-zone {
+      background: #000; flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
     .canvas-video {
-      width: 100%; aspect-ratio: 9 / 16; max-height: 340px; overflow: hidden;
+      width: 100%; aspect-ratio: 9 / 16;
       position: relative;
+      max-height: 340px;
+      overflow: hidden;
     }
     .canvas-video-bg {
-      position: absolute; inset: 0; background: var(--zone-deep);
+      position: absolute; inset: 0;
+      background: var(--zone-deep);
       display: flex; align-items: center; justify-content: center;
     }
     .canvas-video-bg svg { width: 60%; height: 60%; opacity: .2; }
 
-    /* Loading overlay */
-    .canvas-loading-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,.55);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 12px;
+    /* Hint: тут зʼявиться мем */
+    .overlay-hint {
+      position: absolute;
+      top: 18%; left: 10%; width: 80%;
+      border: 1px dashed rgba(255,255,255,.14);
+      border-radius: 6px;
+      aspect-ratio: 16 / 9;
+      display: flex; align-items: center; justify-content: center;
     }
-    .spinner {
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 3px solid rgba(255,255,255,.1);
-      border-top-color: var(--interactive-pri);
-    }
-    .canvas-loading-label { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 500; }
+    .overlay-hint-label { font-size: 10px; color: rgba(255,255,255,.22); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
 
+    /* Play control */
     .canvas-controls {
-      position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px;
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 8px 12px;
       background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
       display: flex; align-items: center; gap: 10px;
     }
     .play-btn {
       width: 32px; height: 32px; background: rgba(255,255,255,.15); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
     }
     .play-btn svg { width: 12px; height: 12px; fill: white; }
-    .playhead-bar { flex: 1; height: 3px; background: rgba(255,255,255,.2); border-radius: 3px; }
+    .playhead-bar { flex: 1; height: 3px; background: rgba(255,255,255,.2); border-radius: 3px; position: relative; }
+    .playhead-fill { width: 35%; height: 100%; background: var(--interactive-pri); border-radius: 3px; }
+    .playhead-dot {
+      position: absolute; top: 50%; right: calc(65% - 6px); transform: translateY(-50%);
+      width: 12px; height: 12px; background: white; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.4);
+    }
     .time-label { font-size: 11px; color: rgba(255,255,255,.5); font-family: ui-monospace, monospace; }
 
+    /* ── Toolbar ── */
     .toolbar {
       padding: 10px 14px; background: var(--zone-deep);
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
@@ -115,26 +133,50 @@
     .tool-btn {
       display: flex; align-items: center; gap: 6px; padding: 8px 12px;
       background: var(--zone); border: 1px solid var(--border); border-radius: 8px;
-      font-size: 13px; font-weight: 600; font-family: inherit;
+      font-size: 13px; font-weight: 600; color: var(--text); font-family: inherit;
       cursor: pointer; white-space: nowrap;
     }
-    .tool-btn.disabled {
-      background: #202020; border-color: #282828; color: #404040; cursor: not-allowed;
+    .tool-btn.primary-tool {
+      background: var(--surface); border-color: var(--text-3);
     }
-    .tool-btn:not(.disabled) { color: var(--text); }
 
+    /* ── Timeline ── */
     .timeline {
       flex: 1; padding: 12px 14px; background: var(--zone-deep);
-      overflow-x: auto; display: flex; flex-direction: column; gap: 6px; min-height: 0;
+      overflow-x: auto; overflow-y: hidden;
+      display: flex; flex-direction: column; gap: 6px;
+      min-height: 0;
     }
     .timeline-track { display: flex; align-items: center; gap: 6px; }
-    .track-label { width: 48px; flex-shrink: 0; font-size: 9px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; }
-    .clip { height: 36px; border-radius: 5px; position: relative; display: flex; align-items: center; padding: 0 8px; }
-    .clip.video-clip { width: 180px; background: #1A2E1A; border: 1px solid #2A4A2A; }
-    .clip.overlay-loading { width: 80px; margin-left: 54px; background: var(--zone); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; }
-    .clip-label { font-size: 10px; color: var(--text-2); font-weight: 600; }
-    .clip-loading-dots { font-size: 14px; color: var(--text-3); letter-spacing: 3px; }
-    .timeline-ruler { height: 16px; display: flex; align-items: center; padding-left: 54px; }
+    .track-label {
+      width: 48px; flex-shrink: 0; font-size: 9px; font-weight: 700;
+      color: var(--text-3); text-transform: uppercase; letter-spacing: .04em;
+    }
+    .track-clips { display: flex; gap: 3px; }
+    .clip {
+      height: 36px; border-radius: 5px; position: relative;
+      background: var(--zone); border: 1px solid var(--border);
+      overflow: hidden; display: flex; align-items: center; padding: 0 8px;
+    }
+    .clip.video-clip { width: 180px; background: #1A2E1A; border-color: #2A4A2A; }
+    /* порожній трек мему — ще нічого не додано */
+    .clip.empty-clip {
+      width: 180px; background: transparent; border: 1px dashed var(--border);
+      color: var(--text-3); justify-content: center;
+    }
+    .clip-label { font-size: 10px; color: var(--text-2); font-weight: 600; white-space: nowrap; }
+    .empty-clip .clip-label { color: var(--text-3); }
+    .clip-thumb-strip {
+      position: absolute; inset: 0; display: flex;
+    }
+    .clip-thumb-strip span {
+      flex: 1; border-right: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 100%);
+    }
+
+    .timeline-ruler {
+      height: 16px; display: flex; align-items: center; padding-left: 54px;
+    }
     .ruler-marks { display: flex; gap: 0; }
     .ruler-mark { width: 60px; font-size: 9px; color: var(--text-3); font-family: ui-monospace, monospace; border-left: 1px solid var(--border); padding-left: 4px; }
 
@@ -160,14 +202,13 @@
 <body>
 
 <aside class="wf-meta">
-  <p class="wf-meta-title">Редактор · loading (GIF)</p>
-  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>editor-loading.html · GIF вибрано в пікері, CDN завантажує файл</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R3 — «додав мем» (в процесі)</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>GIF завантажився → editor-overlay-selected · помилка CDN → picker-cdn-error</span></div>
+  <p class="wf-meta-title">Редактор · готовий до мему</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>editor-no-meme.html · є відео, мему ще немає — старт R3</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>Main · R3 — «додати мем не виходячи з монтажу»</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Додати мем» → ⧉ Мем-пікер · «Експорт» → 📱 Екран експорту</span></div>
   <div class="wf-flow">
-    <span class="wf-flow-dim">⧉ Мем-пікер (вибрано GIF) ⇒</span>
-    <span class="wf-flow-here">📱 Редактор (loading GIF)</span><br>
-    <span class="wf-flow-dim">⇒ OK → 📱 Редактор (base) | fail → picker-error</span>
+    <span class="wf-flow-dim">📱 Вибір відео ⇒</span> <span class="wf-flow-here">📱 Редактор (без мему)</span>
+    <span class="wf-flow-dim">⇒ ⧉ Мем-пікер ⇒ оверлей</span>
   </div>
 </aside>
 
@@ -177,42 +218,51 @@
       <button class="header-back" aria-label="Назад" onclick="history.back()">←</button>
       <div class="header-title-wrap">
         <p class="header-title">Відео для TikTok · 28 черв</p>
-        <p class="header-save-status">✓ Збережено</p>
+        <p class="header-save-status"><span class="save-ok">✓</span> Збережено</p>
       </div>
       <button class="header-export" onclick="location.href='export.html'+location.search">Експорт</button>
     </header>
 
     <main>
 
+      <!-- Canvas -->
       <div class="canvas-zone">
         <div class="canvas-video">
           <div class="canvas-video-bg" aria-hidden="true">
             <svg viewBox="0 0 120 80" fill="none" stroke="white">
-              <line x1="0" y1="0" x2="120" y2="80"/><line x1="120" y1="0" x2="0" y2="80"/>
+              <line x1="0" y1="0" x2="120" y2="80"/>
+              <line x1="120" y1="0" x2="0" y2="80"/>
             </svg>
           </div>
 
-          <!-- Loading overlay for GIF -->
-          <div class="canvas-loading-overlay" role="status" aria-label="Завантаження GIF" onclick="location.href='editor-overlay-selected.html'+location.search" style="cursor:pointer" title="Прототип: GIF завантажено →">
-            <div class="spinner" aria-hidden="true"></div>
-            <p class="canvas-loading-label">Завантаження GIF...</p>
+          <!-- Мему ще немає — підказка де він зʼявиться -->
+          <div class="overlay-hint" aria-hidden="true">
+            <span class="overlay-hint-label">＋ мем сюди</span>
           </div>
 
-          <div class="canvas-controls">
-            <button class="play-btn" aria-label="Відтворити"><svg viewBox="0 0 12 12"><polygon points="2,1 11,6 2,11"/></svg></button>
-            <div class="playhead-bar"></div>
-            <span class="time-label">0:00 / 0:20</span>
+          <div class="canvas-controls" aria-label="Контролі відтворення">
+            <button class="play-btn" aria-label="Відтворити">
+              <svg viewBox="0 0 12 12"><polygon points="2,1 11,6 2,11"/></svg>
+            </button>
+            <div class="playhead-bar" role="slider" aria-label="Позиція відтворення">
+              <div class="playhead-fill"></div>
+              <div class="playhead-dot"></div>
+            </div>
+            <span class="time-label">0:07 / 0:20</span>
           </div>
         </div>
       </div>
 
       <div class="editor-right">
 
-        <div class="toolbar" role="toolbar">
-          <button class="tool-btn disabled" disabled aria-disabled="true">＋ Додати мем</button>
-          <button class="tool-btn disabled" disabled aria-disabled="true">✂ Обрізати</button>
+        <!-- Toolbar -->
+        <div class="toolbar" role="toolbar" aria-label="Інструменти редактора">
+          <button class="tool-btn primary-tool" onclick="location.href='picker.html'+location.search">＋ Додати мем</button>
+          <button class="tool-btn">✂ Обрізати</button>
+          <button class="tool-btn">T Текст</button>
         </div>
 
+        <!-- Timeline -->
         <div class="timeline" role="region" aria-label="Таймлайн">
           <div class="timeline-ruler" aria-hidden="true">
             <div class="ruler-marks">
@@ -223,14 +273,25 @@
               <span class="ruler-mark">0:20</span>
             </div>
           </div>
+
           <div class="timeline-track">
             <span class="track-label">Відео</span>
-            <div class="clip video-clip"><span class="clip-label">відео_тікток.mp4</span></div>
+            <div class="track-clips">
+              <div class="clip video-clip">
+                <div class="clip-thumb-strip" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <span class="clip-label">відео_тікток.mp4</span>
+              </div>
+            </div>
           </div>
+
           <div class="timeline-track">
             <span class="track-label">Мем</span>
-            <div class="clip overlay-loading" aria-label="GIF завантажується">
-              <span class="clip-loading-dots">···</span>
+            <div class="track-clips">
+              <div class="clip empty-clip" style="margin-left:54px">
+                <span class="clip-label">ще немає мему</span>
+              </div>
             </div>
           </div>
         </div>

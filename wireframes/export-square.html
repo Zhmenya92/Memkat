@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Екран експорту · 1:1 · МемКат</title>
+  <style>
+    :root {
+      --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
+      --border: #383838; --text: #EDEDED; --text-2: #8A8A8A; --text-3: #515151;
+      --interactive-pri: #D8D8D8; --interactive-pri-fg: #141414;
+      --col: 480px; /* колонка контенту на планшеті (640–1023) */
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.14);
+      border-radius: 10px;
+      transition: background .15s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0A0A0A; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 20px 16px 40px; gap: 10px;
+    }
+    .wf-meta {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; flex-shrink: 0;
+    }
+    .wf-meta-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .wf-meta-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.7; color: var(--text-3); }
+    .wf-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; min-width: 40px; flex-shrink: 0; }
+    .wf-flow {
+      margin-top: 8px; padding: 8px 10px; background: var(--zone); border-radius: 6px;
+      font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-2); line-height: 1.8;
+    }
+    .wf-flow-here { font-weight: 700; color: var(--text); background: var(--zone-deep); border-radius: 3px; padding: 0 4px; }
+    .wf-flow-dim { color: var(--text-3); }
+
+    .app-layout { width: 100%; display: flex; }
+    .screen {
+      flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 780px; position: relative;
+    }
+
+    header {
+      padding: 14px 16px; background: var(--bg);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .header-back {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border-radius: 8px; font-size: 18px; color: var(--text);
+      cursor: pointer; flex-shrink: 0; border: none;
+    }
+    .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+
+    main { flex: 1; padding: 20px 16px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Format picker */
+    .format-section { display: flex; flex-direction: column; gap: 10px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .05em; }
+    .format-pills { display: flex; gap: 8px; }
+    .format-pill {
+      flex: 1; padding: 12px; background: var(--zone); border: 1px solid var(--border);
+      border-radius: 10px; font-family: inherit; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .format-pill.active { background: rgba(216,216,216,.08); border-color: var(--interactive-pri); }
+    .format-pill-ratio { font-size: 15px; font-weight: 700; color: var(--text); font-family: ui-monospace, monospace; }
+    .format-pill-label { font-size: 11px; color: var(--text-3); }
+    .format-pill.active .format-pill-ratio { color: var(--interactive-pri); }
+    .format-pill.active .format-pill-label { color: var(--text-2); }
+    .format-pill-check { font-size: 14px; color: var(--interactive-pri); }
+
+    /* Preview */
+    .preview-section { display: flex; flex-direction: column; gap: 10px; }
+    .preview-frame-wrap {
+      display: flex; align-items: center; justify-content: center;
+      background: var(--zone); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px;
+    }
+    .preview-frame {
+      width: 140px; aspect-ratio: 1 / 1;
+      background: var(--zone-deep); border-radius: 4px; position: relative; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .preview-frame svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .preview-label { font-size: 12px; color: var(--text-3); text-align: center; }
+
+    /* Save button */
+    .btn-export {
+      width: 100%; padding: 16px;
+      background: var(--interactive-pri); color: var(--interactive-pri-fg);
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
+      margin-top: auto;
+    }
+
+    @media (min-width: 640px) {
+      body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
+      .wf-meta { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; }
+      .screen { min-height: 100vh; }
+      header { padding: 16px 24px; }
+      main { max-width: var(--col); margin: 0 auto; align-self: stretch; }
+    }
+    @media (min-width: 1024px) {
+      header { padding: 16px 40px; }
+      main { max-width: 640px; }
+    }
+  </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  <style>
+    .embed .wf-meta { display: none !important; }
+    html.embed, html.embed body { overflow: hidden; height: 100%; padding: 0; }
+    html.embed .app-layout { flex: 1; min-height: 0; }
+    html.embed .screen { height: 100%; min-height: 0; }
+  </style>
+</head>
+<body>
+
+<aside class="wf-meta">
+  <p class="wf-meta-title">Екран експорту · 1:1</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>export-square.html · формат 1:1 вибрано · live-reframe preview у квадрат</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R5 · персона Денис · вибір формату (1:1 — Instagram feed)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>«Зберегти відео» → export-loading · toggle 9:16 → export.html · ← → 📱 Редактор</span></div>
+  <div class="wf-flow">
+    <span class="wf-flow-dim">📱 Екран експорту ⇒ Формат? ⇒</span>
+    <span class="wf-flow-here">📱 Експорт · 1:1 (reframe)</span><br>
+    <span class="wf-flow-dim">⇒ «Зберегти відео» ⇒ export-loading ⇒ share</span>
+  </div>
+</aside>
+
+<div class="app-layout">
+  <div class="screen">
+    <header>
+      <button class="header-back" aria-label="Назад" onclick="history.back()">←</button>
+      <span class="header-title">Експорт</span>
+    </header>
+
+    <main>
+
+      <div class="format-section">
+        <p class="section-label">Формат</p>
+        <div class="format-pills" role="radiogroup" aria-label="Вибір формату">
+          <button class="format-pill" role="radio" aria-checked="false" onclick="location.href='export.html'+location.search">
+            <span class="format-pill-ratio">9:16</span>
+            <span class="format-pill-label">TikTok / Reels / Shorts</span>
+            <span class="format-pill-check" style="display:none">✓</span>
+          </button>
+          <button class="format-pill active" role="radio" aria-checked="true">
+            <span class="format-pill-ratio">1:1</span>
+            <span class="format-pill-label">Instagram feed</span>
+            <span class="format-pill-check">✓</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <p class="section-label">Кадрування</p>
+        <div class="preview-frame-wrap">
+          <div class="preview-frame" aria-label="Preview кадрування 1:1">
+            <svg viewBox="0 0 140 140" fill="none" stroke="rgba(255,255,255,.15)">
+              <line x1="0" y1="0" x2="140" y2="140"/>
+              <line x1="140" y1="0" x2="0" y2="140"/>
+            </svg>
+          </div>
+        </div>
+        <p class="preview-label">1:1 — Instagram feed</p>
+      </div>
+
+      <button class="btn-export" onclick="location.href='export-loading.html'+location.search">Зберегти відео</button>
+
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

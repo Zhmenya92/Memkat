@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мем-пікер · base · МемКат</title>
+  <title>Мем-пікер · trending loading · МемКат</title>
   <style>
     :root {
       --bg: #141414; --surface: #1E1E1E; --zone: #272727; --zone-deep: #2F2F2F;
@@ -127,28 +127,28 @@
     }
     .tab.active { color: var(--text); border-bottom-color: var(--interactive-pri); font-weight: 600; }
 
-    /* GIF grid */
+    /* Loading status strip */
+    .sheet-loading-status {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 10px; flex-shrink: 0;
+      font-size: 12px; font-weight: 500; color: var(--text-2);
+    }
+    .spinner-sm {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,.1);
+      border-top-color: var(--interactive-pri);
+      flex-shrink: 0;
+    }
+
+    /* GIF grid — skeleton placeholders */
     .sheet-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px; min-height: 0; }
     .gif-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px;
     }
-    .gif-item {
-      aspect-ratio: 1; background: var(--zone); border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; position: relative; overflow: hidden;
+    .gif-item.skeleton {
+      aspect-ratio: 1; border-radius: 8px;
+      background: linear-gradient(90deg, var(--zone) 0%, var(--zone-deep) 50%, var(--zone) 100%);
     }
-    .gif-item svg { width: 36%; height: 36%; }
-    .gif-label {
-      position: absolute; bottom: 4px; left: 6px;
-      font-size: 9px; color: rgba(255,255,255,.3); font-family: ui-monospace, monospace;
-    }
-
-    .sheet-footer {
-      padding: 8px 12px 10px;
-      border-top: 1px solid var(--border); flex-shrink: 0;
-      text-align: center;
-    }
-    .sheet-attribution { font-size: 10px; color: var(--text-3); font-family: ui-monospace, monospace; }
 
     @media (min-width: 640px) {
       body { background: var(--bg); padding: 20px 16px; align-items: stretch; flex-direction: column; }
@@ -173,14 +173,14 @@
 <body>
 
 <aside class="wf-meta">
-  <p class="wf-meta-title">Мем-пікер · base</p>
-  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker.html · Trending tab, cold start — пікер відкритий з контентом</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R2 · R3 · R4 — «побачила мем, підібрала схожий»</span></div>
-  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>tap GIF → editor-loading · Пошук tab → picker-search-empty · свайп вниз → editor base</span></div>
+  <p class="wf-meta-title">Мем-пікер · trending loading</p>
+  <div class="wf-meta-row"><span class="wf-meta-label">Файл</span><span>picker-trending-loading.html · Trending tab, скелетон поки Giphy / Tenor trending API відповідає</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Job</span><span>R2 · Ліза — «побачити актуальний контент з нуля» (cold start, history = 0)</span></div>
+  <div class="wf-meta-row"><span class="wf-meta-label">Дії</span><span>API OK → picker (Trending список) · Нещодавні tab → picker-recents · Пошук tab → picker-search-empty · свайп вниз → editor base</span></div>
   <div class="wf-flow">
-    <span class="wf-flow-dim">📱 Редактор ⇒ «Додати мем» ⇒</span>
-    <span class="wf-flow-here">⧉ Мем-пікер (Trending)</span><br>
-    <span class="wf-flow-dim">⇒ tap GIF ⇒ editor-loading ⇒ 📱 Редактор (base)</span>
+    <span class="wf-flow-dim">📱 Редактор ⇒ «Додати мем» ⇒ cold start ⇒</span>
+    <span class="wf-flow-here">⧉ Trending (⏳ loading)</span><br>
+    <span class="wf-flow-dim">⇒ API OK ⇒ 📱 Trending · список GIF ⇒ tap ⇒ 📱 Редактор</span>
   </div>
 </aside>
 
@@ -211,32 +211,36 @@
     <!-- Scrim -->
     <div class="scrim" aria-hidden="true" onclick="location.href='editor.html'+location.search" style="cursor:pointer" title="Прототип: закрити пікер →"></div>
 
-    <!-- Bottom sheet (picker) -->
-    <dialog class="picker-sheet" open aria-label="Мем-пікер">
+    <!-- Bottom sheet (picker · trending loading) -->
+    <dialog class="picker-sheet" open aria-label="Мем-пікер · завантаження трендів" aria-busy="true">
       <div class="sheet-handle" aria-hidden="true"></div>
 
       <nav class="sheet-tabs" aria-label="Вкладки пікера">
-        <button class="tab active" aria-current="true">Trending</button>
+        <button class="tab active" aria-current="true" onclick="location.href='picker.html'+location.search" title="Прототип: тренди завантажились →">Trending</button>
         <button class="tab" onclick="location.href='picker-recents.html'+location.search">Нещодавні</button>
         <button class="tab" onclick="location.href='picker-search-empty.html'+location.search">Пошук</button>
       </nav>
 
+      <div class="sheet-loading-status" role="status" aria-live="polite">
+        <span class="spinner-sm" aria-hidden="true"></span>
+        <span>Завантажую тренди…</span>
+      </div>
+
       <div class="sheet-scroll">
-      <div class="gif-grid" role="list" aria-label="GIF меми">
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 1"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 2"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 3"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 4"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 5"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 6"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 7"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
-        <article class="gif-item" role="listitem" onclick="location.href='editor-loading.html'+location.search" aria-label="GIF 8"><svg viewBox="0 0 40 40" fill="none" stroke="rgba(255,255,255,.2)"><line x1="0" y1="0" x2="40" y2="40"/><line x1="40" y1="0" x2="0" y2="40"/></svg><span class="gif-label">GIF</span></article>
+      <div class="gif-grid" aria-hidden="true">
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
+        <div class="gif-item skeleton"></div>
       </div>
       </div><!-- /.sheet-scroll -->
 
-      <footer class="sheet-footer">
-        <span class="sheet-attribution">Powered by GIPHY</span>
-      </footer>
+      <!-- Атрибуція «Powered by GIPHY» свідомо ВІДСУТНЯ: реального GIPHY-контенту ще нема (лише скелетони). Зʼявиться у picker.html / picker-recents.html, де показано grid. -->
     </dialog>
 
   </div>
